@@ -1,10 +1,10 @@
 
-import 'package:callout_api/src/overlays/callouts/arrow_type.dart';
-import 'package:callout_api/src/overlays/callouts/callout.dart';
-import 'package:callout_api/src/overlays/callouts/coord.dart';
-import 'package:callout_api/src/overlays/callouts/line.dart';
-import 'package:callout_api/src/overlays/callouts/rectangle.dart';
-import 'package:callout_api/src/overlays/callouts/side.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/arrow_type.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/callout.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/coord.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/line.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/rectangle.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/side.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 

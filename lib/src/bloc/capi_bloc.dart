@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:callout_api/src/list/number_input.dart';
-import 'package:callout_api/src/model/target_config.dart';
-import 'package:callout_api/src/overlays/callouts/callout.dart';
-import 'package:callout_api/src/useful.dart';
+import 'package:flutter_callout_api/src/list/number_input.dart';
+import 'package:flutter_callout_api/src/model/target_config.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/callout.dart';
+import 'package:flutter_callout_api/src/useful.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

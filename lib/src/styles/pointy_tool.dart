@@ -1,5 +1,5 @@
 
-import 'package:callout_api/src/overlays/callouts/arrow_type.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/arrow_type.dart';
 import 'package:flutter/material.dart';
 
 

@@ -1,16 +1,16 @@
-import 'package:callout_api/src/blink.dart';
-import 'package:callout_api/src/overlays/callouts/callout.dart';
-import 'package:callout_api/src/useful.dart';
-import 'package:callout_api/src/wrapper/app_wrapper.dart';
+import 'package:flutter_callout_api/src/blink.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/callout.dart';
+import 'package:flutter_callout_api/src/useful.dart';
+import 'package:flutter_callout_api/src/wrapper/app_wrapper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:callout_api/src/bloc/capi_bloc.dart';
-import 'package:callout_api/src/bloc/capi_event.dart';
-import 'package:callout_api/src/callout_text_editor.dart';
-import 'package:callout_api/src/styles/styles_picker.dart';
-import 'package:callout_api/src/wrapper/buttons/copy_button.dart';
-import 'package:callout_api/src/wrapper/buttons/play_button.dart';
-import 'package:callout_api/src/wrapper/widget_wrapper.dart';
+import 'package:flutter_callout_api/src/bloc/capi_bloc.dart';
+import 'package:flutter_callout_api/src/bloc/capi_event.dart';
+import 'package:flutter_callout_api/src/callout_text_editor.dart';
+import 'package:flutter_callout_api/src/styles/styles_picker.dart';
+import 'package:flutter_callout_api/src/wrapper/buttons/copy_button.dart';
+import 'package:flutter_callout_api/src/wrapper/buttons/play_button.dart';
+import 'package:flutter_callout_api/src/wrapper/widget_wrapper.dart';
 
 import '../model/target_config.dart';
 

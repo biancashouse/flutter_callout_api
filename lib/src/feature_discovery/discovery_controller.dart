@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:callout_api/src/gotits/gotits_helper.dart';
+import 'package:flutter_callout_api/src/gotits/gotits_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

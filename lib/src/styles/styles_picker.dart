@@ -1,12 +1,12 @@
 library text_style_editor;
 
 
-import 'package:callout_api/src/callout_text_editor.dart';
-import 'package:callout_api/src/model/target_config.dart';
-import 'package:callout_api/src/overlays/callouts/arrow_type.dart';
-import 'package:callout_api/src/overlays/callouts/callout.dart';
-import 'package:callout_api/src/styles/font_color_tool.dart';
-import 'package:callout_api/src/useful.dart';
+import 'package:flutter_callout_api/src/callout_text_editor.dart';
+import 'package:flutter_callout_api/src/model/target_config.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/arrow_type.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/callout.dart';
+import 'package:flutter_callout_api/src/styles/font_color_tool.dart';
+import 'package:flutter_callout_api/src/useful.dart';
 import 'package:flutter/material.dart';
 
 import 'background_color_tool.dart';

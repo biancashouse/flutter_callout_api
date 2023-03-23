@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
-import 'package:callout_api/src/cpi_reason_stack.dart';
-import 'package:callout_api/src/feature_discovery/featured_widget.dart';
-import 'package:callout_api/src/useful.dart';
+import 'package:flutter_callout_api/src/cpi_reason_stack.dart';
+import 'package:flutter_callout_api/src/feature_discovery/featured_widget.dart';
+import 'package:flutter_callout_api/src/useful.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

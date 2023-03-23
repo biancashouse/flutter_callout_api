@@ -1,5 +1,5 @@
 
-import 'package:callout_api/src/measuring/find_global_rect.dart';
+import 'package:flutter_callout_api/src/measuring/find_global_rect.dart';
 import 'package:flutter/material.dart';
 
 class OffstageMeasuringWidget extends StatefulWidget {

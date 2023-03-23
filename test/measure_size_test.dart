@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:callout_api/src/overlays/callouts/offstage_measuring_widget.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/offstage_measuring_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';

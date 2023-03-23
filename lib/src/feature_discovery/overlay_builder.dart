@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:callout_api/src/feature_discovery/featured_widget.dart';
-import 'package:callout_api/src/useful.dart';
+import 'package:flutter_callout_api/src/feature_discovery/featured_widget.dart';
+import 'package:flutter_callout_api/src/useful.dart';
 import 'package:flutter/material.dart';
 
 class DiscoveryOverlayBuilder extends StatefulWidget {

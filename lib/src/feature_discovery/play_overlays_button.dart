@@ -1,6 +1,6 @@
-import 'package:callout_api/src/blink.dart';
-import 'package:callout_api/src/gotits/gotits_helper.dart';
-import 'package:callout_api/src/useful.dart';
+import 'package:flutter_callout_api/src/blink.dart';
+import 'package:flutter_callout_api/src/gotits/gotits_helper.dart';
+import 'package:flutter_callout_api/src/useful.dart';
 import 'package:flutter/material.dart';
 
 import 'discovery_controller.dart';

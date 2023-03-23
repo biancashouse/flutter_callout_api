@@ -1,7 +1,7 @@
 import 'dart:developer' as developer;
 
-import 'package:callout_api/src/gotits/gotits_helper.dart';
-import 'package:callout_api/src/useful.dart';
+import 'package:flutter_callout_api/src/gotits/gotits_helper.dart';
+import 'package:flutter_callout_api/src/useful.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 

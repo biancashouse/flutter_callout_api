@@ -1,4 +1,4 @@
-import 'package:callout_api/src/gotits/gotits_helper.dart';
+import 'package:flutter_callout_api/src/gotits/gotits_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../overlays/overlay_manager.dart';

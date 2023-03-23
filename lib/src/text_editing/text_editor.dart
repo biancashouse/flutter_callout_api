@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:callout_api/src/overlays/callouts/callout.dart';
-import 'package:callout_api/src/useful.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/callout.dart';
+import 'package:flutter_callout_api/src/useful.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

@@ -1,24 +1,24 @@
 import 'dart:async';
 
-import 'package:callout_api/src/bloc/capi_bloc.dart';
-import 'package:callout_api/src/bloc/capi_event.dart';
-import 'package:callout_api/src/bloc/capi_state.dart';
-import 'package:callout_api/src/measuring/find_global_pos.dart';
-import 'package:callout_api/src/measuring/find_global_rect.dart';
-import 'package:callout_api/src/measuring/measure_sizebox.dart';
-import 'package:callout_api/src/overlays/callouts/callout.dart';
-import 'package:callout_api/src/overlays/callouts/toast.dart';
-import 'package:callout_api/src/text_editing/text_editor.dart';
-import 'package:callout_api/src/useful.dart';
-import 'package:callout_api/src/wrapper/app_wrapper.dart';
+import 'package:flutter_callout_api/src/bloc/capi_bloc.dart';
+import 'package:flutter_callout_api/src/bloc/capi_event.dart';
+import 'package:flutter_callout_api/src/bloc/capi_state.dart';
+import 'package:flutter_callout_api/src/measuring/find_global_pos.dart';
+import 'package:flutter_callout_api/src/measuring/find_global_rect.dart';
+import 'package:flutter_callout_api/src/measuring/measure_sizebox.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/callout.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/toast.dart';
+import 'package:flutter_callout_api/src/text_editing/text_editor.dart';
+import 'package:flutter_callout_api/src/useful.dart';
+import 'package:flutter_callout_api/src/wrapper/app_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:callout_api/src/callout_ivrect.dart';
-import 'package:callout_api/src/callout_text_editor.dart';
-import 'package:callout_api/src/list/targetlistview.dart';
-import 'package:callout_api/src/model/target_config.dart';
-import 'package:callout_api/src/styles/styles_picker.dart';
-import 'package:callout_api/src/wrapper/target.dart';
+import 'package:flutter_callout_api/src/callout_ivrect.dart';
+import 'package:flutter_callout_api/src/callout_text_editor.dart';
+import 'package:flutter_callout_api/src/list/targetlistview.dart';
+import 'package:flutter_callout_api/src/model/target_config.dart';
+import 'package:flutter_callout_api/src/styles/styles_picker.dart';
+import 'package:flutter_callout_api/src/wrapper/target.dart';
 
 class CAPIWidgetWrapper extends StatefulWidget {
   final String wwName;

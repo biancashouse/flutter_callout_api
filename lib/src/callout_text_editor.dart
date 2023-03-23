@@ -1,8 +1,8 @@
 
-import 'package:callout_api/src/model/target_config.dart';
-import 'package:callout_api/src/overlays/callouts/callout.dart';
-import 'package:callout_api/src/text_editing/text_editor.dart';
-import 'package:callout_api/src/useful.dart';
+import 'package:flutter_callout_api/src/model/target_config.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/callout.dart';
+import 'package:flutter_callout_api/src/text_editing/text_editor.dart';
+import 'package:flutter_callout_api/src/useful.dart';
 import 'package:flutter/material.dart';
 
 

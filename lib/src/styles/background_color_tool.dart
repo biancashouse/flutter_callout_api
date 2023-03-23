@@ -1,4 +1,4 @@
-import 'package:callout_api/src/styles/color_palette.dart';
+import 'package:flutter_callout_api/src/styles/color_palette.dart';
 import 'package:flutter/material.dart';
 
 class BackgroundColorTool extends StatelessWidget {

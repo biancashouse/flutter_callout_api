@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:callout_api/src/bloc/capi_bloc.dart';
-import 'package:callout_api/src/bloc/capi_state.dart';
-import 'package:callout_api/src/overlays/callouts/arrow_type.dart';
-import 'package:callout_api/src/useful.dart';
-import 'package:callout_api/src/wrapper/app_wrapper.dart';
+import 'package:flutter_callout_api/src/bloc/capi_bloc.dart';
+import 'package:flutter_callout_api/src/bloc/capi_state.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/arrow_type.dart';
+import 'package:flutter_callout_api/src/useful.dart';
+import 'package:flutter_callout_api/src/wrapper/app_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:vector_math/vector_math_64.dart' as math;

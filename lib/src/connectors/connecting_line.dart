@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
-import 'package:callout_api/callout_api.dart';
-import 'package:callout_api/src/overlays/callouts/coord.dart';
-import 'package:callout_api/src/overlays/callouts/line.dart';
-import 'package:callout_api/src/overlays/callouts/pointing_line.dart';
+import 'package:flutter_callout_api/callout_api.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/coord.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/line.dart';
+import 'package:flutter_callout_api/src/overlays/callouts/pointing_line.dart';
 import 'package:flutter/material.dart';
 
 

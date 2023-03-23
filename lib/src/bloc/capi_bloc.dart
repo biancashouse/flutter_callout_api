@@ -390,17 +390,17 @@ class CAPIBloc extends Bloc<CAPIEvent, CAPIState> {
     ));
     var asset = await rootBundle.load(localTestingFilePaths
         ? "lib/src/sounds/178186__snapper4298__camera-click-nikon.wav"
-        : "packages/callout_api/lib/src/sounds/178186__snapper4298__camera-click-nikon.wav");
+        : "packages/flutter_callout_api/lib/src/sounds/178186__snapper4298__camera-click-nikon.wav");
     _shutterSoundId = await _soundpool?.load(asset);
     asset = await rootBundle.load(
-        localTestingFilePaths ? "lib/src/sounds/447910__breviceps__plop.wav" : "packages/callout_api/lib/src/sounds/447910__breviceps__plop.wav");
+        localTestingFilePaths ? "lib/src/sounds/447910__breviceps__plop.wav" : "packages/flutter_callout_api/lib/src/sounds/447910__breviceps__plop.wav");
     _plopSoundId = await _soundpool?.load(asset);
     asset = await rootBundle.load(localTestingFilePaths
         ? "lib/src/sounds/394415__inspectorj__bamboo-swing-a1.wav"
-        : "packages/callout_api/lib/src/sounds/394415__inspectorj__bamboo-swing-a1.wav");
+        : "packages/flutter_callout_api/lib/src/sounds/394415__inspectorj__bamboo-swing-a1.wav");
     _whooshSoundId = await _soundpool?.load(asset);
     asset = await rootBundle.load(
-        localTestingFilePaths ? "lib/src/sounds/250048__kwahmah-02__sits6.wav" : "packages/callout_api/lib/src/sounds/250048__kwahmah-02__sits6.wav");
+        localTestingFilePaths ? "lib/src/sounds/250048__kwahmah-02__sits6.wav" : "packages/flutter_callout_api/lib/src/sounds/250048__kwahmah-02__sits6.wav");
     _errorSoundId = await _soundpool?.load(asset);
   }
 

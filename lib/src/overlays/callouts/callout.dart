@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:math' as math;
+import 'dart:math';
 
 import 'package:flutter_callout_api/src/blink.dart';
 import 'package:flutter_callout_api/src/gotits/gotits_helper.dart';
 import 'package:flutter_callout_api/src/measuring/find_global_rect.dart';
+import 'package:flutter_callout_api/src/measuring/measure_sizebox.dart';
 import 'package:flutter_callout_api/src/overlays/callouts/callout.dart';
 import 'package:flutter_callout_api/src/overlays/callouts/coord.dart';
 import 'package:flutter_callout_api/src/overlays/callouts/line.dart';
@@ -88,7 +90,7 @@ class Callout {
   // extend line in the from direction by delta
   final double? toDelta;
   final ArrowType arrowType;
-  final Color arrowColor;
+  Color? arrowColor;
   Alignment? initialTargetAlignment;
   Alignment? initialCalloutAlignment;
   int initialAnimatedPositionDurationMs;
@@ -102,6 +104,7 @@ class Callout {
   final double barrierHolePadding;
   final bool modal;
   final bool showTopRightCloseButton;
+  final VoidCallback? onTopRightButtonPress;
 
   // callout gets removed if on top of the overlay manager's stack when removeTop() Callout called.
   final double? separation;
@@ -210,13 +213,14 @@ class Callout {
     this.targetTranslateX,
     this.targetTranslateY,
     this.arrowType = ArrowType.POINTY,
-    this.arrowColor = Colors.grey,
+    this.arrowColor,
     this.barrierOpacity = 0.0,
     this.barrierGradientColors = const [Colors.black12, Colors.black12],
     this.barrierHasCircularHole = false,
     this.barrierHolePadding = 0.0,
     this.modal = false,
     this.showTopRightCloseButton = false,
+    this.onTopRightButtonPress,
     this.initialTargetAlignment,
     this.initialCalloutAlignment,
     this.initialAnimatedPositionDurationMs = 150,
@@ -256,10 +260,8 @@ class Callout {
   }) {
     _targetGKfunc = targetGKF;
     color ??= Colors.yellow.withOpacity(.9);
+    arrowColor ??= color;
     assert((dragHandle != null && dragHandleHeight != null) || (dragHandle == null && dragHandleHeight == null));
-    if (widthF != null && heightF == null) {
-      heightF = ()=>40;
-    }
   }
 
   //Timer? _timer;
@@ -703,15 +705,16 @@ class Callout {
   Future<void> possibleMeasure() async {
     if ((width == null && height == null)) {
       Size calloutSize = await measureWidgetSize(context: Useful.cachedContext, widget: contents.call(), force: alwaysReCalcSize);
+      // Size calloutSize = await measureWidgetSize2(widget: contents.call(), force: alwaysReCalcSize);
       width = calloutSize.width;
       height = calloutSize.height;
     } else if ((height == null)) {
       Size calloutSize =
-          await measureWidgetSize(context: Useful.cachedContext, widget: SizedBox(width: width, child: contents.call()), force: alwaysReCalcSize);
-      height = calloutSize.height;
+      await measureWidgetSize(context: Useful.cachedContext, widget: SizedBox(width: width, child: contents.call()), force: alwaysReCalcSize);
+      height = max(calloutSize.height, 40);
     } else if ((width == null)) {
       Size calloutSize =
-          await measureWidgetSize(context: Useful.cachedContext, widget: SizedBox(height: height, child: contents.call()), force: alwaysReCalcSize);
+      await measureWidgetSize(context: Useful.cachedContext, widget: SizedBox(height: height, child: contents.call()), force: alwaysReCalcSize);
       width = calloutSize.width;
       height = calloutSize.height;
     }
@@ -803,330 +806,340 @@ class Callout {
     }
   }
 
-  OverlayEntry _createBubbleBg() => OverlayEntry(
-      builder: (BuildContext ctx) {
-        bool targetNotOffscreen = (targetGKF != null && (tR?.intersects(Rectangle.fromRect(Rect.fromLTWH(0, 0, Useful.scrW, Useful.scrH))) ?? false));
-        return initialCalloutPos != null || targetNotOffscreen
-            ? Positioned(
-                top: 0,
-                left: 0,
-                child: CustomPaint(
-                  painter: BubbleShape(callout: this, fillColor: color),
-                  willChange: false,
+  OverlayEntry _createBubbleBg() =>
+      OverlayEntry(
+          builder: (BuildContext ctx) {
+            bool targetNotOffscreen = (targetGKF != null &&
+                (tR?.intersects(Rectangle.fromRect(Rect.fromLTWH(0, 0, Useful.scrW, Useful.scrH))) ?? false));
+            return initialCalloutPos != null || targetNotOffscreen
+                ? Positioned(
+              top: 0,
+              left: 0,
+              child: CustomPaint(
+                painter: BubbleShape(callout: this, fillColor: color),
+                willChange: false,
+              ),
+            )
+                : const Offstage();
+          },
+          opaque: false);
+
+  OverlayEntry _createContentsEntry() =>
+      OverlayEntry(
+          builder: (BuildContext ctx) {
+            //print('${didAnimateYet ? "Positioned" : "AnimatedPositioned"}');
+            // if (!didAnimateYet) {
+            //   print('animating to ($left,$top over $animatedPositionDurationMs ms...');
+            // } else {}
+            bool targetNotOffscreen = (targetGKF != null &&
+                (tR?.intersects(Rectangle.fromRect(Rect.fromLTWH(0, 0, Useful.scrW, Useful.scrH))) ?? false));
+            return initialCalloutPos != null || targetNotOffscreen
+                ? !didAnimateYet
+                ? AnimatedPositioned(
+              duration: Duration(milliseconds: initialAnimatedPositionDurationMs),
+              curve: Curves.decelerate,
+              top: (top ?? 0) + (contentTranslateY ?? 0.0),
+              left: (left ?? 0) + (contentTranslateX ?? 0.0),
+              child: CalloutParent(
+                // may have been called from another callout, so for that case keep a ref to it is kept in its parent container
+                callout: this,
+              ),
+            )
+                : AnimatedPositioned(
+              duration: Duration(milliseconds: moveAnimatedPositionDurationMs),
+              curve: Curves.decelerate,
+              top: (top ?? 0) + (contentTranslateY ?? 0.0),
+              left: (left ?? 0) + (contentTranslateX ?? 0.0),
+              // if draghandle supplied, make it the draggable and pos it above the callout itself
+              child: dragHandle != null
+                  ? SizedBox(
+                width: calloutSize.width,
+                height: calloutSize.height + (dragHandleHeight ?? 0.0),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: dragHandleHeight,
+                      child: CalloutParent(
+                        // may have been called from another callout, so for that case keep a ref to it is kept in its parent container
+                        callout: this,
+                      ),
+                    ),
+                    Listener(
+                      onPointerDown: (PointerDownEvent event) {
+                        if (!isDraggable) return;
+                        //print('global: ${event.position}, local ${event.localPosition}');
+                        // calc offset from callout topLeft
+                        dragCalloutOffset = event.localPosition;
+                        // refresh(() {});
+                        onDragStartedF?.call();
+                      },
+                      onPointerMove: (PointerMoveEvent event) {
+                        if (!isDraggable) return;
+                        //print(event.position);
+                        refreshOverlay(() {
+                          top = event.position.dy - dragCalloutOffset.dy;
+                          left = event.position.dx - dragCalloutOffset.dx;
+                          onDragF?.call(Offset(left!, top!));
+                        });
+                      },
+                      onPointerUp: (PointerUpEvent event) {
+                        if (!isDraggable) return;
+                        //print(event.position);
+                        refreshOverlay(() {
+                          // calloutRect = calloutRect.translate(event.delta.dx, event.delta.dy);
+                          top = event.position.dy - dragCalloutOffset.dy;
+                          left = event.position.dx - dragCalloutOffset.dx;
+                          onDragF?.call(Offset(left!, top!));
+                          onDragEndedF?.call(Offset(left!, top!));
+                        });
+                      },
+                      child: SizedBox(
+                        height: dragHandleHeight,
+                        width: calloutW,
+                        child: dragHandle != null ? dragHandle : null,
+                      ),
+                    ),
+                  ],
                 ),
               )
-            : const Offstage();
-      },
-      opaque: false);
-
-  OverlayEntry _createContentsEntry() => OverlayEntry(
-      builder: (BuildContext ctx) {
-        //print('${didAnimateYet ? "Positioned" : "AnimatedPositioned"}');
-        // if (!didAnimateYet) {
-        //   print('animating to ($left,$top over $animatedPositionDurationMs ms...');
-        // } else {}
-        bool targetNotOffscreen = (targetGKF != null && (tR?.intersects(Rectangle.fromRect(Rect.fromLTWH(0, 0, Useful.scrW, Useful.scrH))) ?? false));
-        return initialCalloutPos != null || targetNotOffscreen
-            ? !didAnimateYet
-                ? AnimatedPositioned(
-                    duration: Duration(milliseconds: initialAnimatedPositionDurationMs),
-                    curve: Curves.decelerate,
-                    top: (top ?? 0) + (contentTranslateY ?? 0.0),
-                    left: (left ?? 0) + (contentTranslateX ?? 0.0),
-                    child: CalloutParent(
-                      // may have been called from another callout, so for that case keep a ref to it is kept in its parent container
-                      callout: this,
-                    ),
-                  )
-                : AnimatedPositioned(
-                    duration: Duration(milliseconds: moveAnimatedPositionDurationMs),
-                    curve: Curves.decelerate,
-                    top: (top ?? 0) + (contentTranslateY ?? 0.0),
-                    left: (left ?? 0) + (contentTranslateX ?? 0.0),
-                    // if draghandle supplied, make it the draggable and pos it above the callout itself
-                    child: dragHandle != null
-                        ? SizedBox(
-                            width: calloutSize.width,
-                            height: calloutSize.height + (dragHandleHeight ?? 0.0),
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  top: dragHandleHeight,
-                                  child: CalloutParent(
-                                    // may have been called from another callout, so for that case keep a ref to it is kept in its parent container
-                                    callout: this,
-                                  ),
-                                ),
-                                Listener(
-                                  onPointerDown: (PointerDownEvent event) {
-                                    if (!isDraggable) return;
-                                    //print('global: ${event.position}, local ${event.localPosition}');
-                                    // calc offset from callout topLeft
-                                    dragCalloutOffset = event.localPosition;
-                                    // refresh(() {});
-                                    onDragStartedF?.call();
-                                  },
-                                  onPointerMove: (PointerMoveEvent event) {
-                                    if (!isDraggable) return;
-                                    //print(event.position);
-                                    refreshOverlay(() {
-                                      top = event.position.dy - dragCalloutOffset.dy;
-                                      left = event.position.dx - dragCalloutOffset.dx;
-                                      onDragF?.call(Offset(left!, top!));
-                                    });
-                                  },
-                                  onPointerUp: (PointerUpEvent event) {
-                                    if (!isDraggable) return;
-                                    //print(event.position);
-                                    refreshOverlay(() {
-                                      // calloutRect = calloutRect.translate(event.delta.dx, event.delta.dy);
-                                      top = event.position.dy - dragCalloutOffset.dy;
-                                      left = event.position.dx - dragCalloutOffset.dx;
-                                      onDragF?.call(Offset(left!, top!));
-                                      onDragEndedF?.call(Offset(left!, top!));
-                                    });
-                                  },
-                                  child: SizedBox(
-                                    height: dragHandleHeight,
-                                    width: calloutW,
-                                    child: dragHandle != null ? dragHandle : null,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : TransparentPointer(
-                            transparent: transparentPointer, // TRUE means treat as invisible, and pass events down below
-                            child: Listener(
-                              onPointerDown: (PointerDownEvent event) {
-                                if (!isDraggable) return;
-                                //print('global: ${event.position}, local ${event.localPosition}');
-                                // calc offset from callout topLeft
-                                dragCalloutOffset = event.localPosition;
-                                // refresh(() {});
-                                onDragStartedF?.call();
-                              },
-                              onPointerMove: (PointerMoveEvent event) {
-                                if (!isDraggable) return;
-                                //print(event.position);
-                                refreshOverlay(() {
-                                  top = event.position.dy - dragCalloutOffset.dy;
-                                  left = event.position.dx - dragCalloutOffset.dx;
-                                  bool OnDragOnlyOnPointerUp = false;
-                                  if (!OnDragOnlyOnPointerUp) onDragF?.call(Offset(left!, top!));
-                                });
-                              },
-                              onPointerUp: (PointerUpEvent event) {
-                                if (!isDraggable) return;
-                                //print(event.position);
-                                refreshOverlay(() {
-                                  // calloutRect = calloutRect.translate(event.delta.dx, event.delta.dy);
-                                  top = event.position.dy - dragCalloutOffset.dy;
-                                  left = event.position.dx - dragCalloutOffset.dx;
-                                  onDragF?.call(Offset(left!, top!));
-                                  onDragEndedF?.call(Offset(left!, top!));
-                                });
-                              },
-                              child: CalloutParent(
-                                // may have been called from another callout, so for that case keep a ref to it is kept in its parent container
-                                callout: this,
-                              ),
-                            ),
-                          ),
-                  )
-            : const Offstage();
-      },
-      opaque: false);
-
-  OverlayEntry _createPointingLineEntry() => OverlayEntry(
-      builder: (BuildContext ctx) {
-        // if (tE == null && cE == null) {
-        //   print('feature ${feature}');
-        //   return Offstage();
-        // }
-        calcEndpoints();
-        Rect r = Rect.fromPoints(tE!.asOffset, cE!.asOffset);
-        Offset to = tE!.asOffset.translate(-r.left, -r.top);
-        Offset from = cE!.asOffset.translate(-r.left, -r.top);
-        Line line = Line(Coord.fromOffset(from), Coord.fromOffset(to));
-        double lineLen = line.length();
-        //Rect inflatedTargetRect = targetRect.inflate(separation / 2);
-        Rect calloutrect = calloutRect();
-        //bool overlaps = calloutrect.overlaps(inflatedTargetRect);
-        // don't show line if gap between endpoints < specifid separation
-        double sep = math.max(separation ?? 0.0, 50);
-        bool veryClose = separation == null && lineLen <= sep;
-        if (veryClose || tR == null || calloutrect.overlaps(tR!)) {
-          return const Offstage();
-        }
-
-        // // only show the line if callout does not overlap (padded) target
-        // if (//targetRect.contains(cE.asOffset) ||
-        //     (calloutRect().overlaps(targetRect.inflate(50))))
-        //   return IgnoreP_contentointer(child: Offstage());
-
-        Widget pointingLine = IgnorePointer(
-          child: PointingLine(
-            arrowType.reverse ? to : from,
-            arrowType.reverse ? from : to,
-            arrowType,
-            arrowColor,
-            lengthDeltaPc: lengthDeltaPc,
-            animate: animate,
-          ),
-        );
-
-        // computer pos for line label
-        //if (lineLabel != null) lineLabelPos = Line(tE,cE).midPoint();
-
-        return didAnimateYet
-            ? AnimatedPositioned(
-                duration: Duration(milliseconds: moveAnimatedPositionDurationMs),
-                curve: Curves.decelerate,
-                top: r.top,
-                left: r.left,
-                child: pointingLine,
-              )
-            : AnimatedPositioned(
-                duration: Duration(milliseconds: initialAnimatedPositionDurationMs),
-                curve: Curves.decelerate,
-                top: r.top,
-                left: r.left,
-                child: pointingLine,
-              );
-      },
-      opaque: false);
-
-  OverlayEntry _createLineLabelEntry() => OverlayEntry(
-      builder: (BuildContext ctx) {
-        //Rect r = Rect.fromPoints(tE.asOffset, cE.asOffset);
-        return Positioned(
-          top: (tE!.y + cE!.y) / 2,
-          left: (tE!.x + cE!.x) / 2,
-          child: Material(
-            child: lineLabel,
-          ),
-        );
-      },
-      opaque: false);
-
-  OverlayEntry _createTargetEntry() => OverlayEntry(
-      builder: (BuildContext ctx) {
-        return Positioned(
-          top: tR!.top,
-          left: tR!.left,
-          child: Material(
-            color: Colors.yellow.withOpacity(.3),
-            child: Container(
-              color: Colors.transparent,
-              width: tR!.width,
-              height: tR!.height,
-            ),
-          ),
-        );
-      },
-      opaque: false);
-
-  OverlayEntry _createDraggableCornerEntry(Alignment corner) => OverlayEntry(
-      builder: (BuildContext ctx) {
-        return DraggableCorner(alignment: corner, thickness: draggableEdgeThickness, color: draggableColor!, parent: this);
-      },
-      opaque: false);
-
-  OverlayEntry _createDraggableEdgeEntry(Side side) => OverlayEntry(
-      builder: (BuildContext ctx) {
-        return DraggableEdge(side: side, thickness: draggableEdgeThickness, color: draggableColor!, parent: this);
-      },
-      opaque: false);
-
-  OverlayEntry _createBarrier() => OverlayEntry(
-      builder: (BuildContext ctx) {
-        // print('_createBarrier() build');
-        return Positioned.fill(
-            child: IgnorePointer(
-          ignoring: !(modal || onBarrierTappedF != null),
-          child: Listener(
-              behavior: HitTestBehavior.translucent,
-              onPointerUp: (_) {
-                onBarrierTappedF?.call();
-              },
-              // barrier now never tappable, because no way to pass taps through to lower widget, such as a button outside of the callout
-              // onPointerDown: (_) {
-              //   barrierTapped = true;
-              //   completed(false);
-              //   onBarrierTappedF?.call();
-              // },
-              child: !kIsWeb && tR != null
-                  ? ColorFiltered(
-                      colorFilter: ColorFilter.mode(Colors.black.withOpacity(barrierOpacity), BlendMode.srcOut),
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.transparent,
-                        ),
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              top: tR!.top - barrierHolePadding,
-                              left: tR!.left - barrierHolePadding,
-                              child: Container(
-                                height: tR!.height + barrierHolePadding * 2,
-                                width: tR!.width + barrierHolePadding * 2,
-                                decoration: BoxDecoration(
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Colors.red,
-                                      blurRadius: 5.0,
-                                      spreadRadius: 2.0,
-                                    ),
-                                  ],
-                                  color: Colors.black,
-                                  // Color does not matter but should not be transparent
-                                  borderRadius:
-                                      barrierHasCircularHole ? BorderRadius.circular(tR!.height / 2 + barrierHolePadding) : BorderRadius.zero,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : barrierGradientColors!.isNotEmpty
-                      ? Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              end: Alignment.topCenter,
-                              begin: Alignment.bottomCenter,
-                              colors: barrierGradientColors!,
-                            ),
-                          ),
-                        )
-                      : Container(
-                          color: Colors.black.withOpacity(barrierOpacity),
-                        )
-              //     : ClipPath(
-              //   clipper: DarkScreenWithHolePainter1(tR, barrierOpacity, padding: barrierHolePadding, round: barrierHasCircularHole),
-              //   child: Container(
-              //     color: Colors.black.withOpacity(barrierOpacity),
-              //   ),
-              // )
-              // CustomPaint(
-              //     size: Size(screenW, screenH),
-              //     painter: DarkScreenWithHolePainter2(tR, barrierOpacity, padding: barrierHolePadding, round: barrierHasCircularHole)
-              // )
-              // TweenAnimationBuilder<Color>(
-              //   duration: kThemeAnimationDuration,
-              //   tween: ColorTween(
-              //     begin: Colors.transparent,
-              //     end: barrierOpacity != null ? Colors.black.withOpacity(barrierOpacity) : Colors.transparent,
-              //   ),
-              //   builder: (context, color, child) {
-              //     return ColoredBox(color: color);
-              //   },
-              // ),
+                  : TransparentPointer(
+                transparent: transparentPointer, // TRUE means treat as invisible, and pass events down below
+                child: Listener(
+                  onPointerDown: (PointerDownEvent event) {
+                    if (!isDraggable) return;
+                    //print('global: ${event.position}, local ${event.localPosition}');
+                    // calc offset from callout topLeft
+                    dragCalloutOffset = event.localPosition;
+                    // refresh(() {});
+                    onDragStartedF?.call();
+                  },
+                  onPointerMove: (PointerMoveEvent event) {
+                    if (!isDraggable) return;
+                    //print(event.position);
+                    refreshOverlay(() {
+                      top = event.position.dy - dragCalloutOffset.dy;
+                      left = event.position.dx - dragCalloutOffset.dx;
+                      bool OnDragOnlyOnPointerUp = false;
+                      if (!OnDragOnlyOnPointerUp) onDragF?.call(Offset(left!, top!));
+                    });
+                  },
+                  onPointerUp: (PointerUpEvent event) {
+                    if (!isDraggable) return;
+                    //print(event.position);
+                    refreshOverlay(() {
+                      // calloutRect = calloutRect.translate(event.delta.dx, event.delta.dy);
+                      top = event.position.dy - dragCalloutOffset.dy;
+                      left = event.position.dx - dragCalloutOffset.dx;
+                      onDragF?.call(Offset(left!, top!));
+                      onDragEndedF?.call(Offset(left!, top!));
+                    });
+                  },
+                  child: CalloutParent(
+                    // may have been called from another callout, so for that case keep a ref to it is kept in its parent container
+                    callout: this,
+                  ),
+                ),
               ),
-        ));
-      },
-      opaque: false);
+            )
+                : const Offstage();
+          },
+          opaque: false);
+
+  OverlayEntry _createPointingLineEntry() =>
+      OverlayEntry(
+          builder: (BuildContext ctx) {
+            // if (tE == null && cE == null) {
+            //   print('feature ${feature}');
+            //   return Offstage();
+            // }
+            calcEndpoints();
+            Rect r = Rect.fromPoints(tE!.asOffset, cE!.asOffset);
+            Offset to = tE!.asOffset.translate(-r.left, -r.top);
+            Offset from = cE!.asOffset.translate(-r.left, -r.top);
+            Line line = Line(Coord.fromOffset(from), Coord.fromOffset(to));
+            double lineLen = line.length();
+            //Rect inflatedTargetRect = targetRect.inflate(separation / 2);
+            Rect calloutrect = calloutRect();
+            //bool overlaps = calloutrect.overlaps(inflatedTargetRect);
+            // don't show line if gap between endpoints < specifid separation
+            double sep = math.max(separation ?? 0.0, 50);
+            bool veryClose = separation == null && lineLen <= sep;
+            if (veryClose || tR == null || calloutrect.overlaps(tR!)) {
+              return const Offstage();
+            }
+
+            // // only show the line if callout does not overlap (padded) target
+            // if (//targetRect.contains(cE.asOffset) ||
+            //     (calloutRect().overlaps(targetRect.inflate(50))))
+            //   return IgnoreP_contentointer(child: Offstage());
+
+            Widget pointingLine = IgnorePointer(
+              child: PointingLine(
+                arrowType.reverse ? to : from,
+                arrowType.reverse ? from : to,
+                arrowType,
+                arrowColor!,
+                lengthDeltaPc: lengthDeltaPc,
+                animate: animate,
+              ),
+            );
+
+            // computer pos for line label
+            //if (lineLabel != null) lineLabelPos = Line(tE,cE).midPoint();
+
+            return didAnimateYet
+                ? AnimatedPositioned(
+              duration: Duration(milliseconds: moveAnimatedPositionDurationMs),
+              curve: Curves.decelerate,
+              top: r.top,
+              left: r.left,
+              child: pointingLine,
+            )
+                : AnimatedPositioned(
+              duration: Duration(milliseconds: initialAnimatedPositionDurationMs),
+              curve: Curves.decelerate,
+              top: r.top,
+              left: r.left,
+              child: pointingLine,
+            );
+          },
+          opaque: false);
+
+  OverlayEntry _createLineLabelEntry() =>
+      OverlayEntry(
+          builder: (BuildContext ctx) {
+            //Rect r = Rect.fromPoints(tE.asOffset, cE.asOffset);
+            return Positioned(
+              top: (tE!.y + cE!.y) / 2,
+              left: (tE!.x + cE!.x) / 2,
+              child: Material(
+                child: lineLabel,
+              ),
+            );
+          },
+          opaque: false);
+
+  OverlayEntry _createTargetEntry() =>
+      OverlayEntry(
+          builder: (BuildContext ctx) {
+            return Positioned(
+              top: tR!.top,
+              left: tR!.left,
+              child: Material(
+                color: Colors.yellow.withOpacity(.3),
+                child: Container(
+                  color: Colors.transparent,
+                  width: tR!.width,
+                  height: tR!.height,
+                ),
+              ),
+            );
+          },
+          opaque: false);
+
+  OverlayEntry _createDraggableCornerEntry(Alignment corner) =>
+      OverlayEntry(
+          builder: (BuildContext ctx) {
+            return DraggableCorner(alignment: corner, thickness: draggableEdgeThickness, color: draggableColor!, parent: this);
+          },
+          opaque: false);
+
+  OverlayEntry _createDraggableEdgeEntry(Side side) =>
+      OverlayEntry(
+          builder: (BuildContext ctx) {
+            return DraggableEdge(side: side, thickness: draggableEdgeThickness, color: draggableColor!, parent: this);
+          },
+          opaque: false);
+
+  OverlayEntry _createBarrier() =>
+      OverlayEntry(
+          builder: (BuildContext ctx) {
+            // print('_createBarrier() build');
+            return Positioned.fill(
+                child: IgnorePointer(
+                  ignoring: !(modal || onBarrierTappedF != null),
+                  child: Listener(
+                      behavior: HitTestBehavior.translucent,
+                      onPointerUp: (_) {
+                        onBarrierTappedF?.call();
+                      },
+                      // barrier now never tappable, because no way to pass taps through to lower widget, such as a button outside of the callout
+                      // onPointerDown: (_) {
+                      //   barrierTapped = true;
+                      //   completed(false);
+                      //   onBarrierTappedF?.call();
+                      // },
+                      child: !kIsWeb && tR != null
+                          ? ColorFiltered(
+                        colorFilter: ColorFilter.mode(Colors.black.withOpacity(barrierOpacity), BlendMode.srcOut),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.transparent,
+                          ),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                top: tR!.top - barrierHolePadding,
+                                left: tR!.left - barrierHolePadding,
+                                child: Container(
+                                  height: tR!.height + barrierHolePadding * 2,
+                                  width: tR!.width + barrierHolePadding * 2,
+                                  decoration: BoxDecoration(
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.red,
+                                        blurRadius: 5.0,
+                                        spreadRadius: 2.0,
+                                      ),
+                                    ],
+                                    color: Colors.black,
+                                    // Color does not matter but should not be transparent
+                                    borderRadius:
+                                    barrierHasCircularHole ? BorderRadius.circular(tR!.height / 2 + barrierHolePadding) : BorderRadius.zero,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                          : barrierGradientColors!.isNotEmpty
+                          ? Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            end: Alignment.topCenter,
+                            begin: Alignment.bottomCenter,
+                            colors: barrierGradientColors!,
+                          ),
+                        ),
+                      )
+                          : Container(
+                        color: Colors.black.withOpacity(barrierOpacity),
+                      )
+                    //     : ClipPath(
+                    //   clipper: DarkScreenWithHolePainter1(tR, barrierOpacity, padding: barrierHolePadding, round: barrierHasCircularHole),
+                    //   child: Container(
+                    //     color: Colors.black.withOpacity(barrierOpacity),
+                    //   ),
+                    // )
+                    // CustomPaint(
+                    //     size: Size(screenW, screenH),
+                    //     painter: DarkScreenWithHolePainter2(tR, barrierOpacity, padding: barrierHolePadding, round: barrierHasCircularHole)
+                    // )
+                    // TweenAnimationBuilder<Color>(
+                    //   duration: kThemeAnimationDuration,
+                    //   tween: ColorTween(
+                    //     begin: Colors.transparent,
+                    //     end: barrierOpacity != null ? Colors.black.withOpacity(barrierOpacity) : Colors.transparent,
+                    //   ),
+                    //   builder: (context, color, child) {
+                    //     return ColoredBox(color: color);
+                    //   },
+                    // ),
+                  ),
+                ));
+          },
+          opaque: false);
 
 // OverlayEntry _createBarrierOLD() =>
 //     OverlayEntry(builder: (BuildContext ctx) {
@@ -1320,7 +1333,7 @@ class Callout {
           child: OffstageMeasuringWidget(
             //boxConstraints: boxConstraints,
             onSized: (size) {
-              _calloutSizeCache[feature] = size;
+              // _calloutSizeCache[feature] = size;
               if (false) {
                 developer.log('''
 - - - - - - - - - - MEASURED Feature $feature -> Size(${size.width},${size.height}) - - - - - - - - - - 
@@ -1335,6 +1348,39 @@ class Callout {
       });
 
       Overlay.of(context).insert(entry);
+      return completer.future;
+    }
+  }
+
+// measures by creating a widget inside an Offstage MeasureSizeBox
+  Future<Size> measureWidgetSize2({
+    Widget? widget,
+    required bool force,
+  }) async {
+    // print('--- MEASURING --');
+    // if found width, assume height also present
+    if (!force && _calloutSizeCache.containsKey(feature)) {
+      return _calloutSizeCache[feature]!;
+    } else {
+      Completer<Size> completer = Completer();
+      OverlayEntry? entry;
+      entry = OverlayEntry(builder: (BuildContext ctx) {
+        return Material(child: Offstage(
+          offstage: true,
+          child: MeasureSizeBox(
+            //TODO is key required ?
+            onSizedCallback: (Size size) {
+              _calloutSizeCache[feature] = size;
+              entry?.remove();
+              completer.complete(size);
+            },
+            child: widget,
+          ),),
+        );
+      });
+      Timer.run(() {
+        Useful.om.overlayState.insert(entry!);
+      });
       return completer.future;
     }
   }
@@ -1376,9 +1422,9 @@ class _CalloutParentState extends State<CalloutParent> {
     return hiding
         ? const Offstage()
         : Material(
-            type: MaterialType.transparency, //widget.callout.roundedCorners > 0 ? MaterialType.card : MaterialType.canvas,
+      type: MaterialType.transparency, //widget.callout.roundedCorners > 0 ? MaterialType.card : MaterialType.canvas,
 //color: Colors.white.withOpacity(.5),
-            borderRadius: BorderRadius.all(Radius.circular(widget.callout.roundedCorners)),
+      borderRadius: BorderRadius.all(Radius.circular(widget.callout.roundedCorners)),
 //elevation: widget.callout.elevation,
 // shapes explained at https://medium.com/codechai/anatomy-of-material-buttons-in-flutter-first-part-40eb790979a6
 // shape: widget.callout.noBorder
@@ -1398,85 +1444,86 @@ class _CalloutParentState extends State<CalloutParent> {
 //     style: BorderStyle.solid,
 //   )
 // ),
-            child: MediaQuery(
-              data: MediaQuery.of(context).copyWith(
-                boldText: false,
-                textScaleFactor: 1.0,
-              ),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 100),
-                width: widget.callout.calloutSize.width,
+      child: MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          boldText: false,
+          textScaleFactor: 1.0,
+        ),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 100),
+          width: widget.callout.calloutSize.width,
 // - (widget.callout.gotitAxis == Axis.horizontal ? 50 : 0),
-                height: widget.callout.calloutSize.height,
+          height: widget.callout.calloutSize.height,
 // - (widget.callout.gotitAxis == Axis.vertical ? 50 : 0),
-                decoration: BoxDecoration(
-                  color: widget.callout.color,
-                  borderRadius: BorderRadius.all(Radius.circular(widget.callout.roundedCorners)),
-                  boxShadow: const [
-                    BoxShadow(color: Colors.black12, blurRadius: 7, spreadRadius: 9),
-                  ],
-                ),
-                child: Stack(
-                  children: <Widget>[
-                    Flex(
-                      direction: widget.callout.gotitAxis ?? Axis.horizontal,
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: widget.callout.draggable
-                              ? MouseRegion(
-                                  cursor: SystemMouseCursors.grab,
-                                  child: _possiblyScrollableContents(),
-                                )
-                              : _possiblyScrollableContents(),
+          decoration: BoxDecoration(
+            color: widget.callout.color,
+            borderRadius: BorderRadius.all(Radius.circular(widget.callout.roundedCorners)),
+            boxShadow: const [
+              BoxShadow(color: Colors.black12, blurRadius: 7, spreadRadius: 9),
+            ],
+          ),
+          child: Stack(
+            children: <Widget>[
+              Flex(
+                direction: widget.callout.gotitAxis ?? Axis.horizontal,
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: widget.callout.draggable
+                        ? MouseRegion(
+                      cursor: SystemMouseCursors.grab,
+                      child: _possiblyScrollableContents(),
+                    )
+                        : _possiblyScrollableContents(),
+                  ),
+                  if (widget.callout.gotitAxis != null && !widget.callout.showcpi)
+                    Blink(
+                      child: IconButton(
+                        tooltip: "got it - don't show again.",
+                        iconSize: 36,
+                        icon: const Icon(
+                          Icons.thumb_up,
+                          color: Colors.orangeAccent,
                         ),
-                        if (widget.callout.gotitAxis != null && !widget.callout.showcpi)
-                          Blink(
-                            child: IconButton(
-                              tooltip: "got it - don't show again.",
-                              iconSize: 36,
-                              icon: const Icon(
-                                Icons.thumb_up,
-                                color: Colors.orangeAccent,
-                              ),
-                              onPressed: () async {
-                                GotitsHelper.gotit(widget.callout.feature);
-                                Useful.om.remove(widget.callout.feature, true);
-                                widget.callout.onGotitPressedF?.call();
-                              },
-                            ),
-                            animateColor: false,
-                          ),
-                        if (widget.callout.showcpi)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: CircularProgressIndicator(
-                              backgroundColor: widget.callout.color,
-                            ),
-                          ),
-                      ],
-                    ),
-                    if (widget.callout.showTopRightCloseButton)
-                      Positioned(
-                        top: 10,
-                        right: 10,
-                        child: IconButton(
-                          iconSize: 36,
-                          icon: const Icon(
-                            Icons.close,
-                            color: Colors.red,
-                          ),
-                          onPressed: () async {
-                            Useful.om.remove(widget.callout.feature, false);
-                          },
-                        ),
+                        onPressed: () async {
+                          GotitsHelper.gotit(widget.callout.feature);
+                          Useful.om.remove(widget.callout.feature, true);
+                          widget.callout.onGotitPressedF?.call();
+                        },
                       ),
-                  ],
-                ),
+                      animateColor: false,
+                    ),
+                  if (widget.callout.showcpi)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(
+                        backgroundColor: widget.callout.color,
+                      ),
+                    ),
+                ],
               ),
-            ),
-          );
+              if (widget.callout.showTopRightCloseButton)
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: IconButton(
+                    iconSize: 36,
+                    icon: const Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    onPressed: () async {
+                      Useful.om.remove(widget.callout.feature, false);
+                      widget.callout.onTopRightButtonPress?.call();
+                    },
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _possiblyScrollableContents() =>
@@ -1489,11 +1536,11 @@ class _CalloutParentState extends State<CalloutParent> {
 //     ),
 //   )
 // :
-      SizedBox(
-        width: widget.callout.calloutSize.width,
-        height: widget.callout.calloutSize.height,
-        child: widget.callout.contents.call(),
-      );
+  SizedBox(
+    width: widget.callout.calloutSize.width,
+    height: widget.callout.calloutSize.height,
+    child: widget.callout.contents.call(),
+  );
 }
 
 // class DarkScreenWithHolePainter2 extends CustomPainter {
@@ -1582,7 +1629,7 @@ class BubbleShape extends CustomPainter {
     Path? path = PathUtil.draw(callout, pointyThickness: callout.height! <= 40 ? 5 : null);
     if (path != null) {
       canvas.drawPath(path, bgPaint(callout.calloutColor));
-      canvas.drawPath(path, linePaint(callout.arrowColor, theThickness: thickness));
+      canvas.drawPath(path, linePaint(callout.arrowColor!, theThickness: thickness));
     }
   }
 

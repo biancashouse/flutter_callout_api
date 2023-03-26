@@ -1,6 +1,6 @@
 name: flutter_callout_api
 description: Point stuff out for your users => Target, Transform, Configure Callout, Record to JSON and Play
-version: 1.0.0+4
+version: 2.0.0
 homepage: https://github.com/biancashouse/flutter_callout_api
 # github mirrored from bitbucket
 #homepage: https://bitbucket:org/biancashouse/flutter_callout_api/src/master/

@@ -35,6 +35,8 @@ typedef ContentFunc = Widget Function();
 typedef SizeChangedF = void Function(Size);
 typedef PosChangedF = void Function(Offset);
 
+const Color FUCHSIA_X = Color.fromRGBO(255, 0, 255, 1);
+
 /// callout creator
 enum CAPI {
   ANY_TOAST,
@@ -105,9 +107,11 @@ class Callout {
   final bool modal;
   final bool showTopRightCloseButton;
   final VoidCallback? onTopRightButtonPress;
+  final Color closeButtonColor;
 
   // callout gets removed if on top of the overlay manager's stack when removeTop() Callout called.
   final double? separation;
+  final bool forceMeasure;
   WidthFunc? widthF;
   HeightFunc? heightF;
   WidthFunc? originalWidthF;
@@ -203,6 +207,7 @@ class Callout {
     this.onExpiredF,
     this.onBarrierTappedF,
     this.separation,
+    this.forceMeasure = false,
     this.widthF,
     this.heightF,
     this.minHeight,
@@ -212,7 +217,7 @@ class Callout {
     this.contentTranslateY,
     this.targetTranslateX,
     this.targetTranslateY,
-    this.arrowType = ArrowType.POINTY,
+    this.arrowType = ArrowType.THIN,
     this.arrowColor,
     this.barrierOpacity = 0.0,
     this.barrierGradientColors = const [Colors.black12, Colors.black12],
@@ -221,6 +226,7 @@ class Callout {
     this.modal = false,
     this.showTopRightCloseButton = false,
     this.onTopRightButtonPress,
+    this.closeButtonColor = Colors.red,
     this.initialTargetAlignment,
     this.initialCalloutAlignment,
     this.initialAnimatedPositionDurationMs = 150,
@@ -259,7 +265,7 @@ class Callout {
     this.transparentPointer = false,
   }) {
     _targetGKfunc = targetGKF;
-    color ??= Colors.yellow.withOpacity(.9);
+    color ??= FUCHSIA_X.withOpacity(.9);
     arrowColor ??= color;
     assert((dragHandle != null && dragHandleHeight != null) || (dragHandle == null && dragHandleHeight == null));
   }
@@ -708,15 +714,14 @@ class Callout {
       // Size calloutSize = await measureWidgetSize2(widget: contents.call(), force: alwaysReCalcSize);
       width = calloutSize.width;
       height = calloutSize.height;
-    } else if ((height == null)) {
+    } else if (height == null) {
       Size calloutSize =
       await measureWidgetSize(context: Useful.cachedContext, widget: SizedBox(width: width, child: contents.call()), force: alwaysReCalcSize);
-      height = max(calloutSize.height, 40);
+      height = forceMeasure ? max(calloutSize.height, 40) : 40;
     } else if ((width == null)) {
       Size calloutSize =
       await measureWidgetSize(context: Useful.cachedContext, widget: SizedBox(height: height, child: contents.call()), force: alwaysReCalcSize);
       width = calloutSize.width;
-      height = calloutSize.height;
     }
     // print(Size(width!, height!).toString());
   }
@@ -1509,9 +1514,9 @@ class _CalloutParentState extends State<CalloutParent> {
                   right: 10,
                   child: IconButton(
                     iconSize: 36,
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.close,
-                      color: Colors.red,
+                      color: widget.callout.closeButtonColor,
                     ),
                     onPressed: () async {
                       Useful.om.remove(widget.callout.feature, false);
@@ -1629,7 +1634,7 @@ class BubbleShape extends CustomPainter {
     Path? path = PathUtil.draw(callout, pointyThickness: callout.height! <= 40 ? 5 : null);
     if (path != null) {
       canvas.drawPath(path, bgPaint(callout.calloutColor));
-      canvas.drawPath(path, linePaint(callout.arrowColor!, theThickness: thickness));
+      canvas.drawPath(path, linePaint(Colors.black, theThickness: thickness));
     }
   }
 

@@ -11,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 /// the app's overlay and not in your widget tree as you might have expected.
 class CAPIAppWrapper extends StatefulWidget {
   final String initialValueJsonAssetPath;
-  final Widget child;
+  final ContentFunc childF;
   final bool localTestingFilePaths;
   final bool runningInProduction;
 
@@ -33,7 +33,7 @@ class CAPIAppWrapper extends StatefulWidget {
 
   CAPIAppWrapper({
     required this.initialValueJsonAssetPath,
-    required this.child,
+    required this.childF,
     this.localTestingFilePaths = false,
     this.runningInProduction = false,
     super.key,
@@ -57,6 +57,12 @@ class _CAPIAppWrapperState extends State<CAPIAppWrapper> {
   }
 
   @override
+  void didChangeDependencies() {
+    Useful.instance.initWithContext(context, force: true);
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) => Builder(builder: (context) {
         return NotificationListener<SizeChangedLayoutNotification>(
           onNotification: (SizeChangedLayoutNotification notification) {
@@ -66,7 +72,7 @@ class _CAPIAppWrapperState extends State<CAPIAppWrapper> {
           child: SizeChangedLayoutNotifier(
             child: BlocProvider(
               create: (BuildContext context) => capiBloc,
-              child: widget.child,
+              child: widget.childF.call(),
             ),
           ),
         );

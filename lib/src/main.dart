@@ -76,64 +76,62 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     print("main build");
-    return CAPIAppWrapper(
-      initialValueJsonAssetPath: "callout-scripts/sample-config.json",
-      localTestingFilePaths: true,
-      runningInProduction: false,
-      child: MaterialApp(
-        home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Flutter Callout API sample'),
-          ),
-          body: Builder(builder: (context) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: testw,
-                    color: Colors.redAccent,
-                  ),
-                  Expanded(
-                    child: CAPIWidgetWrapper(
-                      wwName: "cats",
-                      aspectRatio: 3516/1534,
-                      hardEdge: true,
-                      child: assetPicWithFadeIn(
-                        path: 'images/top-cat-gang.png',
-                        padding: EdgeInsets.zero,
-                        alignment: Alignment.center,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: testw += 30,
-                    color: Colors.redAccent,
-                  ),
-                  Expanded(
-                    child: CAPIWidgetWrapper(
-                      wwName: "dogs",
-                      aspectRatio: 2984 / 1940,
-                      child: assetPicWithFadeIn(
-                        path: 'images/pepper-and-aibo.png',
-                        padding: EdgeInsets.zero,
-                        alignment: Alignment.center,
-                        fit: BoxFit.fitHeight,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: testw += 30,
-                    color: Colors.redAccent,
-                  ),
-                ],
-              ),
-            );
-          }),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Flutter Callout API sample'),
         ),
+        body: Builder(builder: (context) {
+          return CAPIAppWrapper(
+            initialValueJsonAssetPath: "callout-scripts/sample-config.json",
+            localTestingFilePaths: true,
+            runningInProduction: false,
+            childF: () => Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: testw,
+                  color: Colors.redAccent,
+                ),
+                Expanded(
+                  child: CAPIWidgetWrapper(
+                    wwName: "cats",
+                    aspectRatio: 3516 / 1534,
+                    hardEdge: true,
+                    child: assetPicWithFadeIn(
+                      path: 'images/top-cat-gang.png',
+                      padding: EdgeInsets.zero,
+                      alignment: Alignment.center,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: testw += 30,
+                  color: Colors.redAccent,
+                ),
+                Expanded(
+                  child: CAPIWidgetWrapper(
+                    wwName: "dogs",
+                    aspectRatio: 2984 / 1940,
+                    child: assetPicWithFadeIn(
+                      path: 'images/pepper-and-aibo.png',
+                      padding: EdgeInsets.zero,
+                      alignment: Alignment.center,
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: testw += 30,
+                  color: Colors.redAccent,
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }

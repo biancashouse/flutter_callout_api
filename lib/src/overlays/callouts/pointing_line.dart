@@ -182,8 +182,11 @@ class PointingLinePainter extends CustomPainter {
       case ArrowType.HUGE:
       case ArrowType.HUGE_REVERSED:
         return 20;
+      case ArrowType.NO_CONNECTOR:
+      case ArrowType.POINTY:
+      return 1;
+        break;
     }
-    return 1;
   }
 
   @override

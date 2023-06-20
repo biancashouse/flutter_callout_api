@@ -31,10 +31,10 @@ class OverlayManager {
     print("OverlayManager");
   }
 
-  void overlaySetState(VoidCallback f) {
+  void overlaySetState({VoidCallback? f}) {
     // because not allowed to setState from outside of the state itself !
     if (overlayState.mounted) {
-      overlayState.setState(f);
+      overlayState.setState(f ?? (){});
     } else {
       throw ('overlayState not mouted!');
     }
@@ -336,7 +336,7 @@ class OverlayManager {
 // }
 
   void refreshCalloutByFeature(int feature, VoidCallback func) {
-    findCallout(feature)?.refreshOverlay(func);
+    findCallout(feature)?.rebuildOverlays(func);
   }
 
 // void removeToastByFeature(int feature, bool theResult) {
@@ -403,7 +403,7 @@ class OverlayManager {
   refreshParentCallout(BuildContext ctx, VoidCallback f) {
     CalloutParent? calloutParent = ctx.findAncestorWidgetOfExactType<CalloutParent>();
     if (calloutParent != null) {
-      calloutParent.callout.refreshOverlay(f);
+      calloutParent.callout.rebuildOverlays(f);
     }
   }
 

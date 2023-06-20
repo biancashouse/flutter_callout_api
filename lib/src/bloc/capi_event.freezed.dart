@@ -21,29 +21,40 @@ mixin _$CAPIEvent {
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -51,28 +62,35 @@ mixin _$CAPIEvent {
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -80,98 +98,125 @@ mixin _$CAPIEvent {
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -284,29 +329,40 @@ class _$InitApp with DiagnosticableTreeMixin implements InitApp {
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
     return initApp(initialValueJsonAssetPath, localTestingFilePaths);
   }
@@ -317,28 +373,35 @@ class _$InitApp with DiagnosticableTreeMixin implements InitApp {
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
     return initApp?.call(initialValueJsonAssetPath, localTestingFilePaths);
   }
@@ -349,28 +412,34 @@ class _$InitApp with DiagnosticableTreeMixin implements InitApp {
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (initApp != null) {
@@ -383,26 +452,35 @@ class _$InitApp with DiagnosticableTreeMixin implements InitApp {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
     return initApp(this);
   }
@@ -411,23 +489,29 @@ class _$InitApp with DiagnosticableTreeMixin implements InitApp {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
     return initApp?.call(this);
   }
@@ -436,23 +520,29 @@ class _$InitApp with DiagnosticableTreeMixin implements InitApp {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (initApp != null) {
@@ -475,29 +565,31 @@ abstract class InitApp implements CAPIEvent {
 }
 
 /// @nodoc
-abstract class _$$SuspendCopyWith<$Res> {
-  factory _$$SuspendCopyWith(_$Suspend value, $Res Function(_$Suspend) then) =
-      __$$SuspendCopyWithImpl<$Res>;
+abstract class _$$SuspendAndCopyToJsonCopyWith<$Res> {
+  factory _$$SuspendAndCopyToJsonCopyWith(_$SuspendAndCopyToJson value,
+          $Res Function(_$SuspendAndCopyToJson) then) =
+      __$$SuspendAndCopyToJsonCopyWithImpl<$Res>;
   @useResult
-  $Res call({String wwName});
+  $Res call({String wName});
 }
 
 /// @nodoc
-class __$$SuspendCopyWithImpl<$Res>
-    extends _$CAPIEventCopyWithImpl<$Res, _$Suspend>
-    implements _$$SuspendCopyWith<$Res> {
-  __$$SuspendCopyWithImpl(_$Suspend _value, $Res Function(_$Suspend) _then)
+class __$$SuspendAndCopyToJsonCopyWithImpl<$Res>
+    extends _$CAPIEventCopyWithImpl<$Res, _$SuspendAndCopyToJson>
+    implements _$$SuspendAndCopyToJsonCopyWith<$Res> {
+  __$$SuspendAndCopyToJsonCopyWithImpl(_$SuspendAndCopyToJson _value,
+      $Res Function(_$SuspendAndCopyToJson) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? wwName = null,
+    Object? wName = null,
   }) {
-    return _then(_$Suspend(
-      wwName: null == wwName
-          ? _value.wwName
-          : wwName // ignore: cast_nullable_to_non_nullable
+    return _then(_$SuspendAndCopyToJson(
+      wName: null == wName
+          ? _value.wName
+          : wName // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -505,41 +597,44 @@ class __$$SuspendCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$Suspend with DiagnosticableTreeMixin implements Suspend {
-  const _$Suspend({required this.wwName});
+class _$SuspendAndCopyToJson
+    with DiagnosticableTreeMixin
+    implements SuspendAndCopyToJson {
+  const _$SuspendAndCopyToJson({required this.wName});
 
   @override
-  final String wwName;
+  final String wName;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'CAPIEvent.suspend(wwName: $wwName)';
+    return 'CAPIEvent.suspendAndCopyToJson(wName: $wName)';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('type', 'CAPIEvent.suspend'))
-      ..add(DiagnosticsProperty('wwName', wwName));
+      ..add(DiagnosticsProperty('type', 'CAPIEvent.suspendAndCopyToJson'))
+      ..add(DiagnosticsProperty('wName', wName));
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$Suspend &&
-            (identical(other.wwName, wwName) || other.wwName == wwName));
+            other is _$SuspendAndCopyToJson &&
+            (identical(other.wName, wName) || other.wName == wName));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, wwName);
+  int get hashCode => Object.hash(runtimeType, wName);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$SuspendCopyWith<_$Suspend> get copyWith =>
-      __$$SuspendCopyWithImpl<_$Suspend>(this, _$identity);
+  _$$SuspendAndCopyToJsonCopyWith<_$SuspendAndCopyToJson> get copyWith =>
+      __$$SuspendAndCopyToJsonCopyWithImpl<_$SuspendAndCopyToJson>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -547,31 +642,42 @@ class _$Suspend with DiagnosticableTreeMixin implements Suspend {
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
-    return suspend(wwName);
+    return suspendAndCopyToJson(wName);
   }
 
   @override
@@ -580,30 +686,37 @@ class _$Suspend with DiagnosticableTreeMixin implements Suspend {
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
-    return suspend?.call(wwName);
+    return suspendAndCopyToJson?.call(wName);
   }
 
   @override
@@ -612,32 +725,38 @@ class _$Suspend with DiagnosticableTreeMixin implements Suspend {
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
-    if (suspend != null) {
-      return suspend(wwName);
+    if (suspendAndCopyToJson != null) {
+      return suspendAndCopyToJson(wName);
     }
     return orElse();
   }
@@ -646,91 +765,113 @@ class _$Suspend with DiagnosticableTreeMixin implements Suspend {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
-    return suspend(this);
+    return suspendAndCopyToJson(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
-    return suspend?.call(this);
+    return suspendAndCopyToJson?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
-    if (suspend != null) {
-      return suspend(this);
+    if (suspendAndCopyToJson != null) {
+      return suspendAndCopyToJson(this);
     }
     return orElse();
   }
 }
 
-abstract class Suspend implements CAPIEvent {
-  const factory Suspend({required final String wwName}) = _$Suspend;
+abstract class SuspendAndCopyToJson implements CAPIEvent {
+  const factory SuspendAndCopyToJson({required final String wName}) =
+      _$SuspendAndCopyToJson;
 
-  String get wwName;
+  String get wName;
   @JsonKey(ignore: true)
-  _$$SuspendCopyWith<_$Suspend> get copyWith =>
+  _$$SuspendAndCopyToJsonCopyWith<_$SuspendAndCopyToJson> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -739,7 +880,7 @@ abstract class _$$ResumeCopyWith<$Res> {
   factory _$$ResumeCopyWith(_$Resume value, $Res Function(_$Resume) then) =
       __$$ResumeCopyWithImpl<$Res>;
   @useResult
-  $Res call({String wwName});
+  $Res call({String wName});
 }
 
 /// @nodoc
@@ -752,12 +893,12 @@ class __$$ResumeCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? wwName = null,
+    Object? wName = null,
   }) {
     return _then(_$Resume(
-      wwName: null == wwName
-          ? _value.wwName
-          : wwName // ignore: cast_nullable_to_non_nullable
+      wName: null == wName
+          ? _value.wName
+          : wName // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -766,14 +907,14 @@ class __$$ResumeCopyWithImpl<$Res>
 /// @nodoc
 
 class _$Resume with DiagnosticableTreeMixin implements Resume {
-  const _$Resume({required this.wwName});
+  const _$Resume({required this.wName});
 
   @override
-  final String wwName;
+  final String wName;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'CAPIEvent.resume(wwName: $wwName)';
+    return 'CAPIEvent.resume(wName: $wName)';
   }
 
   @override
@@ -781,7 +922,7 @@ class _$Resume with DiagnosticableTreeMixin implements Resume {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'CAPIEvent.resume'))
-      ..add(DiagnosticsProperty('wwName', wwName));
+      ..add(DiagnosticsProperty('wName', wName));
   }
 
   @override
@@ -789,11 +930,11 @@ class _$Resume with DiagnosticableTreeMixin implements Resume {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$Resume &&
-            (identical(other.wwName, wwName) || other.wwName == wwName));
+            (identical(other.wName, wName) || other.wName == wName));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, wwName);
+  int get hashCode => Object.hash(runtimeType, wName);
 
   @JsonKey(ignore: true)
   @override
@@ -807,31 +948,42 @@ class _$Resume with DiagnosticableTreeMixin implements Resume {
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
-    return resume(wwName);
+    return resume(wName);
   }
 
   @override
@@ -840,30 +992,37 @@ class _$Resume with DiagnosticableTreeMixin implements Resume {
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
-    return resume?.call(wwName);
+    return resume?.call(wName);
   }
 
   @override
@@ -872,32 +1031,38 @@ class _$Resume with DiagnosticableTreeMixin implements Resume {
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (resume != null) {
-      return resume(wwName);
+      return resume(wName);
     }
     return orElse();
   }
@@ -906,26 +1071,35 @@ class _$Resume with DiagnosticableTreeMixin implements Resume {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
     return resume(this);
   }
@@ -934,23 +1108,29 @@ class _$Resume with DiagnosticableTreeMixin implements Resume {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
     return resume?.call(this);
   }
@@ -959,23 +1139,29 @@ class _$Resume with DiagnosticableTreeMixin implements Resume {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (resume != null) {
@@ -986,9 +1172,9 @@ class _$Resume with DiagnosticableTreeMixin implements Resume {
 }
 
 abstract class Resume implements CAPIEvent {
-  const factory Resume({required final String wwName}) = _$Resume;
+  const factory Resume({required final String wName}) = _$Resume;
 
-  String get wwName;
+  String get wName;
   @JsonKey(ignore: true)
   _$$ResumeCopyWith<_$Resume> get copyWith =>
       throw _privateConstructorUsedError;
@@ -1043,29 +1229,40 @@ class _$CopyToClipboard
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
     return copyToClipboard();
   }
@@ -1076,28 +1273,35 @@ class _$CopyToClipboard
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
     return copyToClipboard?.call();
   }
@@ -1108,28 +1312,34 @@ class _$CopyToClipboard
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (copyToClipboard != null) {
@@ -1142,26 +1352,35 @@ class _$CopyToClipboard
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
     return copyToClipboard(this);
   }
@@ -1170,23 +1389,29 @@ class _$CopyToClipboard
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
     return copyToClipboard?.call(this);
   }
@@ -1195,23 +1420,29 @@ class _$CopyToClipboard
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (copyToClipboard != null) {
@@ -1231,7 +1462,7 @@ abstract class _$$RecordMatrixCopyWith<$Res> {
           _$RecordMatrix value, $Res Function(_$RecordMatrix) then) =
       __$$RecordMatrixCopyWithImpl<$Res>;
   @useResult
-  $Res call({String wwName, Matrix4 newMatrix});
+  $Res call({String wName, Matrix4 newMatrix});
 }
 
 /// @nodoc
@@ -1245,13 +1476,13 @@ class __$$RecordMatrixCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? wwName = null,
+    Object? wName = null,
     Object? newMatrix = null,
   }) {
     return _then(_$RecordMatrix(
-      wwName: null == wwName
-          ? _value.wwName
-          : wwName // ignore: cast_nullable_to_non_nullable
+      wName: null == wName
+          ? _value.wName
+          : wName // ignore: cast_nullable_to_non_nullable
               as String,
       newMatrix: null == newMatrix
           ? _value.newMatrix
@@ -1264,16 +1495,16 @@ class __$$RecordMatrixCopyWithImpl<$Res>
 /// @nodoc
 
 class _$RecordMatrix with DiagnosticableTreeMixin implements RecordMatrix {
-  const _$RecordMatrix({required this.wwName, required this.newMatrix});
+  const _$RecordMatrix({required this.wName, required this.newMatrix});
 
   @override
-  final String wwName;
+  final String wName;
   @override
   final Matrix4 newMatrix;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'CAPIEvent.recordMatrix(wwName: $wwName, newMatrix: $newMatrix)';
+    return 'CAPIEvent.recordMatrix(wName: $wName, newMatrix: $newMatrix)';
   }
 
   @override
@@ -1281,7 +1512,7 @@ class _$RecordMatrix with DiagnosticableTreeMixin implements RecordMatrix {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'CAPIEvent.recordMatrix'))
-      ..add(DiagnosticsProperty('wwName', wwName))
+      ..add(DiagnosticsProperty('wName', wName))
       ..add(DiagnosticsProperty('newMatrix', newMatrix));
   }
 
@@ -1290,13 +1521,13 @@ class _$RecordMatrix with DiagnosticableTreeMixin implements RecordMatrix {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RecordMatrix &&
-            (identical(other.wwName, wwName) || other.wwName == wwName) &&
+            (identical(other.wName, wName) || other.wName == wName) &&
             (identical(other.newMatrix, newMatrix) ||
                 other.newMatrix == newMatrix));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, wwName, newMatrix);
+  int get hashCode => Object.hash(runtimeType, wName, newMatrix);
 
   @JsonKey(ignore: true)
   @override
@@ -1310,31 +1541,42 @@ class _$RecordMatrix with DiagnosticableTreeMixin implements RecordMatrix {
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
-    return recordMatrix(wwName, newMatrix);
+    return recordMatrix(wName, newMatrix);
   }
 
   @override
@@ -1343,30 +1585,37 @@ class _$RecordMatrix with DiagnosticableTreeMixin implements RecordMatrix {
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
-    return recordMatrix?.call(wwName, newMatrix);
+    return recordMatrix?.call(wName, newMatrix);
   }
 
   @override
@@ -1375,32 +1624,38 @@ class _$RecordMatrix with DiagnosticableTreeMixin implements RecordMatrix {
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (recordMatrix != null) {
-      return recordMatrix(wwName, newMatrix);
+      return recordMatrix(wName, newMatrix);
     }
     return orElse();
   }
@@ -1409,26 +1664,35 @@ class _$RecordMatrix with DiagnosticableTreeMixin implements RecordMatrix {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
     return recordMatrix(this);
   }
@@ -1437,23 +1701,29 @@ class _$RecordMatrix with DiagnosticableTreeMixin implements RecordMatrix {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
     return recordMatrix?.call(this);
   }
@@ -1462,23 +1732,29 @@ class _$RecordMatrix with DiagnosticableTreeMixin implements RecordMatrix {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (recordMatrix != null) {
@@ -1490,10 +1766,10 @@ class _$RecordMatrix with DiagnosticableTreeMixin implements RecordMatrix {
 
 abstract class RecordMatrix implements CAPIEvent {
   const factory RecordMatrix(
-      {required final String wwName,
+      {required final String wName,
       required final Matrix4 newMatrix}) = _$RecordMatrix;
 
-  String get wwName;
+  String get wName;
   Matrix4 get newMatrix;
   @JsonKey(ignore: true)
   _$$RecordMatrixCopyWith<_$RecordMatrix> get copyWith =>
@@ -1506,7 +1782,7 @@ abstract class _$$TargetMovedCopyWith<$Res> {
           _$TargetMoved value, $Res Function(_$TargetMoved) then) =
       __$$TargetMovedCopyWithImpl<$Res>;
   @useResult
-  $Res call({TargetConfig tc, Offset newGlobalPos});
+  $Res call({TargetConfig tc, double targetRadius, Offset newGlobalPos});
 }
 
 /// @nodoc
@@ -1521,6 +1797,7 @@ class __$$TargetMovedCopyWithImpl<$Res>
   @override
   $Res call({
     Object? tc = null,
+    Object? targetRadius = null,
     Object? newGlobalPos = null,
   }) {
     return _then(_$TargetMoved(
@@ -1528,6 +1805,10 @@ class __$$TargetMovedCopyWithImpl<$Res>
           ? _value.tc
           : tc // ignore: cast_nullable_to_non_nullable
               as TargetConfig,
+      targetRadius: null == targetRadius
+          ? _value.targetRadius
+          : targetRadius // ignore: cast_nullable_to_non_nullable
+              as double,
       newGlobalPos: null == newGlobalPos
           ? _value.newGlobalPos
           : newGlobalPos // ignore: cast_nullable_to_non_nullable
@@ -1539,16 +1820,21 @@ class __$$TargetMovedCopyWithImpl<$Res>
 /// @nodoc
 
 class _$TargetMoved with DiagnosticableTreeMixin implements TargetMoved {
-  const _$TargetMoved({required this.tc, required this.newGlobalPos});
+  const _$TargetMoved(
+      {required this.tc,
+      required this.targetRadius,
+      required this.newGlobalPos});
 
   @override
   final TargetConfig tc;
+  @override
+  final double targetRadius;
   @override
   final Offset newGlobalPos;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'CAPIEvent.targetMoved(tc: $tc, newGlobalPos: $newGlobalPos)';
+    return 'CAPIEvent.targetMoved(tc: $tc, targetRadius: $targetRadius, newGlobalPos: $newGlobalPos)';
   }
 
   @override
@@ -1557,6 +1843,7 @@ class _$TargetMoved with DiagnosticableTreeMixin implements TargetMoved {
     properties
       ..add(DiagnosticsProperty('type', 'CAPIEvent.targetMoved'))
       ..add(DiagnosticsProperty('tc', tc))
+      ..add(DiagnosticsProperty('targetRadius', targetRadius))
       ..add(DiagnosticsProperty('newGlobalPos', newGlobalPos));
   }
 
@@ -1566,12 +1853,14 @@ class _$TargetMoved with DiagnosticableTreeMixin implements TargetMoved {
         (other.runtimeType == runtimeType &&
             other is _$TargetMoved &&
             (identical(other.tc, tc) || other.tc == tc) &&
+            (identical(other.targetRadius, targetRadius) ||
+                other.targetRadius == targetRadius) &&
             (identical(other.newGlobalPos, newGlobalPos) ||
                 other.newGlobalPos == newGlobalPos));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, tc, newGlobalPos);
+  int get hashCode => Object.hash(runtimeType, tc, targetRadius, newGlobalPos);
 
   @JsonKey(ignore: true)
   @override
@@ -1585,31 +1874,42 @@ class _$TargetMoved with DiagnosticableTreeMixin implements TargetMoved {
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
-    return targetMoved(tc, newGlobalPos);
+    return targetMoved(tc, targetRadius, newGlobalPos);
   }
 
   @override
@@ -1618,30 +1918,37 @@ class _$TargetMoved with DiagnosticableTreeMixin implements TargetMoved {
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
-    return targetMoved?.call(tc, newGlobalPos);
+    return targetMoved?.call(tc, targetRadius, newGlobalPos);
   }
 
   @override
@@ -1650,32 +1957,38 @@ class _$TargetMoved with DiagnosticableTreeMixin implements TargetMoved {
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (targetMoved != null) {
-      return targetMoved(tc, newGlobalPos);
+      return targetMoved(tc, targetRadius, newGlobalPos);
     }
     return orElse();
   }
@@ -1684,26 +1997,35 @@ class _$TargetMoved with DiagnosticableTreeMixin implements TargetMoved {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
     return targetMoved(this);
   }
@@ -1712,23 +2034,29 @@ class _$TargetMoved with DiagnosticableTreeMixin implements TargetMoved {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
     return targetMoved?.call(this);
   }
@@ -1737,23 +2065,29 @@ class _$TargetMoved with DiagnosticableTreeMixin implements TargetMoved {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (targetMoved != null) {
@@ -1766,9 +2100,11 @@ class _$TargetMoved with DiagnosticableTreeMixin implements TargetMoved {
 abstract class TargetMoved implements CAPIEvent {
   const factory TargetMoved(
       {required final TargetConfig tc,
+      required final double targetRadius,
       required final Offset newGlobalPos}) = _$TargetMoved;
 
   TargetConfig get tc;
+  double get targetRadius;
   Offset get newGlobalPos;
   @JsonKey(ignore: true)
   _$$TargetMovedCopyWith<_$TargetMoved> get copyWith =>
@@ -1859,29 +2195,40 @@ class _$BtnMoved with DiagnosticableTreeMixin implements BtnMoved {
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
     return btnMoved(tc, newGlobalPos);
   }
@@ -1892,28 +2239,35 @@ class _$BtnMoved with DiagnosticableTreeMixin implements BtnMoved {
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
     return btnMoved?.call(tc, newGlobalPos);
   }
@@ -1924,28 +2278,34 @@ class _$BtnMoved with DiagnosticableTreeMixin implements BtnMoved {
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (btnMoved != null) {
@@ -1958,26 +2318,35 @@ class _$BtnMoved with DiagnosticableTreeMixin implements BtnMoved {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
     return btnMoved(this);
   }
@@ -1986,23 +2355,29 @@ class _$BtnMoved with DiagnosticableTreeMixin implements BtnMoved {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
     return btnMoved?.call(this);
   }
@@ -2011,23 +2386,29 @@ class _$BtnMoved with DiagnosticableTreeMixin implements BtnMoved {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (btnMoved != null) {
@@ -2050,32 +2431,32 @@ abstract class BtnMoved implements CAPIEvent {
 }
 
 /// @nodoc
-abstract class _$$NewTargetCopyWith<$Res> {
-  factory _$$NewTargetCopyWith(
-          _$NewTarget value, $Res Function(_$NewTarget) then) =
-      __$$NewTargetCopyWithImpl<$Res>;
+abstract class _$$NewTargetAutoCopyWith<$Res> {
+  factory _$$NewTargetAutoCopyWith(
+          _$NewTargetAuto value, $Res Function(_$NewTargetAuto) then) =
+      __$$NewTargetAutoCopyWithImpl<$Res>;
   @useResult
-  $Res call({String wwName, Offset newGlobalPos});
+  $Res call({String wName, Offset newGlobalPos});
 }
 
 /// @nodoc
-class __$$NewTargetCopyWithImpl<$Res>
-    extends _$CAPIEventCopyWithImpl<$Res, _$NewTarget>
-    implements _$$NewTargetCopyWith<$Res> {
-  __$$NewTargetCopyWithImpl(
-      _$NewTarget _value, $Res Function(_$NewTarget) _then)
+class __$$NewTargetAutoCopyWithImpl<$Res>
+    extends _$CAPIEventCopyWithImpl<$Res, _$NewTargetAuto>
+    implements _$$NewTargetAutoCopyWith<$Res> {
+  __$$NewTargetAutoCopyWithImpl(
+      _$NewTargetAuto _value, $Res Function(_$NewTargetAuto) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? wwName = null,
+    Object? wName = null,
     Object? newGlobalPos = null,
   }) {
-    return _then(_$NewTarget(
-      wwName: null == wwName
-          ? _value.wwName
-          : wwName // ignore: cast_nullable_to_non_nullable
+    return _then(_$NewTargetAuto(
+      wName: null == wName
+          ? _value.wName
+          : wName // ignore: cast_nullable_to_non_nullable
               as String,
       newGlobalPos: null == newGlobalPos
           ? _value.newGlobalPos
@@ -2087,25 +2468,25 @@ class __$$NewTargetCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$NewTarget with DiagnosticableTreeMixin implements NewTarget {
-  const _$NewTarget({required this.wwName, required this.newGlobalPos});
+class _$NewTargetAuto with DiagnosticableTreeMixin implements NewTargetAuto {
+  const _$NewTargetAuto({required this.wName, required this.newGlobalPos});
 
   @override
-  final String wwName;
+  final String wName;
   @override
   final Offset newGlobalPos;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'CAPIEvent.newTarget(wwName: $wwName, newGlobalPos: $newGlobalPos)';
+    return 'CAPIEvent.newTargetAuto(wName: $wName, newGlobalPos: $newGlobalPos)';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('type', 'CAPIEvent.newTarget'))
-      ..add(DiagnosticsProperty('wwName', wwName))
+      ..add(DiagnosticsProperty('type', 'CAPIEvent.newTargetAuto'))
+      ..add(DiagnosticsProperty('wName', wName))
       ..add(DiagnosticsProperty('newGlobalPos', newGlobalPos));
   }
 
@@ -2113,20 +2494,20 @@ class _$NewTarget with DiagnosticableTreeMixin implements NewTarget {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$NewTarget &&
-            (identical(other.wwName, wwName) || other.wwName == wwName) &&
+            other is _$NewTargetAuto &&
+            (identical(other.wName, wName) || other.wName == wName) &&
             (identical(other.newGlobalPos, newGlobalPos) ||
                 other.newGlobalPos == newGlobalPos));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, wwName, newGlobalPos);
+  int get hashCode => Object.hash(runtimeType, wName, newGlobalPos);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$NewTargetCopyWith<_$NewTarget> get copyWith =>
-      __$$NewTargetCopyWithImpl<_$NewTarget>(this, _$identity);
+  _$$NewTargetAutoCopyWith<_$NewTargetAuto> get copyWith =>
+      __$$NewTargetAutoCopyWithImpl<_$NewTargetAuto>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -2134,31 +2515,42 @@ class _$NewTarget with DiagnosticableTreeMixin implements NewTarget {
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
-    return newTarget(wwName, newGlobalPos);
+    return newTargetAuto(wName, newGlobalPos);
   }
 
   @override
@@ -2167,30 +2559,37 @@ class _$NewTarget with DiagnosticableTreeMixin implements NewTarget {
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
-    return newTarget?.call(wwName, newGlobalPos);
+    return newTargetAuto?.call(wName, newGlobalPos);
   }
 
   @override
@@ -2199,32 +2598,38 @@ class _$NewTarget with DiagnosticableTreeMixin implements NewTarget {
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
-    if (newTarget != null) {
-      return newTarget(wwName, newGlobalPos);
+    if (newTargetAuto != null) {
+      return newTargetAuto(wName, newGlobalPos);
     }
     return orElse();
   }
@@ -2233,94 +2638,115 @@ class _$NewTarget with DiagnosticableTreeMixin implements NewTarget {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
-    return newTarget(this);
+    return newTargetAuto(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
-    return newTarget?.call(this);
+    return newTargetAuto?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
-    if (newTarget != null) {
-      return newTarget(this);
+    if (newTargetAuto != null) {
+      return newTargetAuto(this);
     }
     return orElse();
   }
 }
 
-abstract class NewTarget implements CAPIEvent {
-  const factory NewTarget(
-      {required final String wwName,
-      required final Offset newGlobalPos}) = _$NewTarget;
+abstract class NewTargetAuto implements CAPIEvent {
+  const factory NewTargetAuto(
+      {required final String wName,
+      required final Offset newGlobalPos}) = _$NewTargetAuto;
 
-  String get wwName;
+  String get wName;
   Offset get newGlobalPos;
   @JsonKey(ignore: true)
-  _$$NewTargetCopyWith<_$NewTarget> get copyWith =>
+  _$$NewTargetAutoCopyWith<_$NewTargetAuto> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -2399,29 +2825,40 @@ class _$DeleteTarget with DiagnosticableTreeMixin implements DeleteTarget {
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
     return deleteTarget(tc);
   }
@@ -2432,28 +2869,35 @@ class _$DeleteTarget with DiagnosticableTreeMixin implements DeleteTarget {
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
     return deleteTarget?.call(tc);
   }
@@ -2464,28 +2908,34 @@ class _$DeleteTarget with DiagnosticableTreeMixin implements DeleteTarget {
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (deleteTarget != null) {
@@ -2498,26 +2948,35 @@ class _$DeleteTarget with DiagnosticableTreeMixin implements DeleteTarget {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
     return deleteTarget(this);
   }
@@ -2526,23 +2985,29 @@ class _$DeleteTarget with DiagnosticableTreeMixin implements DeleteTarget {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
     return deleteTarget?.call(this);
   }
@@ -2551,23 +3016,29 @@ class _$DeleteTarget with DiagnosticableTreeMixin implements DeleteTarget {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (deleteTarget != null) {
@@ -2661,29 +3132,40 @@ class _$SelectTarget with DiagnosticableTreeMixin implements SelectTarget {
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
     return selectTarget(tc);
   }
@@ -2694,28 +3176,35 @@ class _$SelectTarget with DiagnosticableTreeMixin implements SelectTarget {
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
     return selectTarget?.call(tc);
   }
@@ -2726,28 +3215,34 @@ class _$SelectTarget with DiagnosticableTreeMixin implements SelectTarget {
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (selectTarget != null) {
@@ -2760,26 +3255,35 @@ class _$SelectTarget with DiagnosticableTreeMixin implements SelectTarget {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
     return selectTarget(this);
   }
@@ -2788,23 +3292,29 @@ class _$SelectTarget with DiagnosticableTreeMixin implements SelectTarget {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
     return selectTarget?.call(this);
   }
@@ -2813,23 +3323,29 @@ class _$SelectTarget with DiagnosticableTreeMixin implements SelectTarget {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (selectTarget != null) {
@@ -2849,12 +3365,600 @@ abstract class SelectTarget implements CAPIEvent {
 }
 
 /// @nodoc
+abstract class _$$HideTargetsDuringPlayExceptCopyWith<$Res> {
+  factory _$$HideTargetsDuringPlayExceptCopyWith(
+          _$HideTargetsDuringPlayExcept value,
+          $Res Function(_$HideTargetsDuringPlayExcept) then) =
+      __$$HideTargetsDuringPlayExceptCopyWithImpl<$Res>;
+  @useResult
+  $Res call({TargetConfig tc});
+}
+
+/// @nodoc
+class __$$HideTargetsDuringPlayExceptCopyWithImpl<$Res>
+    extends _$CAPIEventCopyWithImpl<$Res, _$HideTargetsDuringPlayExcept>
+    implements _$$HideTargetsDuringPlayExceptCopyWith<$Res> {
+  __$$HideTargetsDuringPlayExceptCopyWithImpl(
+      _$HideTargetsDuringPlayExcept _value,
+      $Res Function(_$HideTargetsDuringPlayExcept) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? tc = null,
+  }) {
+    return _then(_$HideTargetsDuringPlayExcept(
+      tc: null == tc
+          ? _value.tc
+          : tc // ignore: cast_nullable_to_non_nullable
+              as TargetConfig,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$HideTargetsDuringPlayExcept
+    with DiagnosticableTreeMixin
+    implements HideTargetsDuringPlayExcept {
+  const _$HideTargetsDuringPlayExcept({required this.tc});
+
+  @override
+  final TargetConfig tc;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'CAPIEvent.hideTargetsDuringPlayExcept(tc: $tc)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(
+          DiagnosticsProperty('type', 'CAPIEvent.hideTargetsDuringPlayExcept'))
+      ..add(DiagnosticsProperty('tc', tc));
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$HideTargetsDuringPlayExcept &&
+            (identical(other.tc, tc) || other.tc == tc));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, tc);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$HideTargetsDuringPlayExceptCopyWith<_$HideTargetsDuringPlayExcept>
+      get copyWith => __$$HideTargetsDuringPlayExceptCopyWithImpl<
+          _$HideTargetsDuringPlayExcept>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)
+        initApp,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
+    required TResult Function() copyToClipboard,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
+    required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
+    required TResult Function(TargetConfig tc) deleteTarget,
+    required TResult Function(TargetConfig tc) selectTarget,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
+    required TResult Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
+        overrideTargetGK,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
+    required TResult Function(TargetConfig tc, int newDurationMs)
+        changedCalloutDuration,
+    required TResult Function(TargetConfig tc, TextAlign newTextAlign)
+        changedCalloutTextAlign,
+    required TResult Function(TargetConfig tc, TextStyle newTextStyle)
+        changedCalloutTextStyle,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
+  }) {
+    return hideTargetsDuringPlayExcept(tc);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)?
+        initApp,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
+    TResult? Function()? copyToClipboard,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
+    TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
+    TResult? Function(TargetConfig tc)? deleteTarget,
+    TResult? Function(TargetConfig tc)? selectTarget,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
+    TResult? Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
+        overrideTargetGK,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
+    TResult? Function(TargetConfig tc, int newDurationMs)?
+        changedCalloutDuration,
+    TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
+        changedCalloutTextAlign,
+    TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
+        changedCalloutTextStyle,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
+  }) {
+    return hideTargetsDuringPlayExcept?.call(tc);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)?
+        initApp,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
+    TResult Function()? copyToClipboard,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
+    TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
+    TResult Function(TargetConfig tc)? deleteTarget,
+    TResult Function(TargetConfig tc)? selectTarget,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
+    TResult Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
+        overrideTargetGK,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
+    TResult Function(TargetConfig tc, int newDurationMs)?
+        changedCalloutDuration,
+    TResult Function(TargetConfig tc, TextAlign newTextAlign)?
+        changedCalloutTextAlign,
+    TResult Function(TargetConfig tc, TextStyle newTextStyle)?
+        changedCalloutTextStyle,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
+    required TResult orElse(),
+  }) {
+    if (hideTargetsDuringPlayExcept != null) {
+      return hideTargetsDuringPlayExcept(tc);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(InitApp value) initApp,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
+    required TResult Function(Resume value) resume,
+    required TResult Function(CopyToClipboard value) copyToClipboard,
+    required TResult Function(RecordMatrix value) recordMatrix,
+    required TResult Function(TargetMoved value) targetMoved,
+    required TResult Function(BtnMoved value) btnMoved,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
+    required TResult Function(DeleteTarget value) deleteTarget,
+    required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
+    required TResult Function(ClearSelection value) clearSelection,
+    required TResult Function(OverrideTargetGK value) overrideTargetGK,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
+    required TResult Function(ChangedCalloutDuration value)
+        changedCalloutDuration,
+    required TResult Function(ChangedCalloutTextAlign value)
+        changedCalloutTextAlign,
+    required TResult Function(ChangedCalloutTextStyle value)
+        changedCalloutTextStyle,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
+  }) {
+    return hideTargetsDuringPlayExcept(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(InitApp value)? initApp,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
+    TResult? Function(Resume value)? resume,
+    TResult? Function(CopyToClipboard value)? copyToClipboard,
+    TResult? Function(RecordMatrix value)? recordMatrix,
+    TResult? Function(TargetMoved value)? targetMoved,
+    TResult? Function(BtnMoved value)? btnMoved,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
+    TResult? Function(DeleteTarget value)? deleteTarget,
+    TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
+    TResult? Function(ClearSelection value)? clearSelection,
+    TResult? Function(OverrideTargetGK value)? overrideTargetGK,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
+    TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
+    TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
+    TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
+  }) {
+    return hideTargetsDuringPlayExcept?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(InitApp value)? initApp,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
+    TResult Function(Resume value)? resume,
+    TResult Function(CopyToClipboard value)? copyToClipboard,
+    TResult Function(RecordMatrix value)? recordMatrix,
+    TResult Function(TargetMoved value)? targetMoved,
+    TResult Function(BtnMoved value)? btnMoved,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
+    TResult Function(DeleteTarget value)? deleteTarget,
+    TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
+    TResult Function(ClearSelection value)? clearSelection,
+    TResult Function(OverrideTargetGK value)? overrideTargetGK,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
+    TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
+    TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
+    TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
+    required TResult orElse(),
+  }) {
+    if (hideTargetsDuringPlayExcept != null) {
+      return hideTargetsDuringPlayExcept(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class HideTargetsDuringPlayExcept implements CAPIEvent {
+  const factory HideTargetsDuringPlayExcept({required final TargetConfig tc}) =
+      _$HideTargetsDuringPlayExcept;
+
+  TargetConfig get tc;
+  @JsonKey(ignore: true)
+  _$$HideTargetsDuringPlayExceptCopyWith<_$HideTargetsDuringPlayExcept>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$UnhideTargetsCopyWith<$Res> {
+  factory _$$UnhideTargetsCopyWith(
+          _$UnhideTargets value, $Res Function(_$UnhideTargets) then) =
+      __$$UnhideTargetsCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$UnhideTargetsCopyWithImpl<$Res>
+    extends _$CAPIEventCopyWithImpl<$Res, _$UnhideTargets>
+    implements _$$UnhideTargetsCopyWith<$Res> {
+  __$$UnhideTargetsCopyWithImpl(
+      _$UnhideTargets _value, $Res Function(_$UnhideTargets) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$UnhideTargets with DiagnosticableTreeMixin implements UnhideTargets {
+  const _$UnhideTargets();
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'CAPIEvent.unhideTargets()';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('type', 'CAPIEvent.unhideTargets'));
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$UnhideTargets);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)
+        initApp,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
+    required TResult Function() copyToClipboard,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
+    required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
+    required TResult Function(TargetConfig tc) deleteTarget,
+    required TResult Function(TargetConfig tc) selectTarget,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
+    required TResult Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
+        overrideTargetGK,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
+    required TResult Function(TargetConfig tc, int newDurationMs)
+        changedCalloutDuration,
+    required TResult Function(TargetConfig tc, TextAlign newTextAlign)
+        changedCalloutTextAlign,
+    required TResult Function(TargetConfig tc, TextStyle newTextStyle)
+        changedCalloutTextStyle,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
+  }) {
+    return unhideTargets();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)?
+        initApp,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
+    TResult? Function()? copyToClipboard,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
+    TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
+    TResult? Function(TargetConfig tc)? deleteTarget,
+    TResult? Function(TargetConfig tc)? selectTarget,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
+    TResult? Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
+        overrideTargetGK,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
+    TResult? Function(TargetConfig tc, int newDurationMs)?
+        changedCalloutDuration,
+    TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
+        changedCalloutTextAlign,
+    TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
+        changedCalloutTextStyle,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
+  }) {
+    return unhideTargets?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)?
+        initApp,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
+    TResult Function()? copyToClipboard,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
+    TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
+    TResult Function(TargetConfig tc)? deleteTarget,
+    TResult Function(TargetConfig tc)? selectTarget,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
+    TResult Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
+        overrideTargetGK,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
+    TResult Function(TargetConfig tc, int newDurationMs)?
+        changedCalloutDuration,
+    TResult Function(TargetConfig tc, TextAlign newTextAlign)?
+        changedCalloutTextAlign,
+    TResult Function(TargetConfig tc, TextStyle newTextStyle)?
+        changedCalloutTextStyle,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
+    required TResult orElse(),
+  }) {
+    if (unhideTargets != null) {
+      return unhideTargets();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(InitApp value) initApp,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
+    required TResult Function(Resume value) resume,
+    required TResult Function(CopyToClipboard value) copyToClipboard,
+    required TResult Function(RecordMatrix value) recordMatrix,
+    required TResult Function(TargetMoved value) targetMoved,
+    required TResult Function(BtnMoved value) btnMoved,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
+    required TResult Function(DeleteTarget value) deleteTarget,
+    required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
+    required TResult Function(ClearSelection value) clearSelection,
+    required TResult Function(OverrideTargetGK value) overrideTargetGK,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
+    required TResult Function(ChangedCalloutDuration value)
+        changedCalloutDuration,
+    required TResult Function(ChangedCalloutTextAlign value)
+        changedCalloutTextAlign,
+    required TResult Function(ChangedCalloutTextStyle value)
+        changedCalloutTextStyle,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
+  }) {
+    return unhideTargets(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(InitApp value)? initApp,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
+    TResult? Function(Resume value)? resume,
+    TResult? Function(CopyToClipboard value)? copyToClipboard,
+    TResult? Function(RecordMatrix value)? recordMatrix,
+    TResult? Function(TargetMoved value)? targetMoved,
+    TResult? Function(BtnMoved value)? btnMoved,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
+    TResult? Function(DeleteTarget value)? deleteTarget,
+    TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
+    TResult? Function(ClearSelection value)? clearSelection,
+    TResult? Function(OverrideTargetGK value)? overrideTargetGK,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
+    TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
+    TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
+    TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
+  }) {
+    return unhideTargets?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(InitApp value)? initApp,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
+    TResult Function(Resume value)? resume,
+    TResult Function(CopyToClipboard value)? copyToClipboard,
+    TResult Function(RecordMatrix value)? recordMatrix,
+    TResult Function(TargetMoved value)? targetMoved,
+    TResult Function(BtnMoved value)? btnMoved,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
+    TResult Function(DeleteTarget value)? deleteTarget,
+    TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
+    TResult Function(ClearSelection value)? clearSelection,
+    TResult Function(OverrideTargetGK value)? overrideTargetGK,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
+    TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
+    TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
+    TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
+    required TResult orElse(),
+  }) {
+    if (unhideTargets != null) {
+      return unhideTargets(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class UnhideTargets implements CAPIEvent {
+  const factory UnhideTargets() = _$UnhideTargets;
+}
+
+/// @nodoc
 abstract class _$$ClearSelectionCopyWith<$Res> {
   factory _$$ClearSelectionCopyWith(
           _$ClearSelection value, $Res Function(_$ClearSelection) then) =
       __$$ClearSelectionCopyWithImpl<$Res>;
   @useResult
-  $Res call({String wwName});
+  $Res call({String wName});
 }
 
 /// @nodoc
@@ -2868,12 +3972,12 @@ class __$$ClearSelectionCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? wwName = null,
+    Object? wName = null,
   }) {
     return _then(_$ClearSelection(
-      wwName: null == wwName
-          ? _value.wwName
-          : wwName // ignore: cast_nullable_to_non_nullable
+      wName: null == wName
+          ? _value.wName
+          : wName // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -2882,14 +3986,14 @@ class __$$ClearSelectionCopyWithImpl<$Res>
 /// @nodoc
 
 class _$ClearSelection with DiagnosticableTreeMixin implements ClearSelection {
-  const _$ClearSelection({required this.wwName});
+  const _$ClearSelection({required this.wName});
 
   @override
-  final String wwName;
+  final String wName;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'CAPIEvent.clearSelection(wwName: $wwName)';
+    return 'CAPIEvent.clearSelection(wName: $wName)';
   }
 
   @override
@@ -2897,7 +4001,7 @@ class _$ClearSelection with DiagnosticableTreeMixin implements ClearSelection {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'CAPIEvent.clearSelection'))
-      ..add(DiagnosticsProperty('wwName', wwName));
+      ..add(DiagnosticsProperty('wName', wName));
   }
 
   @override
@@ -2905,11 +4009,11 @@ class _$ClearSelection with DiagnosticableTreeMixin implements ClearSelection {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ClearSelection &&
-            (identical(other.wwName, wwName) || other.wwName == wwName));
+            (identical(other.wName, wName) || other.wName == wName));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, wwName);
+  int get hashCode => Object.hash(runtimeType, wName);
 
   @JsonKey(ignore: true)
   @override
@@ -2923,31 +4027,42 @@ class _$ClearSelection with DiagnosticableTreeMixin implements ClearSelection {
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
-    return clearSelection(wwName);
+    return clearSelection(wName);
   }
 
   @override
@@ -2956,30 +4071,37 @@ class _$ClearSelection with DiagnosticableTreeMixin implements ClearSelection {
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
-    return clearSelection?.call(wwName);
+    return clearSelection?.call(wName);
   }
 
   @override
@@ -2988,32 +4110,38 @@ class _$ClearSelection with DiagnosticableTreeMixin implements ClearSelection {
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (clearSelection != null) {
-      return clearSelection(wwName);
+      return clearSelection(wName);
     }
     return orElse();
   }
@@ -3022,26 +4150,35 @@ class _$ClearSelection with DiagnosticableTreeMixin implements ClearSelection {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
     return clearSelection(this);
   }
@@ -3050,23 +4187,29 @@ class _$ClearSelection with DiagnosticableTreeMixin implements ClearSelection {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
     return clearSelection?.call(this);
   }
@@ -3075,23 +4218,29 @@ class _$ClearSelection with DiagnosticableTreeMixin implements ClearSelection {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (clearSelection != null) {
@@ -3102,10 +4251,10 @@ class _$ClearSelection with DiagnosticableTreeMixin implements ClearSelection {
 }
 
 abstract class ClearSelection implements CAPIEvent {
-  const factory ClearSelection({required final String wwName}) =
+  const factory ClearSelection({required final String wName}) =
       _$ClearSelection;
 
-  String get wwName;
+  String get wName;
   @JsonKey(ignore: true)
   _$$ClearSelectionCopyWith<_$ClearSelection> get copyWith =>
       throw _privateConstructorUsedError;
@@ -3117,7 +4266,7 @@ abstract class _$$OverrideTargetGKCopyWith<$Res> {
           _$OverrideTargetGK value, $Res Function(_$OverrideTargetGK) then) =
       __$$OverrideTargetGKCopyWithImpl<$Res>;
   @useResult
-  $Res call({String wwName, int index, GlobalKey<State<StatefulWidget>> gk});
+  $Res call({String wName, int index, GlobalKey<State<StatefulWidget>> gk});
 }
 
 /// @nodoc
@@ -3131,14 +4280,14 @@ class __$$OverrideTargetGKCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? wwName = null,
+    Object? wName = null,
     Object? index = null,
     Object? gk = null,
   }) {
     return _then(_$OverrideTargetGK(
-      wwName: null == wwName
-          ? _value.wwName
-          : wwName // ignore: cast_nullable_to_non_nullable
+      wName: null == wName
+          ? _value.wName
+          : wName // ignore: cast_nullable_to_non_nullable
               as String,
       index: null == index
           ? _value.index
@@ -3158,10 +4307,10 @@ class _$OverrideTargetGK
     with DiagnosticableTreeMixin
     implements OverrideTargetGK {
   const _$OverrideTargetGK(
-      {required this.wwName, required this.index, required this.gk});
+      {required this.wName, required this.index, required this.gk});
 
   @override
-  final String wwName;
+  final String wName;
   @override
   final int index;
   @override
@@ -3169,7 +4318,7 @@ class _$OverrideTargetGK
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'CAPIEvent.overrideTargetGK(wwName: $wwName, index: $index, gk: $gk)';
+    return 'CAPIEvent.overrideTargetGK(wName: $wName, index: $index, gk: $gk)';
   }
 
   @override
@@ -3177,7 +4326,7 @@ class _$OverrideTargetGK
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'CAPIEvent.overrideTargetGK'))
-      ..add(DiagnosticsProperty('wwName', wwName))
+      ..add(DiagnosticsProperty('wName', wName))
       ..add(DiagnosticsProperty('index', index))
       ..add(DiagnosticsProperty('gk', gk));
   }
@@ -3187,13 +4336,13 @@ class _$OverrideTargetGK
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OverrideTargetGK &&
-            (identical(other.wwName, wwName) || other.wwName == wwName) &&
+            (identical(other.wName, wName) || other.wName == wName) &&
             (identical(other.index, index) || other.index == index) &&
             (identical(other.gk, gk) || other.gk == gk));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, wwName, index, gk);
+  int get hashCode => Object.hash(runtimeType, wName, index, gk);
 
   @JsonKey(ignore: true)
   @override
@@ -3207,31 +4356,42 @@ class _$OverrideTargetGK
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
-    return overrideTargetGK(wwName, index, gk);
+    return overrideTargetGK(wName, index, gk);
   }
 
   @override
@@ -3240,30 +4400,37 @@ class _$OverrideTargetGK
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
-    return overrideTargetGK?.call(wwName, index, gk);
+    return overrideTargetGK?.call(wName, index, gk);
   }
 
   @override
@@ -3272,32 +4439,38 @@ class _$OverrideTargetGK
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (overrideTargetGK != null) {
-      return overrideTargetGK(wwName, index, gk);
+      return overrideTargetGK(wName, index, gk);
     }
     return orElse();
   }
@@ -3306,26 +4479,35 @@ class _$OverrideTargetGK
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
     return overrideTargetGK(this);
   }
@@ -3334,23 +4516,29 @@ class _$OverrideTargetGK
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
     return overrideTargetGK?.call(this);
   }
@@ -3359,23 +4547,29 @@ class _$OverrideTargetGK
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (overrideTargetGK != null) {
@@ -3387,11 +4581,11 @@ class _$OverrideTargetGK
 
 abstract class OverrideTargetGK implements CAPIEvent {
   const factory OverrideTargetGK(
-      {required final String wwName,
+      {required final String wName,
       required final int index,
       required final GlobalKey<State<StatefulWidget>> gk}) = _$OverrideTargetGK;
 
-  String get wwName;
+  String get wName;
   int get index;
   GlobalKey<State<StatefulWidget>> get gk;
   @JsonKey(ignore: true)
@@ -3400,32 +4594,32 @@ abstract class OverrideTargetGK implements CAPIEvent {
 }
 
 /// @nodoc
-abstract class _$$StartPlayingCopyWith<$Res> {
-  factory _$$StartPlayingCopyWith(
-          _$StartPlaying value, $Res Function(_$StartPlaying) then) =
-      __$$StartPlayingCopyWithImpl<$Res>;
+abstract class _$$StartPlayingListCopyWith<$Res> {
+  factory _$$StartPlayingListCopyWith(
+          _$StartPlayingList value, $Res Function(_$StartPlayingList) then) =
+      __$$StartPlayingListCopyWithImpl<$Res>;
   @useResult
-  $Res call({String wwName, List<int>? playList});
+  $Res call({String iwName, List<int>? playList});
 }
 
 /// @nodoc
-class __$$StartPlayingCopyWithImpl<$Res>
-    extends _$CAPIEventCopyWithImpl<$Res, _$StartPlaying>
-    implements _$$StartPlayingCopyWith<$Res> {
-  __$$StartPlayingCopyWithImpl(
-      _$StartPlaying _value, $Res Function(_$StartPlaying) _then)
+class __$$StartPlayingListCopyWithImpl<$Res>
+    extends _$CAPIEventCopyWithImpl<$Res, _$StartPlayingList>
+    implements _$$StartPlayingListCopyWith<$Res> {
+  __$$StartPlayingListCopyWithImpl(
+      _$StartPlayingList _value, $Res Function(_$StartPlayingList) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? wwName = null,
+    Object? iwName = null,
     Object? playList = freezed,
   }) {
-    return _then(_$StartPlaying(
-      wwName: null == wwName
-          ? _value.wwName
-          : wwName // ignore: cast_nullable_to_non_nullable
+    return _then(_$StartPlayingList(
+      iwName: null == iwName
+          ? _value.iwName
+          : iwName // ignore: cast_nullable_to_non_nullable
               as String,
       playList: freezed == playList
           ? _value._playList
@@ -3437,12 +4631,14 @@ class __$$StartPlayingCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$StartPlaying with DiagnosticableTreeMixin implements StartPlaying {
-  const _$StartPlaying({required this.wwName, final List<int>? playList})
+class _$StartPlayingList
+    with DiagnosticableTreeMixin
+    implements StartPlayingList {
+  const _$StartPlayingList({required this.iwName, final List<int>? playList})
       : _playList = playList;
 
   @override
-  final String wwName;
+  final String iwName;
   final List<int>? _playList;
   @override
   List<int>? get playList {
@@ -3455,15 +4651,15 @@ class _$StartPlaying with DiagnosticableTreeMixin implements StartPlaying {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'CAPIEvent.startPlaying(wwName: $wwName, playList: $playList)';
+    return 'CAPIEvent.startPlayingList(iwName: $iwName, playList: $playList)';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('type', 'CAPIEvent.startPlaying'))
-      ..add(DiagnosticsProperty('wwName', wwName))
+      ..add(DiagnosticsProperty('type', 'CAPIEvent.startPlayingList'))
+      ..add(DiagnosticsProperty('iwName', iwName))
       ..add(DiagnosticsProperty('playList', playList));
   }
 
@@ -3471,20 +4667,20 @@ class _$StartPlaying with DiagnosticableTreeMixin implements StartPlaying {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$StartPlaying &&
-            (identical(other.wwName, wwName) || other.wwName == wwName) &&
+            other is _$StartPlayingList &&
+            (identical(other.iwName, iwName) || other.iwName == iwName) &&
             const DeepCollectionEquality().equals(other._playList, _playList));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, wwName, const DeepCollectionEquality().hash(_playList));
+      runtimeType, iwName, const DeepCollectionEquality().hash(_playList));
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$StartPlayingCopyWith<_$StartPlaying> get copyWith =>
-      __$$StartPlayingCopyWithImpl<_$StartPlaying>(this, _$identity);
+  _$$StartPlayingListCopyWith<_$StartPlayingList> get copyWith =>
+      __$$StartPlayingListCopyWithImpl<_$StartPlayingList>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -3492,31 +4688,42 @@ class _$StartPlaying with DiagnosticableTreeMixin implements StartPlaying {
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
-    return startPlaying(wwName, playList);
+    return startPlayingList(iwName, playList);
   }
 
   @override
@@ -3525,30 +4732,37 @@ class _$StartPlaying with DiagnosticableTreeMixin implements StartPlaying {
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
-    return startPlaying?.call(wwName, playList);
+    return startPlayingList?.call(iwName, playList);
   }
 
   @override
@@ -3557,32 +4771,38 @@ class _$StartPlaying with DiagnosticableTreeMixin implements StartPlaying {
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
-    if (startPlaying != null) {
-      return startPlaying(wwName, playList);
+    if (startPlayingList != null) {
+      return startPlayingList(iwName, playList);
     }
     return orElse();
   }
@@ -3591,122 +4811,144 @@ class _$StartPlaying with DiagnosticableTreeMixin implements StartPlaying {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
-    return startPlaying(this);
+    return startPlayingList(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
-    return startPlaying?.call(this);
+    return startPlayingList?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
-    if (startPlaying != null) {
-      return startPlaying(this);
+    if (startPlayingList != null) {
+      return startPlayingList(this);
     }
     return orElse();
   }
 }
 
-abstract class StartPlaying implements CAPIEvent {
-  const factory StartPlaying(
-      {required final String wwName,
-      final List<int>? playList}) = _$StartPlaying;
+abstract class StartPlayingList implements CAPIEvent {
+  const factory StartPlayingList(
+      {required final String iwName,
+      final List<int>? playList}) = _$StartPlayingList;
 
-  String get wwName;
+  String get iwName;
   List<int>? get playList;
   @JsonKey(ignore: true)
-  _$$StartPlayingCopyWith<_$StartPlaying> get copyWith =>
+  _$$StartPlayingListCopyWith<_$StartPlayingList> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$PlayNextCopyWith<$Res> {
-  factory _$$PlayNextCopyWith(
-          _$PlayNext value, $Res Function(_$PlayNext) then) =
-      __$$PlayNextCopyWithImpl<$Res>;
+abstract class _$$PlayNextInListCopyWith<$Res> {
+  factory _$$PlayNextInListCopyWith(
+          _$PlayNextInList value, $Res Function(_$PlayNextInList) then) =
+      __$$PlayNextInListCopyWithImpl<$Res>;
   @useResult
-  $Res call({String wwName});
+  $Res call({String wName});
 }
 
 /// @nodoc
-class __$$PlayNextCopyWithImpl<$Res>
-    extends _$CAPIEventCopyWithImpl<$Res, _$PlayNext>
-    implements _$$PlayNextCopyWith<$Res> {
-  __$$PlayNextCopyWithImpl(_$PlayNext _value, $Res Function(_$PlayNext) _then)
+class __$$PlayNextInListCopyWithImpl<$Res>
+    extends _$CAPIEventCopyWithImpl<$Res, _$PlayNextInList>
+    implements _$$PlayNextInListCopyWith<$Res> {
+  __$$PlayNextInListCopyWithImpl(
+      _$PlayNextInList _value, $Res Function(_$PlayNextInList) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? wwName = null,
+    Object? wName = null,
   }) {
-    return _then(_$PlayNext(
-      wwName: null == wwName
-          ? _value.wwName
-          : wwName // ignore: cast_nullable_to_non_nullable
+    return _then(_$PlayNextInList(
+      wName: null == wName
+          ? _value.wName
+          : wName // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -3714,41 +4956,41 @@ class __$$PlayNextCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$PlayNext with DiagnosticableTreeMixin implements PlayNext {
-  const _$PlayNext({required this.wwName});
+class _$PlayNextInList with DiagnosticableTreeMixin implements PlayNextInList {
+  const _$PlayNextInList({required this.wName});
 
   @override
-  final String wwName;
+  final String wName;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'CAPIEvent.playNext(wwName: $wwName)';
+    return 'CAPIEvent.playNextInList(wName: $wName)';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('type', 'CAPIEvent.playNext'))
-      ..add(DiagnosticsProperty('wwName', wwName));
+      ..add(DiagnosticsProperty('type', 'CAPIEvent.playNextInList'))
+      ..add(DiagnosticsProperty('wName', wName));
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$PlayNext &&
-            (identical(other.wwName, wwName) || other.wwName == wwName));
+            other is _$PlayNextInList &&
+            (identical(other.wName, wName) || other.wName == wName));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, wwName);
+  int get hashCode => Object.hash(runtimeType, wName);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$PlayNextCopyWith<_$PlayNext> get copyWith =>
-      __$$PlayNextCopyWithImpl<_$PlayNext>(this, _$identity);
+  _$$PlayNextInListCopyWith<_$PlayNextInList> get copyWith =>
+      __$$PlayNextInListCopyWithImpl<_$PlayNextInList>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -3756,31 +4998,42 @@ class _$PlayNext with DiagnosticableTreeMixin implements PlayNext {
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
-    return playNext(wwName);
+    return playNextInList(wName);
   }
 
   @override
@@ -3789,30 +5042,37 @@ class _$PlayNext with DiagnosticableTreeMixin implements PlayNext {
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
-    return playNext?.call(wwName);
+    return playNextInList?.call(wName);
   }
 
   @override
@@ -3821,32 +5081,38 @@ class _$PlayNext with DiagnosticableTreeMixin implements PlayNext {
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
-    if (playNext != null) {
-      return playNext(wwName);
+    if (playNextInList != null) {
+      return playNextInList(wName);
     }
     return orElse();
   }
@@ -3855,91 +5121,435 @@ class _$PlayNext with DiagnosticableTreeMixin implements PlayNext {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
-    return playNext(this);
+    return playNextInList(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
-    return playNext?.call(this);
+    return playNextInList?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
-    if (playNext != null) {
-      return playNext(this);
+    if (playNextInList != null) {
+      return playNextInList(this);
     }
     return orElse();
   }
 }
 
-abstract class PlayNext implements CAPIEvent {
-  const factory PlayNext({required final String wwName}) = _$PlayNext;
+abstract class PlayNextInList implements CAPIEvent {
+  const factory PlayNextInList({required final String wName}) =
+      _$PlayNextInList;
 
-  String get wwName;
+  String get wName;
   @JsonKey(ignore: true)
-  _$$PlayNextCopyWith<_$PlayNext> get copyWith =>
+  _$$PlayNextInListCopyWith<_$PlayNextInList> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ChangedCalloutPositionCopyWith<$Res> {
+  factory _$$ChangedCalloutPositionCopyWith(_$ChangedCalloutPosition value,
+          $Res Function(_$ChangedCalloutPosition) then) =
+      __$$ChangedCalloutPositionCopyWithImpl<$Res>;
+  @useResult
+  $Res call({TargetConfig tc, Offset newPos});
+}
+
+/// @nodoc
+class __$$ChangedCalloutPositionCopyWithImpl<$Res>
+    extends _$CAPIEventCopyWithImpl<$Res, _$ChangedCalloutPosition>
+    implements _$$ChangedCalloutPositionCopyWith<$Res> {
+  __$$ChangedCalloutPositionCopyWithImpl(_$ChangedCalloutPosition _value,
+      $Res Function(_$ChangedCalloutPosition) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? tc = null,
+    Object? newPos = null,
+  }) {
+    return _then(_$ChangedCalloutPosition(
+      tc: null == tc
+          ? _value.tc
+          : tc // ignore: cast_nullable_to_non_nullable
+              as TargetConfig,
+      newPos: null == newPos
+          ? _value.newPos
+          : newPos // ignore: cast_nullable_to_non_nullable
+              as Offset,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$ChangedCalloutPosition
+    with DiagnosticableTreeMixin
+    implements ChangedCalloutPosition {
+  const _$ChangedCalloutPosition({required this.tc, required this.newPos});
+
+  @override
+  final TargetConfig tc;
+  @override
+  final Offset newPos;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'CAPIEvent.changedCalloutPosition(tc: $tc, newPos: $newPos)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'CAPIEvent.changedCalloutPosition'))
+      ..add(DiagnosticsProperty('tc', tc))
+      ..add(DiagnosticsProperty('newPos', newPos));
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ChangedCalloutPosition &&
+            (identical(other.tc, tc) || other.tc == tc) &&
+            (identical(other.newPos, newPos) || other.newPos == newPos));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, tc, newPos);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ChangedCalloutPositionCopyWith<_$ChangedCalloutPosition> get copyWith =>
+      __$$ChangedCalloutPositionCopyWithImpl<_$ChangedCalloutPosition>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)
+        initApp,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
+    required TResult Function() copyToClipboard,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
+    required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
+    required TResult Function(TargetConfig tc) deleteTarget,
+    required TResult Function(TargetConfig tc) selectTarget,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
+    required TResult Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
+        overrideTargetGK,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
+    required TResult Function(TargetConfig tc, int newDurationMs)
+        changedCalloutDuration,
+    required TResult Function(TargetConfig tc, TextAlign newTextAlign)
+        changedCalloutTextAlign,
+    required TResult Function(TargetConfig tc, TextStyle newTextStyle)
+        changedCalloutTextStyle,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
+  }) {
+    return changedCalloutPosition(tc, newPos);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)?
+        initApp,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
+    TResult? Function()? copyToClipboard,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
+    TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
+    TResult? Function(TargetConfig tc)? deleteTarget,
+    TResult? Function(TargetConfig tc)? selectTarget,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
+    TResult? Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
+        overrideTargetGK,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
+    TResult? Function(TargetConfig tc, int newDurationMs)?
+        changedCalloutDuration,
+    TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
+        changedCalloutTextAlign,
+    TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
+        changedCalloutTextStyle,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
+  }) {
+    return changedCalloutPosition?.call(tc, newPos);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)?
+        initApp,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
+    TResult Function()? copyToClipboard,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
+    TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
+    TResult Function(TargetConfig tc)? deleteTarget,
+    TResult Function(TargetConfig tc)? selectTarget,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
+    TResult Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
+        overrideTargetGK,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
+    TResult Function(TargetConfig tc, int newDurationMs)?
+        changedCalloutDuration,
+    TResult Function(TargetConfig tc, TextAlign newTextAlign)?
+        changedCalloutTextAlign,
+    TResult Function(TargetConfig tc, TextStyle newTextStyle)?
+        changedCalloutTextStyle,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
+    required TResult orElse(),
+  }) {
+    if (changedCalloutPosition != null) {
+      return changedCalloutPosition(tc, newPos);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(InitApp value) initApp,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
+    required TResult Function(Resume value) resume,
+    required TResult Function(CopyToClipboard value) copyToClipboard,
+    required TResult Function(RecordMatrix value) recordMatrix,
+    required TResult Function(TargetMoved value) targetMoved,
+    required TResult Function(BtnMoved value) btnMoved,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
+    required TResult Function(DeleteTarget value) deleteTarget,
+    required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
+    required TResult Function(ClearSelection value) clearSelection,
+    required TResult Function(OverrideTargetGK value) overrideTargetGK,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
+    required TResult Function(ChangedCalloutDuration value)
+        changedCalloutDuration,
+    required TResult Function(ChangedCalloutTextAlign value)
+        changedCalloutTextAlign,
+    required TResult Function(ChangedCalloutTextStyle value)
+        changedCalloutTextStyle,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
+  }) {
+    return changedCalloutPosition(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(InitApp value)? initApp,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
+    TResult? Function(Resume value)? resume,
+    TResult? Function(CopyToClipboard value)? copyToClipboard,
+    TResult? Function(RecordMatrix value)? recordMatrix,
+    TResult? Function(TargetMoved value)? targetMoved,
+    TResult? Function(BtnMoved value)? btnMoved,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
+    TResult? Function(DeleteTarget value)? deleteTarget,
+    TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
+    TResult? Function(ClearSelection value)? clearSelection,
+    TResult? Function(OverrideTargetGK value)? overrideTargetGK,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
+    TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
+    TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
+    TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
+  }) {
+    return changedCalloutPosition?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(InitApp value)? initApp,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
+    TResult Function(Resume value)? resume,
+    TResult Function(CopyToClipboard value)? copyToClipboard,
+    TResult Function(RecordMatrix value)? recordMatrix,
+    TResult Function(TargetMoved value)? targetMoved,
+    TResult Function(BtnMoved value)? btnMoved,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
+    TResult Function(DeleteTarget value)? deleteTarget,
+    TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
+    TResult Function(ClearSelection value)? clearSelection,
+    TResult Function(OverrideTargetGK value)? overrideTargetGK,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
+    TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
+    TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
+    TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
+    required TResult orElse(),
+  }) {
+    if (changedCalloutPosition != null) {
+      return changedCalloutPosition(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class ChangedCalloutPosition implements CAPIEvent {
+  const factory ChangedCalloutPosition(
+      {required final TargetConfig tc,
+      required final Offset newPos}) = _$ChangedCalloutPosition;
+
+  TargetConfig get tc;
+  Offset get newPos;
+  @JsonKey(ignore: true)
+  _$$ChangedCalloutPositionCopyWith<_$ChangedCalloutPosition> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -4032,29 +5642,40 @@ class _$ChangedCalloutDuration
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
     return changedCalloutDuration(tc, newDurationMs);
   }
@@ -4065,28 +5686,35 @@ class _$ChangedCalloutDuration
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
     return changedCalloutDuration?.call(tc, newDurationMs);
   }
@@ -4097,28 +5725,34 @@ class _$ChangedCalloutDuration
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (changedCalloutDuration != null) {
@@ -4131,26 +5765,35 @@ class _$ChangedCalloutDuration
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
     return changedCalloutDuration(this);
   }
@@ -4159,23 +5802,29 @@ class _$ChangedCalloutDuration
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
     return changedCalloutDuration?.call(this);
   }
@@ -4184,23 +5833,29 @@ class _$ChangedCalloutDuration
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (changedCalloutDuration != null) {
@@ -4311,29 +5966,40 @@ class _$ChangedCalloutTextAlign
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
     return changedCalloutTextAlign(tc, newTextAlign);
   }
@@ -4344,28 +6010,35 @@ class _$ChangedCalloutTextAlign
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
     return changedCalloutTextAlign?.call(tc, newTextAlign);
   }
@@ -4376,28 +6049,34 @@ class _$ChangedCalloutTextAlign
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (changedCalloutTextAlign != null) {
@@ -4410,26 +6089,35 @@ class _$ChangedCalloutTextAlign
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
     return changedCalloutTextAlign(this);
   }
@@ -4438,23 +6126,29 @@ class _$ChangedCalloutTextAlign
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
     return changedCalloutTextAlign?.call(this);
   }
@@ -4463,23 +6157,29 @@ class _$ChangedCalloutTextAlign
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (changedCalloutTextAlign != null) {
@@ -4590,29 +6290,40 @@ class _$ChangedCalloutTextStyle
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
     return changedCalloutTextStyle(tc, newTextStyle);
   }
@@ -4623,28 +6334,35 @@ class _$ChangedCalloutTextStyle
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
     return changedCalloutTextStyle?.call(tc, newTextStyle);
   }
@@ -4655,28 +6373,34 @@ class _$ChangedCalloutTextStyle
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (changedCalloutTextStyle != null) {
@@ -4689,26 +6413,35 @@ class _$ChangedCalloutTextStyle
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
     return changedCalloutTextStyle(this);
   }
@@ -4717,23 +6450,29 @@ class _$ChangedCalloutTextStyle
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
     return changedCalloutTextStyle?.call(this);
   }
@@ -4742,23 +6481,29 @@ class _$ChangedCalloutTextStyle
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
     if (changedCalloutTextStyle != null) {
@@ -4781,94 +6526,86 @@ abstract class ChangedCalloutTextStyle implements CAPIEvent {
 }
 
 /// @nodoc
-abstract class _$$ChangedOrderCopyWith<$Res> {
-  factory _$$ChangedOrderCopyWith(
-          _$ChangedOrder value, $Res Function(_$ChangedOrder) then) =
-      __$$ChangedOrderCopyWithImpl<$Res>;
+abstract class _$$ChangedTargetRadiusCopyWith<$Res> {
+  factory _$$ChangedTargetRadiusCopyWith(_$ChangedTargetRadius value,
+          $Res Function(_$ChangedTargetRadius) then) =
+      __$$ChangedTargetRadiusCopyWithImpl<$Res>;
   @useResult
-  $Res call({String wwName, int oldIndex, int newIndex});
+  $Res call({TargetConfig tc, double newRadius});
 }
 
 /// @nodoc
-class __$$ChangedOrderCopyWithImpl<$Res>
-    extends _$CAPIEventCopyWithImpl<$Res, _$ChangedOrder>
-    implements _$$ChangedOrderCopyWith<$Res> {
-  __$$ChangedOrderCopyWithImpl(
-      _$ChangedOrder _value, $Res Function(_$ChangedOrder) _then)
+class __$$ChangedTargetRadiusCopyWithImpl<$Res>
+    extends _$CAPIEventCopyWithImpl<$Res, _$ChangedTargetRadius>
+    implements _$$ChangedTargetRadiusCopyWith<$Res> {
+  __$$ChangedTargetRadiusCopyWithImpl(
+      _$ChangedTargetRadius _value, $Res Function(_$ChangedTargetRadius) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? wwName = null,
-    Object? oldIndex = null,
-    Object? newIndex = null,
+    Object? tc = null,
+    Object? newRadius = null,
   }) {
-    return _then(_$ChangedOrder(
-      wwName: null == wwName
-          ? _value.wwName
-          : wwName // ignore: cast_nullable_to_non_nullable
-              as String,
-      oldIndex: null == oldIndex
-          ? _value.oldIndex
-          : oldIndex // ignore: cast_nullable_to_non_nullable
-              as int,
-      newIndex: null == newIndex
-          ? _value.newIndex
-          : newIndex // ignore: cast_nullable_to_non_nullable
-              as int,
+    return _then(_$ChangedTargetRadius(
+      tc: null == tc
+          ? _value.tc
+          : tc // ignore: cast_nullable_to_non_nullable
+              as TargetConfig,
+      newRadius: null == newRadius
+          ? _value.newRadius
+          : newRadius // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
 
 /// @nodoc
 
-class _$ChangedOrder with DiagnosticableTreeMixin implements ChangedOrder {
-  const _$ChangedOrder(
-      {required this.wwName, required this.oldIndex, required this.newIndex});
+class _$ChangedTargetRadius
+    with DiagnosticableTreeMixin
+    implements ChangedTargetRadius {
+  const _$ChangedTargetRadius({required this.tc, required this.newRadius});
 
   @override
-  final String wwName;
+  final TargetConfig tc;
   @override
-  final int oldIndex;
-  @override
-  final int newIndex;
+  final double newRadius;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'CAPIEvent.changedOrder(wwName: $wwName, oldIndex: $oldIndex, newIndex: $newIndex)';
+    return 'CAPIEvent.changedTargetRadius(tc: $tc, newRadius: $newRadius)';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('type', 'CAPIEvent.changedOrder'))
-      ..add(DiagnosticsProperty('wwName', wwName))
-      ..add(DiagnosticsProperty('oldIndex', oldIndex))
-      ..add(DiagnosticsProperty('newIndex', newIndex));
+      ..add(DiagnosticsProperty('type', 'CAPIEvent.changedTargetRadius'))
+      ..add(DiagnosticsProperty('tc', tc))
+      ..add(DiagnosticsProperty('newRadius', newRadius));
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ChangedOrder &&
-            (identical(other.wwName, wwName) || other.wwName == wwName) &&
-            (identical(other.oldIndex, oldIndex) ||
-                other.oldIndex == oldIndex) &&
-            (identical(other.newIndex, newIndex) ||
-                other.newIndex == newIndex));
+            other is _$ChangedTargetRadius &&
+            (identical(other.tc, tc) || other.tc == tc) &&
+            (identical(other.newRadius, newRadius) ||
+                other.newRadius == newRadius));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, wwName, oldIndex, newIndex);
+  int get hashCode => Object.hash(runtimeType, tc, newRadius);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$ChangedOrderCopyWith<_$ChangedOrder> get copyWith =>
-      __$$ChangedOrderCopyWithImpl<_$ChangedOrder>(this, _$identity);
+  _$$ChangedTargetRadiusCopyWith<_$ChangedTargetRadius> get copyWith =>
+      __$$ChangedTargetRadiusCopyWithImpl<_$ChangedTargetRadius>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -4876,31 +6613,42 @@ class _$ChangedOrder with DiagnosticableTreeMixin implements ChangedOrder {
     required TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)
         initApp,
-    required TResult Function(String wwName) suspend,
-    required TResult Function(String wwName) resume,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
     required TResult Function() copyToClipboard,
-    required TResult Function(String wwName, Matrix4 newMatrix) recordMatrix,
-    required TResult Function(TargetConfig tc, Offset newGlobalPos) targetMoved,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
     required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
-    required TResult Function(String wwName, Offset newGlobalPos) newTarget,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
     required TResult Function(TargetConfig tc) deleteTarget,
     required TResult Function(TargetConfig tc) selectTarget,
-    required TResult Function(String wwName) clearSelection,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
     required TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
         overrideTargetGK,
-    required TResult Function(String wwName, List<int>? playList) startPlaying,
-    required TResult Function(String wwName) playNext,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
     required TResult Function(TargetConfig tc, int newDurationMs)
         changedCalloutDuration,
     required TResult Function(TargetConfig tc, TextAlign newTextAlign)
         changedCalloutTextAlign,
     required TResult Function(TargetConfig tc, TextStyle newTextStyle)
         changedCalloutTextStyle,
-    required TResult Function(String wwName, int oldIndex, int newIndex)
-        changedOrder,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
   }) {
-    return changedOrder(wwName, oldIndex, newIndex);
+    return changedTargetRadius(tc, newRadius);
   }
 
   @override
@@ -4909,30 +6657,37 @@ class _$ChangedOrder with DiagnosticableTreeMixin implements ChangedOrder {
     TResult? Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult? Function(String wwName)? suspend,
-    TResult? Function(String wwName)? resume,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
     TResult? Function()? copyToClipboard,
-    TResult? Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult? Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult? Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult? Function(TargetConfig tc)? deleteTarget,
     TResult? Function(TargetConfig tc)? selectTarget,
-    TResult? Function(String wwName)? clearSelection,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
     TResult? Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult? Function(String wwName, List<int>? playList)? startPlaying,
-    TResult? Function(String wwName)? playNext,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult? Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult? Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
   }) {
-    return changedOrder?.call(wwName, oldIndex, newIndex);
+    return changedTargetRadius?.call(tc, newRadius);
   }
 
   @override
@@ -4941,32 +6696,38 @@ class _$ChangedOrder with DiagnosticableTreeMixin implements ChangedOrder {
     TResult Function(
             String initialValueJsonAssetPath, bool localTestingFilePaths)?
         initApp,
-    TResult Function(String wwName)? suspend,
-    TResult Function(String wwName)? resume,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
     TResult Function()? copyToClipboard,
-    TResult Function(String wwName, Matrix4 newMatrix)? recordMatrix,
-    TResult Function(TargetConfig tc, Offset newGlobalPos)? targetMoved,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
     TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
-    TResult Function(String wwName, Offset newGlobalPos)? newTarget,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
     TResult Function(TargetConfig tc)? deleteTarget,
     TResult Function(TargetConfig tc)? selectTarget,
-    TResult Function(String wwName)? clearSelection,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
     TResult Function(
-            String wwName, int index, GlobalKey<State<StatefulWidget>> gk)?
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
         overrideTargetGK,
-    TResult Function(String wwName, List<int>? playList)? startPlaying,
-    TResult Function(String wwName)? playNext,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
     TResult Function(TargetConfig tc, int newDurationMs)?
         changedCalloutDuration,
     TResult Function(TargetConfig tc, TextAlign newTextAlign)?
         changedCalloutTextAlign,
     TResult Function(TargetConfig tc, TextStyle newTextStyle)?
         changedCalloutTextStyle,
-    TResult Function(String wwName, int oldIndex, int newIndex)? changedOrder,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
     required TResult orElse(),
   }) {
-    if (changedOrder != null) {
-      return changedOrder(wwName, oldIndex, newIndex);
+    if (changedTargetRadius != null) {
+      return changedTargetRadius(tc, newRadius);
     }
     return orElse();
   }
@@ -4975,95 +6736,760 @@ class _$ChangedOrder with DiagnosticableTreeMixin implements ChangedOrder {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitApp value) initApp,
-    required TResult Function(Suspend value) suspend,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
     required TResult Function(Resume value) resume,
     required TResult Function(CopyToClipboard value) copyToClipboard,
     required TResult Function(RecordMatrix value) recordMatrix,
     required TResult Function(TargetMoved value) targetMoved,
     required TResult Function(BtnMoved value) btnMoved,
-    required TResult Function(NewTarget value) newTarget,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
     required TResult Function(DeleteTarget value) deleteTarget,
     required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
     required TResult Function(ClearSelection value) clearSelection,
     required TResult Function(OverrideTargetGK value) overrideTargetGK,
-    required TResult Function(StartPlaying value) startPlaying,
-    required TResult Function(PlayNext value) playNext,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
     required TResult Function(ChangedCalloutDuration value)
         changedCalloutDuration,
     required TResult Function(ChangedCalloutTextAlign value)
         changedCalloutTextAlign,
     required TResult Function(ChangedCalloutTextStyle value)
         changedCalloutTextStyle,
-    required TResult Function(ChangedOrder value) changedOrder,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
   }) {
-    return changedOrder(this);
+    return changedTargetRadius(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitApp value)? initApp,
-    TResult? Function(Suspend value)? suspend,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult? Function(Resume value)? resume,
     TResult? Function(CopyToClipboard value)? copyToClipboard,
     TResult? Function(RecordMatrix value)? recordMatrix,
     TResult? Function(TargetMoved value)? targetMoved,
     TResult? Function(BtnMoved value)? btnMoved,
-    TResult? Function(NewTarget value)? newTarget,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
     TResult? Function(DeleteTarget value)? deleteTarget,
     TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
     TResult? Function(ClearSelection value)? clearSelection,
     TResult? Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult? Function(StartPlaying value)? startPlaying,
-    TResult? Function(PlayNext value)? playNext,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult? Function(ChangedOrder value)? changedOrder,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
   }) {
-    return changedOrder?.call(this);
+    return changedTargetRadius?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitApp value)? initApp,
-    TResult Function(Suspend value)? suspend,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
     TResult Function(Resume value)? resume,
     TResult Function(CopyToClipboard value)? copyToClipboard,
     TResult Function(RecordMatrix value)? recordMatrix,
     TResult Function(TargetMoved value)? targetMoved,
     TResult Function(BtnMoved value)? btnMoved,
-    TResult Function(NewTarget value)? newTarget,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
     TResult Function(DeleteTarget value)? deleteTarget,
     TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
     TResult Function(ClearSelection value)? clearSelection,
     TResult Function(OverrideTargetGK value)? overrideTargetGK,
-    TResult Function(StartPlaying value)? startPlaying,
-    TResult Function(PlayNext value)? playNext,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
     TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
     TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
     TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
-    TResult Function(ChangedOrder value)? changedOrder,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
     required TResult orElse(),
   }) {
-    if (changedOrder != null) {
-      return changedOrder(this);
+    if (changedTargetRadius != null) {
+      return changedTargetRadius(this);
     }
     return orElse();
   }
 }
 
-abstract class ChangedOrder implements CAPIEvent {
-  const factory ChangedOrder(
-      {required final String wwName,
-      required final int oldIndex,
-      required final int newIndex}) = _$ChangedOrder;
+abstract class ChangedTargetRadius implements CAPIEvent {
+  const factory ChangedTargetRadius(
+      {required final TargetConfig tc,
+      required final double newRadius}) = _$ChangedTargetRadius;
 
-  String get wwName;
-  int get oldIndex;
-  int get newIndex;
+  TargetConfig get tc;
+  double get newRadius;
   @JsonKey(ignore: true)
-  _$$ChangedOrderCopyWith<_$ChangedOrder> get copyWith =>
+  _$$ChangedTargetRadiusCopyWith<_$ChangedTargetRadius> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ChangedTransformScaleCopyWith<$Res> {
+  factory _$$ChangedTransformScaleCopyWith(_$ChangedTransformScale value,
+          $Res Function(_$ChangedTransformScale) then) =
+      __$$ChangedTransformScaleCopyWithImpl<$Res>;
+  @useResult
+  $Res call({TargetConfig tc, double newScale});
+}
+
+/// @nodoc
+class __$$ChangedTransformScaleCopyWithImpl<$Res>
+    extends _$CAPIEventCopyWithImpl<$Res, _$ChangedTransformScale>
+    implements _$$ChangedTransformScaleCopyWith<$Res> {
+  __$$ChangedTransformScaleCopyWithImpl(_$ChangedTransformScale _value,
+      $Res Function(_$ChangedTransformScale) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? tc = null,
+    Object? newScale = null,
+  }) {
+    return _then(_$ChangedTransformScale(
+      tc: null == tc
+          ? _value.tc
+          : tc // ignore: cast_nullable_to_non_nullable
+              as TargetConfig,
+      newScale: null == newScale
+          ? _value.newScale
+          : newScale // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$ChangedTransformScale
+    with DiagnosticableTreeMixin
+    implements ChangedTransformScale {
+  const _$ChangedTransformScale({required this.tc, required this.newScale});
+
+  @override
+  final TargetConfig tc;
+  @override
+  final double newScale;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'CAPIEvent.changedTransformScale(tc: $tc, newScale: $newScale)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'CAPIEvent.changedTransformScale'))
+      ..add(DiagnosticsProperty('tc', tc))
+      ..add(DiagnosticsProperty('newScale', newScale));
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ChangedTransformScale &&
+            (identical(other.tc, tc) || other.tc == tc) &&
+            (identical(other.newScale, newScale) ||
+                other.newScale == newScale));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, tc, newScale);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ChangedTransformScaleCopyWith<_$ChangedTransformScale> get copyWith =>
+      __$$ChangedTransformScaleCopyWithImpl<_$ChangedTransformScale>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)
+        initApp,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
+    required TResult Function() copyToClipboard,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
+    required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
+    required TResult Function(TargetConfig tc) deleteTarget,
+    required TResult Function(TargetConfig tc) selectTarget,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
+    required TResult Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
+        overrideTargetGK,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
+    required TResult Function(TargetConfig tc, int newDurationMs)
+        changedCalloutDuration,
+    required TResult Function(TargetConfig tc, TextAlign newTextAlign)
+        changedCalloutTextAlign,
+    required TResult Function(TargetConfig tc, TextStyle newTextStyle)
+        changedCalloutTextStyle,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
+  }) {
+    return changedTransformScale(tc, newScale);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)?
+        initApp,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
+    TResult? Function()? copyToClipboard,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
+    TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
+    TResult? Function(TargetConfig tc)? deleteTarget,
+    TResult? Function(TargetConfig tc)? selectTarget,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
+    TResult? Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
+        overrideTargetGK,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
+    TResult? Function(TargetConfig tc, int newDurationMs)?
+        changedCalloutDuration,
+    TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
+        changedCalloutTextAlign,
+    TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
+        changedCalloutTextStyle,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
+  }) {
+    return changedTransformScale?.call(tc, newScale);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)?
+        initApp,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
+    TResult Function()? copyToClipboard,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
+    TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
+    TResult Function(TargetConfig tc)? deleteTarget,
+    TResult Function(TargetConfig tc)? selectTarget,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
+    TResult Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
+        overrideTargetGK,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
+    TResult Function(TargetConfig tc, int newDurationMs)?
+        changedCalloutDuration,
+    TResult Function(TargetConfig tc, TextAlign newTextAlign)?
+        changedCalloutTextAlign,
+    TResult Function(TargetConfig tc, TextStyle newTextStyle)?
+        changedCalloutTextStyle,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
+    required TResult orElse(),
+  }) {
+    if (changedTransformScale != null) {
+      return changedTransformScale(tc, newScale);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(InitApp value) initApp,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
+    required TResult Function(Resume value) resume,
+    required TResult Function(CopyToClipboard value) copyToClipboard,
+    required TResult Function(RecordMatrix value) recordMatrix,
+    required TResult Function(TargetMoved value) targetMoved,
+    required TResult Function(BtnMoved value) btnMoved,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
+    required TResult Function(DeleteTarget value) deleteTarget,
+    required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
+    required TResult Function(ClearSelection value) clearSelection,
+    required TResult Function(OverrideTargetGK value) overrideTargetGK,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
+    required TResult Function(ChangedCalloutDuration value)
+        changedCalloutDuration,
+    required TResult Function(ChangedCalloutTextAlign value)
+        changedCalloutTextAlign,
+    required TResult Function(ChangedCalloutTextStyle value)
+        changedCalloutTextStyle,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
+  }) {
+    return changedTransformScale(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(InitApp value)? initApp,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
+    TResult? Function(Resume value)? resume,
+    TResult? Function(CopyToClipboard value)? copyToClipboard,
+    TResult? Function(RecordMatrix value)? recordMatrix,
+    TResult? Function(TargetMoved value)? targetMoved,
+    TResult? Function(BtnMoved value)? btnMoved,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
+    TResult? Function(DeleteTarget value)? deleteTarget,
+    TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
+    TResult? Function(ClearSelection value)? clearSelection,
+    TResult? Function(OverrideTargetGK value)? overrideTargetGK,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
+    TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
+    TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
+    TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
+  }) {
+    return changedTransformScale?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(InitApp value)? initApp,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
+    TResult Function(Resume value)? resume,
+    TResult Function(CopyToClipboard value)? copyToClipboard,
+    TResult Function(RecordMatrix value)? recordMatrix,
+    TResult Function(TargetMoved value)? targetMoved,
+    TResult Function(BtnMoved value)? btnMoved,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
+    TResult Function(DeleteTarget value)? deleteTarget,
+    TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
+    TResult Function(ClearSelection value)? clearSelection,
+    TResult Function(OverrideTargetGK value)? overrideTargetGK,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
+    TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
+    TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
+    TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
+    required TResult orElse(),
+  }) {
+    if (changedTransformScale != null) {
+      return changedTransformScale(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class ChangedTransformScale implements CAPIEvent {
+  const factory ChangedTransformScale(
+      {required final TargetConfig tc,
+      required final double newScale}) = _$ChangedTransformScale;
+
+  TargetConfig get tc;
+  double get newScale;
+  @JsonKey(ignore: true)
+  _$$ChangedTransformScaleCopyWith<_$ChangedTransformScale> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ChangedHelpContentTypeCopyWith<$Res> {
+  factory _$$ChangedHelpContentTypeCopyWith(_$ChangedHelpContentType value,
+          $Res Function(_$ChangedHelpContentType) then) =
+      __$$ChangedHelpContentTypeCopyWithImpl<$Res>;
+  @useResult
+  $Res call({TargetConfig tc, bool useImage});
+}
+
+/// @nodoc
+class __$$ChangedHelpContentTypeCopyWithImpl<$Res>
+    extends _$CAPIEventCopyWithImpl<$Res, _$ChangedHelpContentType>
+    implements _$$ChangedHelpContentTypeCopyWith<$Res> {
+  __$$ChangedHelpContentTypeCopyWithImpl(_$ChangedHelpContentType _value,
+      $Res Function(_$ChangedHelpContentType) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? tc = null,
+    Object? useImage = null,
+  }) {
+    return _then(_$ChangedHelpContentType(
+      tc: null == tc
+          ? _value.tc
+          : tc // ignore: cast_nullable_to_non_nullable
+              as TargetConfig,
+      useImage: null == useImage
+          ? _value.useImage
+          : useImage // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$ChangedHelpContentType
+    with DiagnosticableTreeMixin
+    implements ChangedHelpContentType {
+  const _$ChangedHelpContentType({required this.tc, required this.useImage});
+
+  @override
+  final TargetConfig tc;
+  @override
+  final bool useImage;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'CAPIEvent.changedHelpContentType(tc: $tc, useImage: $useImage)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'CAPIEvent.changedHelpContentType'))
+      ..add(DiagnosticsProperty('tc', tc))
+      ..add(DiagnosticsProperty('useImage', useImage));
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ChangedHelpContentType &&
+            (identical(other.tc, tc) || other.tc == tc) &&
+            (identical(other.useImage, useImage) ||
+                other.useImage == useImage));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, tc, useImage);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ChangedHelpContentTypeCopyWith<_$ChangedHelpContentType> get copyWith =>
+      __$$ChangedHelpContentTypeCopyWithImpl<_$ChangedHelpContentType>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)
+        initApp,
+    required TResult Function(String wName) suspendAndCopyToJson,
+    required TResult Function(String wName) resume,
+    required TResult Function() copyToClipboard,
+    required TResult Function(String wName, Matrix4 newMatrix) recordMatrix,
+    required TResult Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)
+        targetMoved,
+    required TResult Function(TargetConfig tc, Offset newGlobalPos) btnMoved,
+    required TResult Function(String wName, Offset newGlobalPos) newTargetAuto,
+    required TResult Function(TargetConfig tc) deleteTarget,
+    required TResult Function(TargetConfig tc) selectTarget,
+    required TResult Function(TargetConfig tc) hideTargetsDuringPlayExcept,
+    required TResult Function() unhideTargets,
+    required TResult Function(String wName) clearSelection,
+    required TResult Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)
+        overrideTargetGK,
+    required TResult Function(String iwName, List<int>? playList)
+        startPlayingList,
+    required TResult Function(String wName) playNextInList,
+    required TResult Function(TargetConfig tc, Offset newPos)
+        changedCalloutPosition,
+    required TResult Function(TargetConfig tc, int newDurationMs)
+        changedCalloutDuration,
+    required TResult Function(TargetConfig tc, TextAlign newTextAlign)
+        changedCalloutTextAlign,
+    required TResult Function(TargetConfig tc, TextStyle newTextStyle)
+        changedCalloutTextStyle,
+    required TResult Function(TargetConfig tc, double newRadius)
+        changedTargetRadius,
+    required TResult Function(TargetConfig tc, double newScale)
+        changedTransformScale,
+    required TResult Function(TargetConfig tc, bool useImage)
+        changedHelpContentType,
+  }) {
+    return changedHelpContentType(tc, useImage);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)?
+        initApp,
+    TResult? Function(String wName)? suspendAndCopyToJson,
+    TResult? Function(String wName)? resume,
+    TResult? Function()? copyToClipboard,
+    TResult? Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult? Function(
+            TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
+    TResult? Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
+    TResult? Function(String wName, Offset newGlobalPos)? newTargetAuto,
+    TResult? Function(TargetConfig tc)? deleteTarget,
+    TResult? Function(TargetConfig tc)? selectTarget,
+    TResult? Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult? Function()? unhideTargets,
+    TResult? Function(String wName)? clearSelection,
+    TResult? Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
+        overrideTargetGK,
+    TResult? Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult? Function(String wName)? playNextInList,
+    TResult? Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
+    TResult? Function(TargetConfig tc, int newDurationMs)?
+        changedCalloutDuration,
+    TResult? Function(TargetConfig tc, TextAlign newTextAlign)?
+        changedCalloutTextAlign,
+    TResult? Function(TargetConfig tc, TextStyle newTextStyle)?
+        changedCalloutTextStyle,
+    TResult? Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult? Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult? Function(TargetConfig tc, bool useImage)? changedHelpContentType,
+  }) {
+    return changedHelpContentType?.call(tc, useImage);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(
+            String initialValueJsonAssetPath, bool localTestingFilePaths)?
+        initApp,
+    TResult Function(String wName)? suspendAndCopyToJson,
+    TResult Function(String wName)? resume,
+    TResult Function()? copyToClipboard,
+    TResult Function(String wName, Matrix4 newMatrix)? recordMatrix,
+    TResult Function(TargetConfig tc, double targetRadius, Offset newGlobalPos)?
+        targetMoved,
+    TResult Function(TargetConfig tc, Offset newGlobalPos)? btnMoved,
+    TResult Function(String wName, Offset newGlobalPos)? newTargetAuto,
+    TResult Function(TargetConfig tc)? deleteTarget,
+    TResult Function(TargetConfig tc)? selectTarget,
+    TResult Function(TargetConfig tc)? hideTargetsDuringPlayExcept,
+    TResult Function()? unhideTargets,
+    TResult Function(String wName)? clearSelection,
+    TResult Function(
+            String wName, int index, GlobalKey<State<StatefulWidget>> gk)?
+        overrideTargetGK,
+    TResult Function(String iwName, List<int>? playList)? startPlayingList,
+    TResult Function(String wName)? playNextInList,
+    TResult Function(TargetConfig tc, Offset newPos)? changedCalloutPosition,
+    TResult Function(TargetConfig tc, int newDurationMs)?
+        changedCalloutDuration,
+    TResult Function(TargetConfig tc, TextAlign newTextAlign)?
+        changedCalloutTextAlign,
+    TResult Function(TargetConfig tc, TextStyle newTextStyle)?
+        changedCalloutTextStyle,
+    TResult Function(TargetConfig tc, double newRadius)? changedTargetRadius,
+    TResult Function(TargetConfig tc, double newScale)? changedTransformScale,
+    TResult Function(TargetConfig tc, bool useImage)? changedHelpContentType,
+    required TResult orElse(),
+  }) {
+    if (changedHelpContentType != null) {
+      return changedHelpContentType(tc, useImage);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(InitApp value) initApp,
+    required TResult Function(SuspendAndCopyToJson value) suspendAndCopyToJson,
+    required TResult Function(Resume value) resume,
+    required TResult Function(CopyToClipboard value) copyToClipboard,
+    required TResult Function(RecordMatrix value) recordMatrix,
+    required TResult Function(TargetMoved value) targetMoved,
+    required TResult Function(BtnMoved value) btnMoved,
+    required TResult Function(NewTargetAuto value) newTargetAuto,
+    required TResult Function(DeleteTarget value) deleteTarget,
+    required TResult Function(SelectTarget value) selectTarget,
+    required TResult Function(HideTargetsDuringPlayExcept value)
+        hideTargetsDuringPlayExcept,
+    required TResult Function(UnhideTargets value) unhideTargets,
+    required TResult Function(ClearSelection value) clearSelection,
+    required TResult Function(OverrideTargetGK value) overrideTargetGK,
+    required TResult Function(StartPlayingList value) startPlayingList,
+    required TResult Function(PlayNextInList value) playNextInList,
+    required TResult Function(ChangedCalloutPosition value)
+        changedCalloutPosition,
+    required TResult Function(ChangedCalloutDuration value)
+        changedCalloutDuration,
+    required TResult Function(ChangedCalloutTextAlign value)
+        changedCalloutTextAlign,
+    required TResult Function(ChangedCalloutTextStyle value)
+        changedCalloutTextStyle,
+    required TResult Function(ChangedTargetRadius value) changedTargetRadius,
+    required TResult Function(ChangedTransformScale value)
+        changedTransformScale,
+    required TResult Function(ChangedHelpContentType value)
+        changedHelpContentType,
+  }) {
+    return changedHelpContentType(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(InitApp value)? initApp,
+    TResult? Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
+    TResult? Function(Resume value)? resume,
+    TResult? Function(CopyToClipboard value)? copyToClipboard,
+    TResult? Function(RecordMatrix value)? recordMatrix,
+    TResult? Function(TargetMoved value)? targetMoved,
+    TResult? Function(BtnMoved value)? btnMoved,
+    TResult? Function(NewTargetAuto value)? newTargetAuto,
+    TResult? Function(DeleteTarget value)? deleteTarget,
+    TResult? Function(SelectTarget value)? selectTarget,
+    TResult? Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult? Function(UnhideTargets value)? unhideTargets,
+    TResult? Function(ClearSelection value)? clearSelection,
+    TResult? Function(OverrideTargetGK value)? overrideTargetGK,
+    TResult? Function(StartPlayingList value)? startPlayingList,
+    TResult? Function(PlayNextInList value)? playNextInList,
+    TResult? Function(ChangedCalloutPosition value)? changedCalloutPosition,
+    TResult? Function(ChangedCalloutDuration value)? changedCalloutDuration,
+    TResult? Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
+    TResult? Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
+    TResult? Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult? Function(ChangedTransformScale value)? changedTransformScale,
+    TResult? Function(ChangedHelpContentType value)? changedHelpContentType,
+  }) {
+    return changedHelpContentType?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(InitApp value)? initApp,
+    TResult Function(SuspendAndCopyToJson value)? suspendAndCopyToJson,
+    TResult Function(Resume value)? resume,
+    TResult Function(CopyToClipboard value)? copyToClipboard,
+    TResult Function(RecordMatrix value)? recordMatrix,
+    TResult Function(TargetMoved value)? targetMoved,
+    TResult Function(BtnMoved value)? btnMoved,
+    TResult Function(NewTargetAuto value)? newTargetAuto,
+    TResult Function(DeleteTarget value)? deleteTarget,
+    TResult Function(SelectTarget value)? selectTarget,
+    TResult Function(HideTargetsDuringPlayExcept value)?
+        hideTargetsDuringPlayExcept,
+    TResult Function(UnhideTargets value)? unhideTargets,
+    TResult Function(ClearSelection value)? clearSelection,
+    TResult Function(OverrideTargetGK value)? overrideTargetGK,
+    TResult Function(StartPlayingList value)? startPlayingList,
+    TResult Function(PlayNextInList value)? playNextInList,
+    TResult Function(ChangedCalloutPosition value)? changedCalloutPosition,
+    TResult Function(ChangedCalloutDuration value)? changedCalloutDuration,
+    TResult Function(ChangedCalloutTextAlign value)? changedCalloutTextAlign,
+    TResult Function(ChangedCalloutTextStyle value)? changedCalloutTextStyle,
+    TResult Function(ChangedTargetRadius value)? changedTargetRadius,
+    TResult Function(ChangedTransformScale value)? changedTransformScale,
+    TResult Function(ChangedHelpContentType value)? changedHelpContentType,
+    required TResult orElse(),
+  }) {
+    if (changedHelpContentType != null) {
+      return changedHelpContentType(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class ChangedHelpContentType implements CAPIEvent {
+  const factory ChangedHelpContentType(
+      {required final TargetConfig tc,
+      required final bool useImage}) = _$ChangedHelpContentType;
+
+  TargetConfig get tc;
+  bool get useImage;
+  @JsonKey(ignore: true)
+  _$$ChangedHelpContentTypeCopyWith<_$ChangedHelpContentType> get copyWith =>
       throw _privateConstructorUsedError;
 }

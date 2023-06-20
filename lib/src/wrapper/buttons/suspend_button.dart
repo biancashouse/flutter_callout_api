@@ -7,9 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SuspendButton extends StatelessWidget {
   static const double BUTTON_SIZE = 30;
-  final String wwName;
+  final String iwName;
 
-  const SuspendButton(this.wwName, {super.key});
+  const SuspendButton(this.iwName, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class SuspendButton extends StatelessWidget {
     return CircleAvatar(
       backgroundColor: Colors.purpleAccent,
       radius: SuspendButton.BUTTON_SIZE,
-      child: !bloc.state.isSuspended(wwName)
+      child: !bloc.state.isSuspended(iwName)
           ? Offstage()
           : Blink(
               child: buildIconButton(bloc),
@@ -33,8 +33,8 @@ class SuspendButton extends StatelessWidget {
         color: Colors.white,
       ),
       onPressed: () async {
-        if (bloc.state.isSuspended(wwName)) {
-          bloc.add( CAPIEvent.resume(wwName: wwName));
+        if (bloc.state.isSuspended(iwName)) {
+          bloc.add( CAPIEvent.resume(wName: iwName));
         }
       },
     );

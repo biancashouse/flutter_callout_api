@@ -494,6 +494,24 @@ Widget assetPicWithFadeIn(
       ),
     );
 
+// Size calculateTextSize({
+//   required String text,
+//   required TextStyle style,
+//   required int numLines,
+//   required BuildContext context,
+// }) {
+//   final double textScaleFactor = MediaQuery.of(context).textScaleFactor;
+//
+//   final TextPainter textPainter = TextPainter(
+//     text: TextSpan(text: text.replaceAll("`10`", "\n"), style: style),
+//     textDirection: Directionality.of(context),
+//     textScaleFactor: textScaleFactor,
+//     maxLines: 6,
+//   )..layout(minWidth: 0, maxWidth: double.infinity);
+//
+//   return numLines > 1 ? Size(textPainter.size.width, textPainter.size.height) : textPainter.size;
+// }
+
 double calculateAutoscaleFontSize(String text, TextStyle style, double startFontSize, double maxWidth) {
   final textPainter = TextPainter(textDirection: TextDirection.ltr);
 
@@ -711,12 +729,14 @@ PositionedTab({
   required Color borderColor,
   bool? dontRotate,
   required Widget child,
+  GlobalKey? key,
 }) {
   assert(
     left == 0 || right == 0 || top == 0 || bottom == 0,
   );
   rect ??= Rect.fromLTWH(0, 0, Useful.scrW, Useful.scrH);
   return Positioned(
+    key: key,
     top: top,
     left: left,
     bottom: bottom,
@@ -749,9 +769,9 @@ PositionedTab({
                           topLeft: Radius.circular(16.0),
                           topRight: Radius.circular(16.0),
                         ),
-          // boxShadow: [
-          //   BoxShadow(color: borderColor, blurRadius: 3, spreadRadius: 2),
-          //],
+          boxShadow: [
+            BoxShadow(color: borderColor, blurRadius: 3, spreadRadius: 2),
+          ],
         ),
         child: Container(child: child),
       ),

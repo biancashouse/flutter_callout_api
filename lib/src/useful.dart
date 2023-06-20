@@ -5,6 +5,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_callout_api/src/bloc/capi_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:universal_platform/universal_platform.dart';
@@ -13,6 +14,8 @@ import "package:yaml/yaml.dart";
 import 'overlays/overlay_manager.dart';
 
 typedef SetStateF = void Function(VoidCallback f);
+typedef PassBlocF = void Function(CAPIBloc);
+typedef PassGlobalKeyF = void Function(GlobalKey);
 
 class Useful {
   bool _initialisedWithContext = false;
@@ -32,7 +35,23 @@ class Useful {
 
   //static LocalStoreHydrated get localStore => instance._localStore;
 
-  static OverlayManager get om => instance._oms["root"]!;
+  static OverlayManager get om {
+    OverlayManager? om = instance._oms["root"];
+    if (om == null) {
+      throw ('''
+      
+You didn't call Useful.instance.initWithContext() !
+You'd normally do it like this:
+
+  @override
+  void didChangeDependencies() {
+    Useful.instance.initWithContext(context, force: true);
+    super.didChangeDependencies();
+  }
+''');
+    } else
+      return om;
+  }
 
   // static OverlayManager namedOM(String name) => instance._overlays[name]!;
 
@@ -49,8 +68,7 @@ class Useful {
     if (_initialisedWithContext && !force) return;
     _mqd = MediaQuery.of(_cachedContext = context);
     _initialisedWithContext = true;
-    if (!instance._oms.containsKey("root"))
-      instance._oms["root"] = OverlayManager(Overlay.of(context, rootOverlay: true));
+    if (!instance._oms.containsKey("root")) instance._oms["root"] = OverlayManager(Overlay.of(context, rootOverlay: true));
   }
 
   void createOM(BuildContext context, String name) {
@@ -69,7 +87,13 @@ class Useful {
 
   static double get scrH => instance._mqd.size.height;
 
-  static double get keyboardHeight => instance._mqd.viewInsets.bottom;
+  // static double get keyboardHeight => instance._mqd.viewInsets.bottom;
+
+  static double get kbdH {
+    if (!isIOS && !isAndroid) return 0.0;
+    final viewInsets = EdgeInsets.fromWindowPadding(WidgetsBinding.instance.window.viewInsets, WidgetsBinding.instance.window.devicePixelRatio);
+    return viewInsets.bottom;
+  }
 
   static Orientation get orientation => instance._mqd.orientation;
 
@@ -98,7 +122,6 @@ class Useful {
 
   static String get actualBuildNumber => _packageInfo.buildNumber;
 
-
   static Future<bool> informUserOfNewVersion() async {
     _packageInfo = await PackageInfo.fromPlatform();
     // decide whether new version loaded
@@ -117,29 +140,86 @@ class Useful {
     developer.log('queryData.orientation = ${orientation.name}');
   }
 
-  static void afterNextBuildDo(VoidCallback fn) =>
-      WidgetsBinding.instance.addPostFrameCallback(
-            (_) {
-          fn.call();
-        },
-      );
+  static void afterNextBuildDo(VoidCallback fn, {List<ScrollController>? scrollControllers}) {
+    Map<int, double> savedOffsets = {};
+    if (scrollControllers != null && scrollControllers.isNotEmpty) {
+      for (int i = 0; i < scrollControllers.length; i++) {
+        ScrollController sc = scrollControllers[i];
+        if (sc.positions.isNotEmpty) {
+          savedOffsets[i] = sc.offset;
+        }
+      }
+    }
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        if (savedOffsets.isNotEmpty) {
+          for (int i in savedOffsets.keys) {
+            scrollControllers![i].jumpTo(savedOffsets[i]!);
+            // scrollControllers![i].animateTo(savedOffsets[i]!, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+          }
+        }
+        fn.call();
+      },
+    );
+  }
 
-  static void afterNextBuildDoAsync(VoidCallback fn) =>
-      WidgetsBinding.instance.addPostFrameCallback(
-            (_) async {
-          fn.call();
-        },
-      );
+  // void _saveScrollOffsets() {
+  //   if (editingPageState?.vScrollController.positions.isNotEmpty ?? false) {
+  //     _vScrollControllerOffset = editingPageState?.vScrollController.offset;
+  //   }
+  //   if (editingPageState?.hScrollController.positions.isNotEmpty ?? false) {
+  //     _hScrollControllerOffset = editingPageState?.hScrollController.offset;
+  //   }
+  //   if (editingPageState != null && editingPageState!.itemScrollController.hasClients) {
+  //     commentsAutoScrollControllerOffset = editingPageState!.itemScrollController.offset;
+  //   }
+  // }
+  //
+  // void restoreScrollOffsetsAfterNextBuild() {
+  //   _saveScrollOffsets();
+  //   Useful.afterNextBuildDo(() {
+  //     print('restoreScrollOffsetsAfterNextBuild');
+  //     if (_vScrollControllerOffset != null && (editingPageState?.vScrollController.hasClients ?? false)) {
+  //       editingPageState?.vScrollController.jumpTo(_vScrollControllerOffset!);
+  //     }
+  //     if (_hScrollControllerOffset != null && (editingPageState?.hScrollController.hasClients ?? false)) {
+  //       editingPageState?.hScrollController.jumpTo(_hScrollControllerOffset!);
+  //     }
+  //     if (commentsAutoScrollControllerOffset != null && (editingPageState?.itemScrollController.hasClients ?? false)) {
+  //       editingPageState?.itemScrollController.jumpTo(commentsAutoScrollControllerOffset!);
+  //     }
+  //   });
+  // }
 
-  static Future afterMsDelayDo(int millis, VoidCallback fn) async =>
-      Future.delayed(Duration(milliseconds: millis), () {
+  static void afterNextBuildPassBlocAndDo(CAPIBloc bloc, PassBlocF fn) => WidgetsBinding.instance.addPostFrameCallback(
+        (_) {
+      fn.call(bloc);
+    },
+  );
+
+  static void afterNextBuildPassGlobalKeyAndDo(GlobalKey gk, PassGlobalKeyF fn) => WidgetsBinding.instance.addPostFrameCallback(
+        (_) {
+      fn.call(gk);
+    },
+  );
+
+  // static void afterNextBuildDoAsync(VoidCallback fn) => WidgetsBinding.instance.addPostFrameCallback(
+  //       (_) async {
+  //         fn.call();
+  //       },
+  //     );
+
+  static Future afterMsDelayDo(int millis, VoidCallback fn) async => Future.delayed(Duration(milliseconds: millis), () {
         fn.call();
       });
 
-  static Future afterMsDelayDoAsync(int millis, VoidCallback fn) async =>
-      Future.delayed(Duration(milliseconds: millis), () async {
-        fn.call();
+  static Future afterMsDelayPassBlocAndDo(int millis, CAPIBloc bloc, PassBlocF fn) async => Future.delayed(Duration(milliseconds: millis), () {
+        fn.call(bloc);
       });
+
+  // static Future afterMsDelayDoAsync(int millis, VoidCallback fn) async => Future.delayed(Duration(milliseconds: millis), () async {
+  //       fn.call();
+  //     });
 
   static bool get isDesktopSized {
     return !isIOS && !isAndroid && scrW > 1023;
@@ -163,11 +243,38 @@ class Useful {
 
   static const double LARGEST_PHONE_WIDTH = 400.0;
 
+  /// given a Rect, returns most appropriate alignment between target and callout
+  static Alignment calcTargetAlignment(Rect wrapperRect, final Rect targetRect) {
+    // Rect? wrapperRect = findGlobalRect(widget.key as GlobalKey);
+
+    Rect screenRect = Rect.fromLTWH(0, 0, Useful.scrW, Useful.scrH);
+    wrapperRect = screenRect;
+    Offset wrapperC = wrapperRect.center;
+    Offset targetRectC = targetRect.center;
+    double x = (targetRectC.dx - wrapperC.dx) / (wrapperRect.width / 2);
+    double y = (targetRectC.dy - wrapperC.dy) / (wrapperRect.height / 2);
+    // keep away from sides
+    if (x < -0.75)
+      x = -1.0;
+    else if (x > 0.75) x = 1.0;
+    if (y < -0.75)
+      y = -1.0;
+    else if (y > 0.75) y = 1.0;
+    print("$x, $y");
+    return Alignment(x, y);
+  }
+
   static Future<String> getPubspecYamlStringValue(final String name) async {
     final yamlString = await rootBundle.loadString('pubspec.yaml');
     final parsedYaml = loadYaml(yamlString);
     final String ver = parsedYaml[name];
     return ver;
+  }
+
+  static Offset? findGlobalPos(GlobalKey key) {
+    BuildContext? cxt = key.currentContext;
+    RenderObject? renderObject = cxt?.findRenderObject();
+    return (renderObject as RenderBox).localToGlobal(Offset.zero);
   }
 }
 
@@ -288,5 +395,4 @@ class _Responsive {
 //     var shortestSide = MediaQuery.of(theCtx).size.shortestSide;
 //     return !kIsWeb && shortestSide >= 600;
 //   }
-
 }

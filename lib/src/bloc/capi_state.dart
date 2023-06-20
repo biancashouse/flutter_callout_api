@@ -1,5 +1,6 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_callout_api/callout_api.dart';
 import 'package:flutter_callout_api/src/model/target_config.dart';
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'capi_state.freezed.dart';
@@ -12,25 +13,49 @@ const Duration ms300 = Duration(milliseconds: 300);
 class CAPIState with _$CAPIState {
   const CAPIState._();
 
+  /// the following static are actuall all UI-related and span all blocs...
+  // can have multiple transformable widgets and preferredSize widgets under the MaterialApp
+  // want new sizes to be available immediately after changing, hence not part of bloc, but static (global) instead
+  // keys are wrapper name (WidgetWrapper or ImageWrapper)
+  static Map<String, GlobalKey> gkMap = {};
+  static Map<String, Offset> iwPosMap = {};
+  static Map<String, Size> iwSizeMap = {};
+
+  static GlobalKey? gk(String name) => gkMap[name];
+
+  static Size iwSize(String wName) => iwSizeMap[wName] ?? Size.zero;
+
+  static Offset iwPos(String wName) => iwPosMap[wName] ?? Offset.zero;
+
+  static Rect wwRect(String wName) => Rect.fromLTWH(
+        iwPos(wName).dx,
+        iwPos(wName).dy,
+        iwSize(wName).width,
+        iwSize(wName).height,
+      );
+
+  static List<ScrollController> registeredScrollControllers = [];
+
   // one per page, each having its own json data file
   // can have multiple (named) target wrappers, hence the maps
   factory CAPIState({
     @Default(false) bool localTestingFilePaths, // because filepaths and fonts accedd differently in own package
-    @Default({}) Map<String, List<TargetConfig>> wtMap,
-    @Default({}) Map<String, List<TargetConfig>> playListMap,
+    String? initialValueJsonAssetPath, // both come from MaterialAppWrapper widget constructor
+    int? timestamp,
+    @Default({}) Map<String, TargetConfig> targetMap,
+    @Default({}) Map<String, List<TargetConfig>> imageTargetListMap,
+    @Default([]) List<TargetConfig> playList,
     @Default({}) Map<String, bool> suspendedMap,
-    @Default({}) Map<String, int> selectedTargetIndexMap,
     // current selection
-    TargetConfig? targetPlaying,
-    // TargetConfig? lastUpdatedTC, // for debug only
+    TargetConfig? hideTargetsWhilePlayingExcept,
+    TargetConfig? newestTarget,
+    TargetConfig? selectedTarget,
     @Default(0) int force, // hacky way to force a transition
   }) = _CAPIState;
 
-  bool isPlaying(String wwName) => playList(wwName).isNotEmpty;
+  bool aTargetIsSelected() => selectedTarget != null;
 
-  bool aTargetIsSelected(String wwName) => (selectedTargetIndexMap[wwName] ?? -1) > -1;
-
-  bool isSuspended(String wwName) => suspendedMap[wwName] ?? true;
+  bool isSuspended(String iwName) => suspendedMap[iwName] ?? true;
 
   String? resumedWW() {
     for (String key in suspendedMap.keys) {
@@ -39,36 +64,31 @@ class CAPIState with _$CAPIState {
     return null;
   }
 
-  List<TargetConfig> targets(String wwName) => wtMap.containsKey(wwName) ? wtMap[wwName] ?? [] : [];
+  List<TargetConfig> imageTargets(String iwName) => imageTargetListMap.containsKey(iwName) ? imageTargetListMap[iwName] ?? [] : [];
 
-  List<TargetConfig> playList(String wwName) => playListMap.containsKey(wwName) ? playListMap[wwName] ?? [] : [];
+  TargetConfig? getNewestTarget() => newestTarget;
 
-  TargetConfig? selectedTarget(String wwName) {
-    int index = selectedTargetIndex(wwName);
-    return (index > -1) ? wtMap[wwName]![index] : null;
-  }
+  int targetIndex(TargetConfig tc) => imageTargetListMap.containsKey(tc.wName) ? imageTargetListMap[tc.wName]!.indexOf(tc) : -1;
 
-  TargetConfig? newestTarget(String wwName) {
-    return targets(wwName).last;
-  }
-
-  int selectedTargetIndex(String wwName) => selectedTargetIndexMap.containsKey(wwName) ? selectedTargetIndexMap[wwName] ?? -1 : -1;
-
-  int targetIndex(TargetConfig tc) => wtMap.containsKey(tc.wwName) ? wtMap[tc.wwName]!.indexOf(tc) : -1;
-
-  TargetConfig? target(String wwName, int i) => wtMap.containsKey(wwName) ? wtMap[wwName]![i] : null;
+  TargetConfig? target(String iwName, int i) => imageTargetListMap.containsKey(iwName) ? imageTargetListMap[iwName]![i] : null;
 
   int numTargetsOnPage() {
     int numTCs = 0;
-    for (List<TargetConfig> list in wtMap.values) {
+    for (List<TargetConfig> list in imageTargetListMap.values) {
       numTCs += list.length;
     }
     return numTCs;
   }
 
-  double CAPI_TARGET_RADIUS(String wwName) => 40;
+  //avoids listening to the same scrollcontroller more than once for the purpose of refreshing the overlays
+  static void registerScrollController(ScrollController sController) {
+    if (!registeredScrollControllers.contains(sController)) {
+      sController.addListener(() => Useful.om.overlaySetState());
+    }
+  }
+
   final double CAPI_TARGET_BTN_RADIUS = 30.0;
 
   /// total duration is sum(target durations) + transition time for each
-// int totalDurationMs() => (wtMap..map((t) => t.calloutDurationMs).reduce((a, b) => a + b)) + TRANSITION_DURATION_MS * (targets.length + 1);
+// int totalDurationMs() => (imageTargetListMap..map((t) => t.calloutDurationMs).reduce((a, b) => a + b)) + TRANSITION_DURATION_MS * (targets.length + 1);
 }

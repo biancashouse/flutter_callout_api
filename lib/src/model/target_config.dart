@@ -1,11 +1,11 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_callout_api/src/bloc/capi_bloc.dart';
 import 'package:flutter_callout_api/src/bloc/capi_state.dart';
 import 'package:flutter_callout_api/src/overlays/callouts/arrow_type.dart';
 import 'package:flutter_callout_api/src/useful.dart';
 import 'package:flutter_callout_api/src/wrapper/app_wrapper.dart';
-import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:vector_math/vector_math_64.dart' as math;
 
@@ -15,9 +15,11 @@ typedef SizeFunc = Size Function();
 
 @JsonSerializable()
 class CAPIModel {
-  Map<String, List<TargetConfig>>? wtMap;
+  int? timestamp;
+  Map<String, TargetConfig>? targetMap;
+  Map<String, List<TargetConfig>>? imageTargetListMap;
 
-  CAPIModel(this.wtMap);
+  CAPIModel(this.timestamp, this.targetMap, this.imageTargetListMap);
 
   factory CAPIModel.fromJson(Map<String, dynamic> data) => _$CAPIModelFromJson(data);
 
@@ -30,15 +32,20 @@ const List<String> textAlignments = ["l", "c", "r", "j"];
 class TargetConfig {
   int uid;
 
+  double transformScale;
+  double transformTranslateX;
+  double transformTranslateY;
+
   // only use this when target selected, or as play to value, otherwise use transient matrix
   List<double> recordedM4list; // see Matrix.storage, and Float32List.toList etc
-  double recordedScale;
-  double recordedTranslatePCX;
-  double recordedTranslatePCY;
+  double? recordedScale;
+  double? recordedTranslatePCX;
+  double? recordedTranslatePCY;
 
-  String wwName;
+  String wName;
   double? targetLocalPosLeftPc;
   double? targetLocalPosTopPc;
+  double radius;
   double? btnLocalTopPc;
   double? btnLocalLeftPc;
   double? calloutTopPc;
@@ -48,10 +55,12 @@ class TargetConfig {
   double calloutHeight;
   int calloutDurationMs;
   int? calloutColorValue;
+  bool usingText;
+  String? calloutImageUrl;
   String? calloutText;
   String fontFamily;
   double fontSize;
-  int? fontWeight;
+  int? fontWeightIndex;
   bool italic;
   double letterSpacing;
   double letterHeight;
@@ -67,21 +76,32 @@ class TargetConfig {
   @JsonKey(includeFromJson: false, includeToJson: false)
   late GlobalKey _overridingGK;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late FocusNode _focusNode;
+  late FocusNode _textFocusNode;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late Matrix4 _transientMatrix;
+  late FocusNode _imageUrlFocusNode;
+  // @JsonKey(includeFromJson: false, includeToJson: false)
+  // late Alignment transformAlignment;
+
+  // @JsonKey(includeFromJson: false, includeToJson: false)
+  // late Matrix4 _transientMatrix;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  bool visible = false;
+  Rect _rect = Rect.zero;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool visible = true;
 
   TargetConfig({
     required this.uid,
-    required this.wwName,
+    required this.wName,
+    this.transformScale = 1.0,
+    this.transformTranslateX = 0.0,
+    this.transformTranslateY = 0.0,
     this.recordedM4list = const [],
     this.recordedScale = 1.0,
     this.recordedTranslatePCX = 0.0,
     this.recordedTranslatePCY = 0.0,
+    this.radius = 30,
     this.calloutDurationMs = 1500,
-    this.calloutWidth = 300,
+    this.calloutWidth = 400,
     this.calloutHeight = 85,
     this.calloutTopPc,
     this.calloutLeftPc,
@@ -89,10 +109,12 @@ class TargetConfig {
     this.btnLocalLeftPc,
     this.showBtn = true,
     this.calloutColorValue,
+    this.usingText = true,
+    this.calloutImageUrl,
     this.calloutText,
     this.fontFamily = "OpenSans",
     this.fontSize = 24.0,
-    this.fontWeight,
+    this.fontWeightIndex,
     this.italic = false,
     this.letterSpacing = 1.0,
     this.letterHeight = 1.0,
@@ -102,9 +124,15 @@ class TargetConfig {
     this.animateArrow = false,
   }) {
     textColorValue ??= Colors.blue[900]!.value;
-    calloutColorValue ??= Colors.white.value;
-    fontWeight = FontWeight.normal.index;
+    calloutColorValue ??= Colors.grey.value;
+    fontWeightIndex = FontWeight.normal.index;
   }
+
+  // Rect getRect() => _rect;
+  //
+  // void setRect(Rect value) {
+  //   _rect = value;
+  // }
 
   void setRecordedMatrix(Matrix4 newMatrix) {
     recordedM4list = newMatrix.storage;
@@ -122,7 +150,7 @@ class TargetConfig {
       print("scale changed: $oldScale => $recordedScale");
     }
 
-    Size ivSize = CAPIAppWrapper.wwSize(wwName);
+    Size ivSize = CAPIState.iwSize(wName);
     var oldTranslatePCX = recordedTranslatePCX;
     var oldTranslatePCY = recordedTranslatePCY;
     recordedTranslatePCX = translation.x / ivSize.width;
@@ -174,13 +202,9 @@ class TargetConfig {
     // if (recordedM4list.isEmpty) {
     //   return Matrix4.identity();
     // } else {
-    Size ivSize = CAPIAppWrapper.wwSize(wwName);
+    Size ivSize = CAPIState.iwSize(wName);
     var translate = getTranslate();
-    return composeMatrix(
-      scale: getScale(),
-      translateX: translate.dx,
-      translateY: translate.dy
-    );
+    return composeMatrix(scale: getScale(), translateX: translate.dx, translateY: translate.dy);
     math.Vector3 translateV3 = math.Vector3(translate.dx, translate.dy, 0.0);
     math.Quaternion rotation = math.Quaternion.identity();
     Matrix4 m5 = Matrix4.compose(translateV3, rotation, math.Vector3(getScale(), getScale(), 1));
@@ -197,23 +221,13 @@ class TargetConfig {
     // }
   }
 
-  bool useRecordedMatrix() =>
-      _bloc.state.playList(wwName).isNotEmpty || (_bloc.state.aTargetIsSelected(wwName) && _bloc.state.selectedTarget(wwName)!.uid == uid);
+  bool playingOrSelected() => _bloc.state.playList.isNotEmpty || (_bloc.state.aTargetIsSelected() && _bloc.state.selectedTarget!.uid == uid);
 
-  double getScale({bool testing = false}) {
-    // if (!useRecordedMatrix()) {
-    //   print("nothing selected ?");
-    // }
-    double scale = useRecordedMatrix() || testing ? recordedScale : 1.0;
-    // print("SCALE: $scale");
-    return scale;
-  }
+  double getScale({bool testing = false}) => playingOrSelected() || testing ? transformScale : 1.0;
 
   Offset getTranslate({bool testing = false}) {
-    Size ivSize = CAPIAppWrapper.wwSize(wwName);
-    Offset translate =
-        useRecordedMatrix() || testing ? Offset(recordedTranslatePCX * ivSize.width, recordedTranslatePCY * ivSize.height) : Offset.zero;
-    // print("TRANSLATE: ${translate.toString()}");
+    Size ivSize = CAPIState.iwSize(wName);
+    Offset translate = playingOrSelected() || testing ? Offset(transformTranslateX * ivSize.width, transformTranslateY * ivSize.height) : Offset.zero;
     return translate;
   }
 
@@ -270,14 +284,15 @@ class TargetConfig {
         height: letterHeight,
         letterSpacing: letterSpacing,
         fontStyle: italic ? FontStyle.italic : FontStyle.normal,
-        fontWeight: FontWeight.values[fontWeight ?? 3],
+        fontWeight: FontWeight.values[fontWeightIndex ?? FontWeight.normal.index],
       );
 
   CAPIBloc get bloc => _bloc;
 
   Color textColor() => textColorValue == null ? Colors.blue[900]! : Color(textColorValue!);
 
-  FocusNode focusNode() => _focusNode;
+  FocusNode textFocusNode() => _textFocusNode;
+  FocusNode imageUrlFocusNode() => _imageUrlFocusNode;
 
   TextAlign textAlign() {
     switch (textAlignment) {
@@ -344,7 +359,7 @@ class TargetConfig {
       letterHeight = newTS.height!;
     }
     if (newTS.fontWeight != null) {
-      fontWeight = newTS.fontWeight!.index;
+      fontWeightIndex = newTS.fontWeight!.index;
     }
     if (newTS.fontStyle != null) {
       italic = newTS.fontStyle == FontStyle.italic;
@@ -355,8 +370,8 @@ class TargetConfig {
 
   Offset targetGlobalPos() {
     // iv rect should always be measured
-    Offset ivTopLeft = CAPIAppWrapper.wwPos(wwName);
-    Size ivSize = CAPIAppWrapper.wwSize(wwName);
+    Offset ivTopLeft = CAPIState.iwPos(wName);
+    Size ivSize = CAPIState.iwSize(wName);
 
     // calc from matrix
     double scale = getScale();
@@ -366,65 +381,49 @@ class TargetConfig {
     double globalPosY = ivTopLeft.dy + translate.dy + ((targetLocalPosTopPc ?? 0.0) * ivSize.height * scale);
 
     // in prod, target callout will be much smaller
-    // if (bloc.state.isPlaying(wwName)) {
-    //   globalPosX += bloc.state.CC_TARGET_SIZE_OUTER(!bloc.state.isPlaying(wwName), ivSize) * scale / 2 - bloc.state.CC_TARGET_SIZE(bloc.state.isPlaying(wwName), ivSize) * scale / 2;
-    //   globalPosY += bloc.state.CC_TARGET_SIZE_OUTER(!bloc.state.isPlaying(wwName), ivSize) * scale / 2 - bloc.state.CC_TARGET_SIZE(bloc.state.isPlaying(wwName), ivSize) * scale / 2;
+    // if (bloc.state.isPlaying(iwName)) {
+    //   globalPosX += bloc.state.CC_TARGET_SIZE_OUTER(!bloc.state.isPlaying(iwName), ivSize) * scale / 2 - bloc.state.CC_TARGET_SIZE(bloc.state.isPlaying(iwName), ivSize) * scale / 2;
+    //   globalPosY += bloc.state.CC_TARGET_SIZE_OUTER(!bloc.state.isPlaying(iwName), ivSize) * scale / 2 - bloc.state.CC_TARGET_SIZE(bloc.state.isPlaying(iwName), ivSize) * scale / 2;
     // }
     return Offset(globalPosX, globalPosY);
   }
 
   Offset btnStackPos() {
     // iv rect should always be measured
-    Size ivSize = CAPIAppWrapper.wwSize(wwName);
+    Size ivSize = CAPIState.iwSize(wName);
 
-    // calc from matrix
-    double scale = getScale();
-    Offset translate = getTranslate();
-
-    double stackPosX = translate.dx + ((btnLocalLeftPc ?? 0.0) * ivSize.width * scale);
-    double stackPosY = translate.dy + ((btnLocalTopPc ?? 0.0) * ivSize.height * scale);
+    double stackPosX = (btnLocalLeftPc ?? 0.0) * ivSize.width;
+    double stackPosY = (btnLocalTopPc ?? 0.0) * ivSize.height;
 
     return Offset(stackPosX, stackPosY);
   }
 
   Offset targetStackPos() {
     // iv rect should always be measured
-    Size ivSize = CAPIAppWrapper.wwSize(wwName);
+    Size ivSize = CAPIState.iwSize(wName);
 
-    // calc from matrix
-    double scale = getScale();
-    Offset translate = getTranslate();
-
-    double stackPosX = translate.dx + ((targetLocalPosLeftPc ?? 0.0) * ivSize.width * scale);
-    double stackPosY = translate.dy + ((targetLocalPosTopPc ?? 0.0) * ivSize.height * scale);
+    double stackPosX = (targetLocalPosLeftPc ?? 0.0) * ivSize.width;
+    double stackPosY = (targetLocalPosTopPc ?? 0.0) * ivSize.height;
 
     return Offset(stackPosX, stackPosY);
   }
 
   void setTargetStackPosPc(Offset globalPos) {
     // iv rect should always be measured
-    Offset ivTopLeft = CAPIAppWrapper.wwPos(wwName);
-    Size ivSize = CAPIAppWrapper.wwSize(wwName);
+    Offset ivTopLeft = CAPIState.iwPos(wName);
+    Size ivSize = CAPIState.iwSize(wName);
 
-    // calc from matrix
-    double scale = getScale();
-    Offset translate = getTranslate();
-
-    targetLocalPosTopPc = (globalPos.dy - ivTopLeft.dy - translate.dy) / (ivSize.height * scale);
-    targetLocalPosLeftPc = (globalPos.dx - ivTopLeft.dx - translate.dx) / (ivSize.width * scale);
+    targetLocalPosTopPc = (globalPos.dy - ivTopLeft.dy) / (ivSize.height);
+    targetLocalPosLeftPc = (globalPos.dx - ivTopLeft.dx) / (ivSize.width);
   }
 
   void setBtnStackPosPc(Offset globalPos) {
     // iv rect should always be measured
-    Offset ivTopLeft = CAPIAppWrapper.wwPos(wwName);
-    Size ivSize = CAPIAppWrapper.wwSize(wwName);
+    Offset ivTopLeft = CAPIState.iwPos(wName);
+    Size ivSize = CAPIState.iwSize(wName);
 
-    // calc from matrix
-    double scale = getScale();
-    Offset translate = getTranslate();
-
-    btnLocalTopPc = (globalPos.dy - ivTopLeft.dy - translate.dy) / (ivSize.height * scale);
-    btnLocalLeftPc = (globalPos.dx - ivTopLeft.dx - translate.dx) / (ivSize.width * scale);
+    btnLocalTopPc = (globalPos.dy - ivTopLeft.dy) / (ivSize.height);
+    btnLocalLeftPc = (globalPos.dx - ivTopLeft.dx) / (ivSize.width);
   }
 
   Offset getTextCalloutPos() => Offset(
@@ -432,20 +431,22 @@ class TargetConfig {
         Useful.scrH * (calloutTopPc ?? .5),
       );
 
-  setTextCalloutPos(Offset newGlobalPos) {
-    calloutTopPc = newGlobalPos.dy / Useful.scrH;
-    calloutLeftPc = newGlobalPos.dx / Useful.scrW;
-  }
+  // setTextCalloutPos(Offset newGlobalPos) {
+  //   calloutTopPc = newGlobalPos.dy / Useful.scrH;
+  //   calloutLeftPc = newGlobalPos.dx / Useful.scrW;
+  // }
 
   void init(
     CAPIBloc bloc,
     GlobalKey gk,
-    FocusNode focusNode,
+    FocusNode textFocusNode,
+    FocusNode imageUrlFocusNode,
   ) {
     _bloc = bloc;
     _gk = gk;
-    _focusNode = focusNode;
-    _transientMatrix = Matrix4.identity();
+    _textFocusNode = textFocusNode;
+    _imageUrlFocusNode = imageUrlFocusNode;
+    // _transientMatrix = Matrix4.identity();
   }
 
   GlobalKey gk() => _gk;
@@ -454,11 +455,11 @@ class TargetConfig {
 
   factory TargetConfig.fromJson(Map<String, dynamic> data) => _$TargetConfigFromJson(data);
 
-  @override
-  String toString() {
-    Matrix4 m4 = recordedM4list.isNotEmpty ? Matrix4.fromList(recordedM4list) : Matrix4.identity();
-    return "${m4.toString()}";
-  }
+  // @override
+  // String toString() {
+  //   Matrix4 m4 = recordedM4list.isNotEmpty ? Matrix4.fromList(recordedM4list) : Matrix4.identity();
+  //   return "${m4.toString()}";
+  // }
 
   Map<String, dynamic> toJson() => _$TargetConfigToJson(this);
 
@@ -475,8 +476,10 @@ class TargetConfig {
     TargetConfig clonedTC = TargetConfig.fromJson(cloneJson);
     clonedTC._bloc = this._bloc;
     clonedTC._gk = this._gk;
-    clonedTC._focusNode = this._focusNode;
-    clonedTC._transientMatrix = this._transientMatrix;
+    clonedTC._textFocusNode = this._textFocusNode;
+    clonedTC._imageUrlFocusNode = this._imageUrlFocusNode;
+    // clonedTC._transientMatrix = this._transientMatrix;
+    // clonedTC._rect = this._rect;
     return clonedTC;
   }
 }

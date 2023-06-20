@@ -74,7 +74,7 @@ class DraggableEdge extends StatelessWidget {
               parent.calloutSize = Size(calloutSize.width, calloutSize.height + deltaY);
             }
           }
-          parent.refreshOverlay(() {
+          parent.rebuildOverlays(() {
             parent.onResize?.call(parent.calloutSize);
           });
         },
@@ -110,7 +110,7 @@ class DraggableEdge extends StatelessWidget {
     if (side == Side.TOP || side == Side.BOTTOM) {
       return thickness;
     } else {
-      return calloutSize.height;
+      return calloutSize.height+(parent.dragHandleHeight??0);
     }
   }
 }

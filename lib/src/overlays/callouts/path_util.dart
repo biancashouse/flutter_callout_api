@@ -1,4 +1,3 @@
-
 import 'package:flutter_callout_api/src/overlays/callouts/arrow_type.dart';
 import 'package:flutter_callout_api/src/overlays/callouts/callout.dart';
 import 'package:flutter_callout_api/src/overlays/callouts/coord.dart';
@@ -9,14 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class PathUtil {
-
   static const int DEFAULT_THICKNESS = 10;
 
   static Path? draw(Callout callout, {int? pointyThickness}) {
-
     Path path = Path();
     callout.calcEndpoints();
-    if (callout.arrowType == ArrowType.NO_CONNECTOR || (callout.tE == null || callout.cR().contains(Offset(callout.tE!.x, callout.tE!.y)))) {
+    Offset tE = callout.tE?.asOffset ?? Offset.zero;
+    if (callout.arrowType == ArrowType.NO_CONNECTOR || (callout.tE == null || callout.cR().contains(tE))) {
       /*
 			 * rectangle around calloutR
 			 */
@@ -26,8 +24,18 @@ class PathUtil {
       Rectangle calloutR = callout.cR();
       Offset cspCentre = calloutR.center;
 
-      // possibly translate tE
-      callout.tE = Coord.fromOffset(callout.tE!.asOffset.translate(callout.targetTranslateX ?? 0.0, callout.targetTranslateY ?? 0.0));
+      // possibly translate tE with callout args + possible scroll offsets
+      callout.tE = Coord.fromOffset(
+        callout.tE!.asOffset
+            .translate(
+              callout.targetTranslateX ?? 0.0,
+              callout.targetTranslateY ?? 0.0,
+            // )
+            // .translate(
+            //   -(callout.hScrollController?.offset ?? 0.0),
+            //   -(callout.vScrollController?.offset ?? 0.0),
+            ),
+      );
 
       // path.translate(-canvasOffset.left, -canvasOffset.top);
 
@@ -71,6 +79,7 @@ class PathUtil {
       /*
 				 * finally, close shape by drawing pb2 to pointy and back to pb1
 				 */
+      // print("path.lineTo(${callout.tE!.x}, ${callout.tE!.y})");
       path.lineTo(callout.tE!.x, callout.tE!.y);
       path.lineTo(pointyBase1.x, pointyBase1.y);
     }

@@ -1,0 +1,42 @@
+{
+  "timestamp": 1680446852309,
+  "targetMap": {},
+  "imageTargetListMap": {
+    "cats": [
+      {
+        "uid": 39,
+        "transformScale": 1.5,
+        "transformTranslateX": 0,
+        "transformTranslateY": 0,
+        "recordedM4list": [],
+        "recordedScale": 1,
+        "recordedTranslatePCX": 0,
+        "recordedTranslatePCY": 0,
+        "twName": "cats",
+        "targetLocalPosLeftPc": 0.08962414490049751,
+        "targetLocalPosTopPc": 0.4761457281894518,
+        "radiusPC": null,
+        "btnLocalTopPc": 0.2872959197039603,
+        "btnLocalLeftPc": 0.09458305017272046,
+        "calloutTopPc": 0.12200246273892597,
+        "calloutLeftPc": 0.2420815944671631,
+        "showBtn": true,
+        "calloutWidth": 300,
+        "calloutHeight": 85,
+        "calloutDurationMs": 1500,
+        "calloutColorValue": 4288585374,
+        "calloutText": null,
+        "fontFamily": "OpenSans",
+        "fontSize": 24,
+        "fontWeight": 3,
+        "italic": false,
+        "letterSpacing": 1,
+        "letterHeight": 1,
+        "textColorValue": 4279060385,
+        "textAlignment": "c",
+        "arrowType": 1,
+        "animateArrow": false
+      }
+    ]
+  }
+}

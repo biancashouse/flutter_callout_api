@@ -7,7 +7,11 @@ part of 'target_config.dart';
 // **************************************************************************
 
 CAPIModel _$CAPIModelFromJson(Map<String, dynamic> json) => CAPIModel(
-      (json['wtMap'] as Map<String, dynamic>?)?.map(
+      json['timestamp'] as int?,
+      (json['targetMap'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, TargetConfig.fromJson(e as Map<String, dynamic>)),
+      ),
+      (json['imageTargetListMap'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(
             k,
             (e as List<dynamic>)
@@ -17,12 +21,19 @@ CAPIModel _$CAPIModelFromJson(Map<String, dynamic> json) => CAPIModel(
     );
 
 Map<String, dynamic> _$CAPIModelToJson(CAPIModel instance) => <String, dynamic>{
-      'wtMap': instance.wtMap,
+      'timestamp': instance.timestamp,
+      'targetMap': instance.targetMap,
+      'imageTargetListMap': instance.imageTargetListMap,
     };
 
 TargetConfig _$TargetConfigFromJson(Map<String, dynamic> json) => TargetConfig(
       uid: json['uid'] as int,
-      wwName: json['wwName'] as String,
+      wName: json['wName'] as String,
+      transformScale: (json['transformScale'] as num?)?.toDouble() ?? 1.0,
+      transformTranslateX:
+          (json['transformTranslateX'] as num?)?.toDouble() ?? 0.0,
+      transformTranslateY:
+          (json['transformTranslateY'] as num?)?.toDouble() ?? 0.0,
       recordedM4list: (json['recordedM4list'] as List<dynamic>?)
               ?.map((e) => (e as num).toDouble())
               .toList() ??
@@ -32,8 +43,9 @@ TargetConfig _$TargetConfigFromJson(Map<String, dynamic> json) => TargetConfig(
           (json['recordedTranslatePCX'] as num?)?.toDouble() ?? 0.0,
       recordedTranslatePCY:
           (json['recordedTranslatePCY'] as num?)?.toDouble() ?? 0.0,
+      radius: (json['radius'] as num?)?.toDouble() ?? 30,
       calloutDurationMs: json['calloutDurationMs'] as int? ?? 1500,
-      calloutWidth: (json['calloutWidth'] as num?)?.toDouble() ?? 300,
+      calloutWidth: (json['calloutWidth'] as num?)?.toDouble() ?? 400,
       calloutHeight: (json['calloutHeight'] as num?)?.toDouble() ?? 85,
       calloutTopPc: (json['calloutTopPc'] as num?)?.toDouble(),
       calloutLeftPc: (json['calloutLeftPc'] as num?)?.toDouble(),
@@ -41,10 +53,12 @@ TargetConfig _$TargetConfigFromJson(Map<String, dynamic> json) => TargetConfig(
       btnLocalLeftPc: (json['btnLocalLeftPc'] as num?)?.toDouble(),
       showBtn: json['showBtn'] as bool? ?? true,
       calloutColorValue: json['calloutColorValue'] as int?,
+      usingText: json['usingText'] as bool? ?? true,
+      calloutImageUrl: json['calloutImageUrl'] as String?,
       calloutText: json['calloutText'] as String?,
       fontFamily: json['fontFamily'] as String? ?? "OpenSans",
       fontSize: (json['fontSize'] as num?)?.toDouble() ?? 24.0,
-      fontWeight: json['fontWeight'] as int?,
+      fontWeightIndex: json['fontWeightIndex'] as int?,
       italic: json['italic'] as bool? ?? false,
       letterSpacing: (json['letterSpacing'] as num?)?.toDouble() ?? 1.0,
       letterHeight: (json['letterHeight'] as num?)?.toDouble() ?? 1.0,
@@ -60,13 +74,17 @@ TargetConfig _$TargetConfigFromJson(Map<String, dynamic> json) => TargetConfig(
 Map<String, dynamic> _$TargetConfigToJson(TargetConfig instance) =>
     <String, dynamic>{
       'uid': instance.uid,
+      'transformScale': instance.transformScale,
+      'transformTranslateX': instance.transformTranslateX,
+      'transformTranslateY': instance.transformTranslateY,
       'recordedM4list': instance.recordedM4list,
       'recordedScale': instance.recordedScale,
       'recordedTranslatePCX': instance.recordedTranslatePCX,
       'recordedTranslatePCY': instance.recordedTranslatePCY,
-      'wwName': instance.wwName,
+      'wName': instance.wName,
       'targetLocalPosLeftPc': instance.targetLocalPosLeftPc,
       'targetLocalPosTopPc': instance.targetLocalPosTopPc,
+      'radius': instance.radius,
       'btnLocalTopPc': instance.btnLocalTopPc,
       'btnLocalLeftPc': instance.btnLocalLeftPc,
       'calloutTopPc': instance.calloutTopPc,
@@ -76,10 +94,12 @@ Map<String, dynamic> _$TargetConfigToJson(TargetConfig instance) =>
       'calloutHeight': instance.calloutHeight,
       'calloutDurationMs': instance.calloutDurationMs,
       'calloutColorValue': instance.calloutColorValue,
+      'usingText': instance.usingText,
+      'calloutImageUrl': instance.calloutImageUrl,
       'calloutText': instance.calloutText,
       'fontFamily': instance.fontFamily,
       'fontSize': instance.fontSize,
-      'fontWeight': instance.fontWeight,
+      'fontWeightIndex': instance.fontWeightIndex,
       'italic': instance.italic,
       'letterSpacing': instance.letterSpacing,
       'letterHeight': instance.letterHeight,

@@ -13,28 +13,29 @@ class CAPIEvent with _$CAPIEvent {
   }) = InitApp;
 
   // const factory CAPIEvent.initTW({
-  //   required String wwName,
+  //   required String iwName,
   //   required GlobalKey ivGK,
   //   required GlobalKey ivChildGK,
   // }) = InitTW;
 
-  const factory CAPIEvent.suspend({
-    required String wwName,
-  }) = Suspend;
+  const factory CAPIEvent.suspendAndCopyToJson({
+    required String wName,
+  }) = SuspendAndCopyToJson;
 
   const factory CAPIEvent.resume({
-    required String wwName,
+    required String wName,
   }) = Resume;
 
   const factory CAPIEvent.copyToClipboard() = CopyToClipboard;
 
   const factory CAPIEvent.recordMatrix({
-    required String wwName,
+    required String wName,
     required Matrix4 newMatrix,
   }) = RecordMatrix;
 
   const factory CAPIEvent.targetMoved({
     required TargetConfig tc,
+    required double targetRadius,
     required Offset newGlobalPos,
   }) = TargetMoved;
 
@@ -43,10 +44,15 @@ class CAPIEvent with _$CAPIEvent {
     required Offset newGlobalPos,
   }) = BtnMoved;
 
-  const factory CAPIEvent.newTarget({
-    required String wwName,
+  // const factory CAPIEvent.newTargetManual({
+  //   required String iwName,
+  //   required Offset newGlobalPos,
+  // }) = NewTargetManual;
+
+  const factory CAPIEvent.newTargetAuto({
+    required String wName,
     required Offset newGlobalPos,
-  }) = NewTarget;
+  }) = NewTargetAuto;
 
   const factory CAPIEvent.deleteTarget({
     required TargetConfig tc,
@@ -56,29 +62,41 @@ class CAPIEvent with _$CAPIEvent {
     required TargetConfig tc,
   }) = SelectTarget;
 
+  const factory CAPIEvent.hideTargetsDuringPlayExcept({
+    required TargetConfig tc,
+}) = HideTargetsDuringPlayExcept;
+
+  const factory CAPIEvent.unhideTargets(
+) = UnhideTargets;
+
   const factory CAPIEvent.clearSelection({
-    required String wwName,
+    required String wName,
   }) = ClearSelection;
 
   // const factory CAPIEvent.measuredIV({
-  //   required String wwName,
+  //   required String iwName,
   //   required Rect ivRect,
   // }) = MeasuredIV;
 
   const factory CAPIEvent.overrideTargetGK({
-    required String wwName,
+    required String wName,
     required int index,
     required GlobalKey gk,
   }) = OverrideTargetGK;
 
-  const factory CAPIEvent.startPlaying({
-    required String wwName,
+  const factory CAPIEvent.startPlayingList({
+    required String iwName,
     List<int>? playList,
-  }) = StartPlaying;
+  }) = StartPlayingList;
 
-  const factory CAPIEvent.playNext({
-    required String wwName,
-  }) = PlayNext;
+  const factory CAPIEvent.playNextInList({
+    required String wName,
+  }) = PlayNextInList;
+
+  const factory CAPIEvent.changedCalloutPosition({
+    required TargetConfig tc,
+    required Offset newPos,
+  }) = ChangedCalloutPosition;
 
   const factory CAPIEvent.changedCalloutDuration({
     required TargetConfig tc,
@@ -95,9 +113,24 @@ class CAPIEvent with _$CAPIEvent {
     required TextStyle newTextStyle,
   }) = ChangedCalloutTextStyle;
 
-  const factory CAPIEvent.changedOrder({
-    required String wwName,
-    required int oldIndex,
-    required int newIndex,
-  }) = ChangedOrder;
+  const factory CAPIEvent.changedTargetRadius({
+    required TargetConfig tc,
+    required double newRadius,
+  }) = ChangedTargetRadius;
+
+  const factory CAPIEvent.changedTransformScale({
+    required TargetConfig tc,
+    required double newScale,
+  }) = ChangedTransformScale;
+
+  const factory CAPIEvent.changedHelpContentType({
+    required TargetConfig tc,
+    required bool useImage,
+  }) = ChangedHelpContentType;
+
+// const factory CAPIEvent.changedOrder({
+  //   required String iwName,
+  //   required int oldIndex,
+  //   required int newIndex,
+  // }) = ChangedOrder;
 }

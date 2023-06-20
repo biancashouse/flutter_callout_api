@@ -2,8 +2,6 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_callout_api/callout_api.dart';
 import 'package:flutter_callout_api/src/measuring/measure_sizebox.dart';
-import 'package:flutter_callout_api/src/useful.dart';
-import 'package:flutter_callout_api/src/widget_helper.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 main() async {
@@ -30,6 +28,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
+    super.initState();
     Useful.afterNextBuildDo(() {
       Callout(
         feature: 987654321,
@@ -55,6 +54,7 @@ class _MyAppState extends State<MyApp> {
     print("main build");
     return MaterialApp(
       home: Scaffold(
+        resizeToAvoidBottomInset: false,  // IMPORTANT for ensuring callout not behind keyboard
         body: WidgetSizer(
           widget: _contents(),
           onSizedCallback: (size) {

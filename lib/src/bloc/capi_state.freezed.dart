@@ -18,15 +18,19 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$CAPIState {
   bool get localTestingFilePaths =>
       throw _privateConstructorUsedError; // because filepaths and fonts accedd differently in own package
-  Map<String, List<TargetConfig>> get wtMap =>
+  String? get initialValueJsonAssetPath =>
+      throw _privateConstructorUsedError; // both come from MaterialAppWrapper widget constructor
+  int? get timestamp => throw _privateConstructorUsedError;
+  Map<String, TargetConfig> get targetMap => throw _privateConstructorUsedError;
+  Map<String, List<TargetConfig>> get imageTargetListMap =>
       throw _privateConstructorUsedError;
-  Map<String, List<TargetConfig>> get playListMap =>
-      throw _privateConstructorUsedError;
-  Map<String, bool> get suspendedMap => throw _privateConstructorUsedError;
-  Map<String, int> get selectedTargetIndexMap =>
+  List<TargetConfig> get playList => throw _privateConstructorUsedError;
+  Map<String, bool> get suspendedMap =>
       throw _privateConstructorUsedError; // current selection
-  TargetConfig? get targetPlaying =>
-      throw _privateConstructorUsedError; // TargetConfig? lastUpdatedTC, // for debug only
+  TargetConfig? get hideTargetsWhilePlayingExcept =>
+      throw _privateConstructorUsedError;
+  TargetConfig? get newestTarget => throw _privateConstructorUsedError;
+  TargetConfig? get selectedTarget => throw _privateConstructorUsedError;
   int get force => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -41,11 +45,15 @@ abstract class $CAPIStateCopyWith<$Res> {
   @useResult
   $Res call(
       {bool localTestingFilePaths,
-      Map<String, List<TargetConfig>> wtMap,
-      Map<String, List<TargetConfig>> playListMap,
+      String? initialValueJsonAssetPath,
+      int? timestamp,
+      Map<String, TargetConfig> targetMap,
+      Map<String, List<TargetConfig>> imageTargetListMap,
+      List<TargetConfig> playList,
       Map<String, bool> suspendedMap,
-      Map<String, int> selectedTargetIndexMap,
-      TargetConfig? targetPlaying,
+      TargetConfig? hideTargetsWhilePlayingExcept,
+      TargetConfig? newestTarget,
+      TargetConfig? selectedTarget,
       int force});
 }
 
@@ -63,11 +71,15 @@ class _$CAPIStateCopyWithImpl<$Res, $Val extends CAPIState>
   @override
   $Res call({
     Object? localTestingFilePaths = null,
-    Object? wtMap = null,
-    Object? playListMap = null,
+    Object? initialValueJsonAssetPath = freezed,
+    Object? timestamp = freezed,
+    Object? targetMap = null,
+    Object? imageTargetListMap = null,
+    Object? playList = null,
     Object? suspendedMap = null,
-    Object? selectedTargetIndexMap = null,
-    Object? targetPlaying = freezed,
+    Object? hideTargetsWhilePlayingExcept = freezed,
+    Object? newestTarget = freezed,
+    Object? selectedTarget = freezed,
     Object? force = null,
   }) {
     return _then(_value.copyWith(
@@ -75,25 +87,41 @@ class _$CAPIStateCopyWithImpl<$Res, $Val extends CAPIState>
           ? _value.localTestingFilePaths
           : localTestingFilePaths // ignore: cast_nullable_to_non_nullable
               as bool,
-      wtMap: null == wtMap
-          ? _value.wtMap
-          : wtMap // ignore: cast_nullable_to_non_nullable
+      initialValueJsonAssetPath: freezed == initialValueJsonAssetPath
+          ? _value.initialValueJsonAssetPath
+          : initialValueJsonAssetPath // ignore: cast_nullable_to_non_nullable
+              as String?,
+      timestamp: freezed == timestamp
+          ? _value.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as int?,
+      targetMap: null == targetMap
+          ? _value.targetMap
+          : targetMap // ignore: cast_nullable_to_non_nullable
+              as Map<String, TargetConfig>,
+      imageTargetListMap: null == imageTargetListMap
+          ? _value.imageTargetListMap
+          : imageTargetListMap // ignore: cast_nullable_to_non_nullable
               as Map<String, List<TargetConfig>>,
-      playListMap: null == playListMap
-          ? _value.playListMap
-          : playListMap // ignore: cast_nullable_to_non_nullable
-              as Map<String, List<TargetConfig>>,
+      playList: null == playList
+          ? _value.playList
+          : playList // ignore: cast_nullable_to_non_nullable
+              as List<TargetConfig>,
       suspendedMap: null == suspendedMap
           ? _value.suspendedMap
           : suspendedMap // ignore: cast_nullable_to_non_nullable
               as Map<String, bool>,
-      selectedTargetIndexMap: null == selectedTargetIndexMap
-          ? _value.selectedTargetIndexMap
-          : selectedTargetIndexMap // ignore: cast_nullable_to_non_nullable
-              as Map<String, int>,
-      targetPlaying: freezed == targetPlaying
-          ? _value.targetPlaying
-          : targetPlaying // ignore: cast_nullable_to_non_nullable
+      hideTargetsWhilePlayingExcept: freezed == hideTargetsWhilePlayingExcept
+          ? _value.hideTargetsWhilePlayingExcept
+          : hideTargetsWhilePlayingExcept // ignore: cast_nullable_to_non_nullable
+              as TargetConfig?,
+      newestTarget: freezed == newestTarget
+          ? _value.newestTarget
+          : newestTarget // ignore: cast_nullable_to_non_nullable
+              as TargetConfig?,
+      selectedTarget: freezed == selectedTarget
+          ? _value.selectedTarget
+          : selectedTarget // ignore: cast_nullable_to_non_nullable
               as TargetConfig?,
       force: null == force
           ? _value.force
@@ -112,11 +140,15 @@ abstract class _$$_CAPIStateCopyWith<$Res> implements $CAPIStateCopyWith<$Res> {
   @useResult
   $Res call(
       {bool localTestingFilePaths,
-      Map<String, List<TargetConfig>> wtMap,
-      Map<String, List<TargetConfig>> playListMap,
+      String? initialValueJsonAssetPath,
+      int? timestamp,
+      Map<String, TargetConfig> targetMap,
+      Map<String, List<TargetConfig>> imageTargetListMap,
+      List<TargetConfig> playList,
       Map<String, bool> suspendedMap,
-      Map<String, int> selectedTargetIndexMap,
-      TargetConfig? targetPlaying,
+      TargetConfig? hideTargetsWhilePlayingExcept,
+      TargetConfig? newestTarget,
+      TargetConfig? selectedTarget,
       int force});
 }
 
@@ -132,11 +164,15 @@ class __$$_CAPIStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? localTestingFilePaths = null,
-    Object? wtMap = null,
-    Object? playListMap = null,
+    Object? initialValueJsonAssetPath = freezed,
+    Object? timestamp = freezed,
+    Object? targetMap = null,
+    Object? imageTargetListMap = null,
+    Object? playList = null,
     Object? suspendedMap = null,
-    Object? selectedTargetIndexMap = null,
-    Object? targetPlaying = freezed,
+    Object? hideTargetsWhilePlayingExcept = freezed,
+    Object? newestTarget = freezed,
+    Object? selectedTarget = freezed,
     Object? force = null,
   }) {
     return _then(_$_CAPIState(
@@ -144,25 +180,41 @@ class __$$_CAPIStateCopyWithImpl<$Res>
           ? _value.localTestingFilePaths
           : localTestingFilePaths // ignore: cast_nullable_to_non_nullable
               as bool,
-      wtMap: null == wtMap
-          ? _value._wtMap
-          : wtMap // ignore: cast_nullable_to_non_nullable
+      initialValueJsonAssetPath: freezed == initialValueJsonAssetPath
+          ? _value.initialValueJsonAssetPath
+          : initialValueJsonAssetPath // ignore: cast_nullable_to_non_nullable
+              as String?,
+      timestamp: freezed == timestamp
+          ? _value.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as int?,
+      targetMap: null == targetMap
+          ? _value._targetMap
+          : targetMap // ignore: cast_nullable_to_non_nullable
+              as Map<String, TargetConfig>,
+      imageTargetListMap: null == imageTargetListMap
+          ? _value._imageTargetListMap
+          : imageTargetListMap // ignore: cast_nullable_to_non_nullable
               as Map<String, List<TargetConfig>>,
-      playListMap: null == playListMap
-          ? _value._playListMap
-          : playListMap // ignore: cast_nullable_to_non_nullable
-              as Map<String, List<TargetConfig>>,
+      playList: null == playList
+          ? _value._playList
+          : playList // ignore: cast_nullable_to_non_nullable
+              as List<TargetConfig>,
       suspendedMap: null == suspendedMap
           ? _value._suspendedMap
           : suspendedMap // ignore: cast_nullable_to_non_nullable
               as Map<String, bool>,
-      selectedTargetIndexMap: null == selectedTargetIndexMap
-          ? _value._selectedTargetIndexMap
-          : selectedTargetIndexMap // ignore: cast_nullable_to_non_nullable
-              as Map<String, int>,
-      targetPlaying: freezed == targetPlaying
-          ? _value.targetPlaying
-          : targetPlaying // ignore: cast_nullable_to_non_nullable
+      hideTargetsWhilePlayingExcept: freezed == hideTargetsWhilePlayingExcept
+          ? _value.hideTargetsWhilePlayingExcept
+          : hideTargetsWhilePlayingExcept // ignore: cast_nullable_to_non_nullable
+              as TargetConfig?,
+      newestTarget: freezed == newestTarget
+          ? _value.newestTarget
+          : newestTarget // ignore: cast_nullable_to_non_nullable
+              as TargetConfig?,
+      selectedTarget: freezed == selectedTarget
+          ? _value.selectedTarget
+          : selectedTarget // ignore: cast_nullable_to_non_nullable
               as TargetConfig?,
       force: null == force
           ? _value.force
@@ -177,39 +229,57 @@ class __$$_CAPIStateCopyWithImpl<$Res>
 class _$_CAPIState extends _CAPIState {
   _$_CAPIState(
       {this.localTestingFilePaths = false,
-      final Map<String, List<TargetConfig>> wtMap = const {},
-      final Map<String, List<TargetConfig>> playListMap = const {},
+      this.initialValueJsonAssetPath,
+      this.timestamp,
+      final Map<String, TargetConfig> targetMap = const {},
+      final Map<String, List<TargetConfig>> imageTargetListMap = const {},
+      final List<TargetConfig> playList = const [],
       final Map<String, bool> suspendedMap = const {},
-      final Map<String, int> selectedTargetIndexMap = const {},
-      this.targetPlaying,
+      this.hideTargetsWhilePlayingExcept,
+      this.newestTarget,
+      this.selectedTarget,
       this.force = 0})
-      : _wtMap = wtMap,
-        _playListMap = playListMap,
+      : _targetMap = targetMap,
+        _imageTargetListMap = imageTargetListMap,
+        _playList = playList,
         _suspendedMap = suspendedMap,
-        _selectedTargetIndexMap = selectedTargetIndexMap,
         super._();
 
   @override
   @JsonKey()
   final bool localTestingFilePaths;
 // because filepaths and fonts accedd differently in own package
-  final Map<String, List<TargetConfig>> _wtMap;
-// because filepaths and fonts accedd differently in own package
+  @override
+  final String? initialValueJsonAssetPath;
+// both come from MaterialAppWrapper widget constructor
+  @override
+  final int? timestamp;
+  final Map<String, TargetConfig> _targetMap;
   @override
   @JsonKey()
-  Map<String, List<TargetConfig>> get wtMap {
-    if (_wtMap is EqualUnmodifiableMapView) return _wtMap;
+  Map<String, TargetConfig> get targetMap {
+    if (_targetMap is EqualUnmodifiableMapView) return _targetMap;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_wtMap);
+    return EqualUnmodifiableMapView(_targetMap);
   }
 
-  final Map<String, List<TargetConfig>> _playListMap;
+  final Map<String, List<TargetConfig>> _imageTargetListMap;
   @override
   @JsonKey()
-  Map<String, List<TargetConfig>> get playListMap {
-    if (_playListMap is EqualUnmodifiableMapView) return _playListMap;
+  Map<String, List<TargetConfig>> get imageTargetListMap {
+    if (_imageTargetListMap is EqualUnmodifiableMapView)
+      return _imageTargetListMap;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_playListMap);
+    return EqualUnmodifiableMapView(_imageTargetListMap);
+  }
+
+  final List<TargetConfig> _playList;
+  @override
+  @JsonKey()
+  List<TargetConfig> get playList {
+    if (_playList is EqualUnmodifiableListView) return _playList;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_playList);
   }
 
   final Map<String, bool> _suspendedMap;
@@ -221,27 +291,20 @@ class _$_CAPIState extends _CAPIState {
     return EqualUnmodifiableMapView(_suspendedMap);
   }
 
-  final Map<String, int> _selectedTargetIndexMap;
-  @override
-  @JsonKey()
-  Map<String, int> get selectedTargetIndexMap {
-    if (_selectedTargetIndexMap is EqualUnmodifiableMapView)
-      return _selectedTargetIndexMap;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_selectedTargetIndexMap);
-  }
-
 // current selection
   @override
-  final TargetConfig? targetPlaying;
-// TargetConfig? lastUpdatedTC, // for debug only
+  final TargetConfig? hideTargetsWhilePlayingExcept;
+  @override
+  final TargetConfig? newestTarget;
+  @override
+  final TargetConfig? selectedTarget;
   @override
   @JsonKey()
   final int force;
 
   @override
   String toString() {
-    return 'CAPIState(localTestingFilePaths: $localTestingFilePaths, wtMap: $wtMap, playListMap: $playListMap, suspendedMap: $suspendedMap, selectedTargetIndexMap: $selectedTargetIndexMap, targetPlaying: $targetPlaying, force: $force)';
+    return 'CAPIState(localTestingFilePaths: $localTestingFilePaths, initialValueJsonAssetPath: $initialValueJsonAssetPath, timestamp: $timestamp, targetMap: $targetMap, imageTargetListMap: $imageTargetListMap, playList: $playList, suspendedMap: $suspendedMap, hideTargetsWhilePlayingExcept: $hideTargetsWhilePlayingExcept, newestTarget: $newestTarget, selectedTarget: $selectedTarget, force: $force)';
   }
 
   @override
@@ -251,15 +314,26 @@ class _$_CAPIState extends _CAPIState {
             other is _$_CAPIState &&
             (identical(other.localTestingFilePaths, localTestingFilePaths) ||
                 other.localTestingFilePaths == localTestingFilePaths) &&
-            const DeepCollectionEquality().equals(other._wtMap, _wtMap) &&
+            (identical(other.initialValueJsonAssetPath,
+                    initialValueJsonAssetPath) ||
+                other.initialValueJsonAssetPath == initialValueJsonAssetPath) &&
+            (identical(other.timestamp, timestamp) ||
+                other.timestamp == timestamp) &&
             const DeepCollectionEquality()
-                .equals(other._playListMap, _playListMap) &&
+                .equals(other._targetMap, _targetMap) &&
+            const DeepCollectionEquality()
+                .equals(other._imageTargetListMap, _imageTargetListMap) &&
+            const DeepCollectionEquality().equals(other._playList, _playList) &&
             const DeepCollectionEquality()
                 .equals(other._suspendedMap, _suspendedMap) &&
-            const DeepCollectionEquality().equals(
-                other._selectedTargetIndexMap, _selectedTargetIndexMap) &&
-            (identical(other.targetPlaying, targetPlaying) ||
-                other.targetPlaying == targetPlaying) &&
+            (identical(other.hideTargetsWhilePlayingExcept,
+                    hideTargetsWhilePlayingExcept) ||
+                other.hideTargetsWhilePlayingExcept ==
+                    hideTargetsWhilePlayingExcept) &&
+            (identical(other.newestTarget, newestTarget) ||
+                other.newestTarget == newestTarget) &&
+            (identical(other.selectedTarget, selectedTarget) ||
+                other.selectedTarget == selectedTarget) &&
             (identical(other.force, force) || other.force == force));
   }
 
@@ -267,11 +341,15 @@ class _$_CAPIState extends _CAPIState {
   int get hashCode => Object.hash(
       runtimeType,
       localTestingFilePaths,
-      const DeepCollectionEquality().hash(_wtMap),
-      const DeepCollectionEquality().hash(_playListMap),
+      initialValueJsonAssetPath,
+      timestamp,
+      const DeepCollectionEquality().hash(_targetMap),
+      const DeepCollectionEquality().hash(_imageTargetListMap),
+      const DeepCollectionEquality().hash(_playList),
       const DeepCollectionEquality().hash(_suspendedMap),
-      const DeepCollectionEquality().hash(_selectedTargetIndexMap),
-      targetPlaying,
+      hideTargetsWhilePlayingExcept,
+      newestTarget,
+      selectedTarget,
       force);
 
   @JsonKey(ignore: true)
@@ -284,27 +362,39 @@ class _$_CAPIState extends _CAPIState {
 abstract class _CAPIState extends CAPIState {
   factory _CAPIState(
       {final bool localTestingFilePaths,
-      final Map<String, List<TargetConfig>> wtMap,
-      final Map<String, List<TargetConfig>> playListMap,
+      final String? initialValueJsonAssetPath,
+      final int? timestamp,
+      final Map<String, TargetConfig> targetMap,
+      final Map<String, List<TargetConfig>> imageTargetListMap,
+      final List<TargetConfig> playList,
       final Map<String, bool> suspendedMap,
-      final Map<String, int> selectedTargetIndexMap,
-      final TargetConfig? targetPlaying,
+      final TargetConfig? hideTargetsWhilePlayingExcept,
+      final TargetConfig? newestTarget,
+      final TargetConfig? selectedTarget,
       final int force}) = _$_CAPIState;
   _CAPIState._() : super._();
 
   @override
   bool get localTestingFilePaths;
   @override // because filepaths and fonts accedd differently in own package
-  Map<String, List<TargetConfig>> get wtMap;
+  String? get initialValueJsonAssetPath;
+  @override // both come from MaterialAppWrapper widget constructor
+  int? get timestamp;
   @override
-  Map<String, List<TargetConfig>> get playListMap;
+  Map<String, TargetConfig> get targetMap;
+  @override
+  Map<String, List<TargetConfig>> get imageTargetListMap;
+  @override
+  List<TargetConfig> get playList;
   @override
   Map<String, bool> get suspendedMap;
-  @override
-  Map<String, int> get selectedTargetIndexMap;
   @override // current selection
-  TargetConfig? get targetPlaying;
-  @override // TargetConfig? lastUpdatedTC, // for debug only
+  TargetConfig? get hideTargetsWhilePlayingExcept;
+  @override
+  TargetConfig? get newestTarget;
+  @override
+  TargetConfig? get selectedTarget;
+  @override
   int get force;
   @override
   @JsonKey(ignore: true)

@@ -11,7 +11,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 
 environment:
-  sdk: '>=2.18.6 <3.7.7'
+  sdk: '>=3.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -23,7 +23,8 @@ dependencies:
   flutter:
     sdk: flutter
   url_strategy: ^0.2.0
-  json_annotation: ^4.8.0
+  path_provider: ^2.0.11
+  json_annotation: ^4.8.1
   #rive: ^0.9.1
   #bhlib:
     #path: ../bhlib
@@ -43,9 +44,15 @@ dependencies:
   dotted_border: ^2.0.0+2
   image_network: ^2.5.1
   hydrated_bloc: ^9.0.0
-  package_info_plus: ^1.4.3+1
-  device_info_plus: ^4.1.2
+  package_info_plus: 3.1.2
+  device_info_plus: 8.2.2
   universal_platform: any
+  numeric_keyboard: ^1.1.0
+  file_picker: ^5.2.7
+  flutter_fancy_tree_view:
+    path: ../flutter_tree_view
+  dart_mappable: 3.1.1
+  smooth_page_indicator: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -55,8 +62,8 @@ dev_dependencies:
   vector_math: ^2.1.2
   text_editor: ^0.7.0
   bloc_test: ^9.1.1
-
   flutter_lints: ^2.0.0
+  dart_mappable_builder: ^3.1.1
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -76,6 +83,9 @@ flutter:
     - family: Roboto
       fonts:
         - asset: google_fonts/roboto-regular.ttf
+    - family: AlkatraBold
+      fonts:
+        - asset: google_fonts/Alkatra-Bold.ttf
 
   assets:
     - images/

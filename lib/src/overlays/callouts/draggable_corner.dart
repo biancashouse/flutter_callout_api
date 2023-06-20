@@ -88,7 +88,7 @@ class DraggableCorner extends StatelessWidget {
             parent.calloutSize = Size(parent.calloutSize.width + deltaX, parent.calloutSize.height);
             parent.calloutSize = Size(parent.calloutSize.width, parent.calloutSize.height + deltaY);
           }
-          parent.refreshOverlay(() {
+          parent.rebuildOverlays(() {
             parent.onResize?.call(parent.calloutSize);
           });
         },
@@ -103,9 +103,9 @@ class DraggableCorner extends StatelessWidget {
     } else if (alignment == Alignment.topRight) {
       return calloutRect.topRight.translate(0, -thickness);
     } else if (alignment == Alignment.bottomLeft) {
-      return calloutRect.bottomLeft.translate(-thickness, 0);
+      return calloutRect.bottomLeft.translate(-thickness, (parent.dragHandleHeight??0));
     } else if (alignment == Alignment.bottomRight) {
-      return calloutRect.bottomRight.translate(0, 0);
+      return calloutRect.bottomRight.translate(0, (parent.dragHandleHeight??0));
     } else {
       throw ('Corner _pos() unexpected alignment!');
     }

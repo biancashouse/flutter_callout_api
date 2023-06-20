@@ -7,7 +7,6 @@ import 'package:flutter_callout_api/src/overlays/callouts/line.dart';
 import 'package:flutter_callout_api/src/overlays/callouts/pointing_line.dart';
 import 'package:flutter/material.dart';
 
-
 class ConnectingLine {
   final int feature;
 
@@ -57,7 +56,7 @@ class ConnectingLine {
 
   Coord? toE, fromE;
 
-  late Rectangle fromR;
+  late Rectangle? fromR;
   Rectangle? toR;
 
   Future<void> init() async {
@@ -72,16 +71,26 @@ class ConnectingLine {
 
   GlobalKey? getFromGK() => fromGKF.call();
 
-  Rectangle rectangleFromGK(GlobalKey gk) {
-    Rect r;
+  Rectangle? rectangleFromGK(GlobalKey gk) {
     if (gk.currentWidget == null) {
       developer.log('gk not found in the widget tree - assuming no target specified! (${feature.toString()})');
-      r = const Rect.fromLTWH(0, 0, 1, 1);
+      return null;
     } else {
-      r = findGlobalRect(gk);
+      Rect? r = findGlobalRect(gk);
+      return r != null ? Rectangle.fromRect(r) : null;
     }
-    return Rectangle.fromRect(r);
   }
+
+  // Rectangle rectangleFromGK(GlobalKey gk) {
+  //   Rect r;
+  //   if (gk.currentWidget == null) {
+  //     developer.log('gk not found in the widget tree - assuming no target specified! (${feature.toString()})');
+  //     r = const Rect.fromLTWH(0, 0, 1, 1);
+  //   } else {
+  //     r = findGlobalRect(gk);
+  //   }
+  //   return Rectangle.fromRect(r);
+  // }
 
   OverlayEntry _createLineEntry() => OverlayEntry(builder: (BuildContext ctx) {
         calcEndpoints();
@@ -112,20 +121,23 @@ class ConnectingLine {
     if (toGKF() == null) return;
     toR = rectangleFromGK(toGKF()!);
     if (toR != null) {
+      if (fromGKF() == null) return;
       fromR = rectangleFromGK(fromGKF()!);
-      var toCentre = toR!.center;
-      var fromCentre = fromR.center;
-      Line line = Line.fromOffsets(fromCentre, toCentre);
+      if (fromR != null) {
+        var toCentre = toR!.center;
+        var fromCentre = fromR!.center;
+        Line line = Line.fromOffsets(fromCentre, toCentre);
 
-      toE = Rectangle.getTargetIntersectionPoint2(Coord.fromOffset(fromCentre), line, toR!);
-      fromE = Rectangle.getTargetIntersectionPoint2(Coord.fromOffset(toCentre), line, fromR);
+        toE = Rectangle.getTargetIntersectionPoint2(Coord.fromOffset(fromCentre), line, toR!);
+        fromE = Rectangle.getTargetIntersectionPoint2(Coord.fromOffset(toCentre), line, fromR!);
 
-      if (toDelta != null && toDelta != 0.0) {
-        toE = Coord.changeDistanceBetweenPoints(fromE, toE, toDelta);
-      }
+        if (toDelta != null && toDelta != 0.0) {
+          toE = Coord.changeDistanceBetweenPoints(fromE, toE, toDelta);
+        }
 
-      if (fromDelta != null && fromDelta != 0.0) {
-        fromE = Coord.changeDistanceBetweenPoints(toE, fromE, fromDelta);
+        if (fromDelta != null && fromDelta != 0.0) {
+          fromE = Coord.changeDistanceBetweenPoints(toE, fromE, fromDelta);
+        }
       }
     }
   }

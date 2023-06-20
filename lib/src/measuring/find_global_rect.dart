@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-Rect findGlobalRect(GlobalKey key) {
+Rect? findGlobalRect(GlobalKey key) {
+  Widget? w = key.currentWidget;
   RenderObject? renderObject = key.currentContext?.findRenderObject();
   if (renderObject == null) {
-    return Rect.fromLTWH(0, 0, 20, 20);
+    return null;
   }
 
   try {
@@ -14,13 +15,13 @@ Rect findGlobalRect(GlobalKey key) {
       bounds = bounds.translate(globalOffset.dx, globalOffset.dy);
       return bounds;
     } else {
-      var bounds = renderObject.paintBounds;
+      var bounds = renderObject!.paintBounds;
       final translation = renderObject.getTransformTo(null).getTranslation();
       bounds = bounds.translate(translation.x, translation.y);
       return bounds;
     }
   } catch (e) {
-    print(e.toString());
-    return Rect.fromLTWH(0, 0, 20, 20);
+    print("findGlobalRect: ${e.toString()}");
+    return null;
   }
 }

@@ -1,4 +1,3 @@
-
 import 'package:flutter_callout_api/src/measuring/find_global_rect.dart';
 import 'package:flutter/material.dart';
 
@@ -47,8 +46,10 @@ class _OffstageMeasuringWidgetState extends State<OffstageMeasuringWidget> {
   }
 
   void afterFirstLayout(Duration context) {
-    Rect rect = findGlobalRect(key);
+    Rect? rect = findGlobalRect(key);
     // only the size is useful, because widget is rendered offstage
-    widget.onSized?.call(Size(rect.width, rect.height));
+    if (rect != null) {
+      widget.onSized?.call(Size(rect.width, rect.height));
+    }
   }
 }

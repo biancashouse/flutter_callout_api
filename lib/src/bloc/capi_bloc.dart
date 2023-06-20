@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter_callout_api/src/list/number_input.dart';
-import 'package:flutter_callout_api/src/model/target_config.dart';
-import 'package:flutter_callout_api/src/overlays/callouts/callout.dart';
-import 'package:flutter_callout_api/src/useful.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_callout_api/callout_api.dart';
+import 'package:flutter_callout_api/src/model/target_config.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:soundpool/soundpool.dart';
 
 import 'capi_event.dart';
@@ -17,23 +17,30 @@ class CAPIBloc extends Bloc<CAPIEvent, CAPIState> {
   CAPIBloc() : super(CAPIState()) {
     on<InitApp>((event, emit) => _initApp(event, emit));
     // on<InitTW>((event, emit) => _initTW(event, emit));
-    on<Suspend>((event, emit) => _suspend(event, emit));
+    on<SuspendAndCopyToJson>((event, emit) => _suspendAndCopyToJson(event, emit));
     on<Resume>((event, emit) => _resume(event, emit));
     on<CopyToClipboard>((event, emit) => _copyToClipboard(event, emit));
     on<RecordMatrix>((event, emit) => _recordMatrix(event, emit));
     on<TargetMoved>((event, emit) => _targetMoved(event, emit));
     on<BtnMoved>((event, emit) => _btnMoved(event, emit));
-    on<NewTarget>((event, emit) => _newTarget(event, emit));
+    // on<NewTargetManual>((event, emit) => _newTargetManual(event, emit));
+    on<NewTargetAuto>((event, emit) => _newTargetAuto(event, emit));
     // on<ListViewRefreshed>((event, emit) => _listViewRefreshed(event, emit));
     on<DeleteTarget>((event, emit) => _deleteTarget(event, emit));
     on<SelectTarget>((event, emit) => _selectTarget(event, emit));
-    on<ChangedOrder>((event, emit) => _changedOrder(event, emit));
+    on<HideTargetsDuringPlayExcept>((event, emit) => _hideTargetsExcept(event, emit));
+    on<UnhideTargets>((event, emit) => _unhideTargets(event, emit));
+    // on<ChangedOrder>((event, emit) => _changedOrder(event, emit));
     on<ClearSelection>((event, emit) => _clearSelection(event, emit));
-    on<StartPlaying>((event, emit) => _startPlaying(event, emit));
-    on<PlayNext>((event, emit) => _playNext(event, emit));
+    on<StartPlayingList>((event, emit) => _startPlayingList(event, emit));
+    on<PlayNextInList>((event, emit) => _playNextInList(event, emit));
+    on<ChangedCalloutPosition>((event, emit) => _changedCalloutPosition(event, emit));
     on<ChangedCalloutDuration>((event, emit) => _changedCalloutDuration(event, emit));
     on<ChangedCalloutTextAlign>((event, emit) => _changedCalloutTextAlign(event, emit));
     on<ChangedCalloutTextStyle>((event, emit) => _changedCalloutTextStyle(event, emit));
+    on<ChangedTargetRadius>((event, emit) => _changedTargetRadius(event, emit));
+    on<ChangedTransformScale>((event, emit) => _changedTransformScale(event, emit));
+    on<ChangedHelpContentType>((event, emit) => _changedHelpContentType(event, emit));
   }
 
   static Soundpool? _soundpool;
@@ -42,43 +49,82 @@ class CAPIBloc extends Bloc<CAPIEvent, CAPIState> {
   static int? _whooshSoundId;
   static int? _errorSoundId;
 
+  // lazy load
+  static Future<void> possiblyLoadSounds(CAPIState capiState) async {
+    if (_soundpool == null && capiState.initialValueJsonAssetPath != null) {
+      await _readSoundFiles(capiState.initialValueJsonAssetPath!, capiState.localTestingFilePaths);
+    }
+  }
+
   Future<void> _initApp(InitApp event, emit) async {
-    if (_soundpool == null) {
-      await _readSoundFiles(event.initialValueJsonAssetPath, event.localTestingFilePaths);
-      Map<String, List<TargetConfig>> wtMap = await _readJsonFile(event.initialValueJsonAssetPath);
-      emit(state.copyWith(
-        wtMap: wtMap,
-        localTestingFilePaths: event.localTestingFilePaths,
-      ));
+    if (state.initialValueJsonAssetPath == null) {
+      // json config source file asset
+      late Map<String, TargetConfig>? targetMap;
+      late Map<String, List<TargetConfig>>? imageTargetListMap;
+      String configFileS = await rootBundle.loadString(event.initialValueJsonAssetPath, cache: false);
+      CAPIModel model = CAPIModel.fromJson(json.decode(configFileS));
+      int configFileTS = model.timestamp ?? 0;
+      targetMap = _parseTargets(model);
+      imageTargetListMap = _parseImageTargets(model);
+      // check for local storage version having a later timestamp than the asset
+      var dir = kIsWeb ? HydratedStorage.webStorageDirectory : await getTemporaryDirectory();
+      HydratedBloc.storage = await HydratedStorage.build(
+        storageDirectory: dir,
+      );
+      bool USE_LOCAL_STORAGE = false;
+      String? localStorageConfigS = await HydratedBloc.storage.read("callout-api-config");
+      if (USE_LOCAL_STORAGE && localStorageConfigS != null) {
+        CAPIModel model = CAPIModel.fromJson(json.decode(localStorageConfigS));
+        int localStorageConfigTS = model.timestamp ?? 0;
+        if (localStorageConfigTS < configFileTS) {
+          targetMap = _parseTargets(model);
+          imageTargetListMap = _parseImageTargets(model);
+        }
+      }
+      emit(
+        state.copyWith(
+          targetMap: targetMap,
+          imageTargetListMap: imageTargetListMap,
+          localTestingFilePaths: event.localTestingFilePaths,
+        ),
+      );
     }
   }
 
 // Future<void> _initTW(InitTW event, emit) async {
 //   Map<String, GlobalKey> newIVGKMap = {}..addAll(state.ivGKMap);
-//   newIVGKMap[event.wwName] = event.ivGK;
+//   newIVGKMap[event.wName] = event.ivGK;
 //   Map<String, GlobalKey> newIVChildGKMap = {}..addAll(state.ivChildGKMap);
-//   newIVChildGKMap[event.wwName] = event.ivChildGK;
+//   newIVChildGKMap[event.wName] = event.ivChildGK;
 //   emit(state.copyWith(
 //     ivGKMap: newIVGKMap,
 //     ivChildGKMap: newIVChildGKMap,
 //   ));
 // }
 
-  void _suspend(Suspend event, emit) {
-    print("bloc _suspend (${event.wwName})");
+  Future<void> _suspendAndCopyToJson(SuspendAndCopyToJson event, emit) async {
+    print("bloc _suspend (${event.wName})");
     Map<String, bool> newSuspendedMap = Map.of(state.suspendedMap);
-    newSuspendedMap[event.wwName] = true;
-    Map<String, int> newSelectionMap = Map.of(state.selectedTargetIndexMap);
-    newSelectionMap[event.wwName] = -1;
+    newSuspendedMap[event.wName] = true;
+
+    // indicate copy to clipboard
+    playWhooshSound();
+
+    // update localstorage
+    CAPIModel model = CAPIModel(DateTime.now().millisecondsSinceEpoch, state.targetMap, state.imageTargetListMap);
+    String jsonS = jsonEncode(model.toJson());
+    await HydratedBloc.storage.write('callout-api-config', jsonS);
+
     emit(state.copyWith(
-      selectedTargetIndexMap: newSelectionMap,
+      selectedTarget: null,
       suspendedMap: newSuspendedMap,
+      timestamp: model.timestamp,
     ));
   }
 
   void _resume(event, emit) {
     Map<String, bool> newSuspendedMap = {};
-    newSuspendedMap[event.wwName] = false;
+    newSuspendedMap[event.wName] = false;
     emit(state.copyWith(
       suspendedMap: newSuspendedMap,
     ));
@@ -90,47 +136,47 @@ class CAPIBloc extends Bloc<CAPIEvent, CAPIState> {
 //   ));
 // }
 
-  void _startPlaying(StartPlaying event, emit) {
-    Map<String, List<TargetConfig>> newPlayListMap = {};
+  void _startPlayingList(StartPlayingList event, emit) {
+    List<TargetConfig> newPlayList = [];
     if (event.playList == null) {
-      if (state.aTargetIsSelected(event.wwName)) {
-        newPlayListMap[event.wwName] = [state.selectedTarget(event.wwName)!];
+      if (state.aTargetIsSelected()) {
+        newPlayList = [state.selectedTarget!];
       } else {
-        newPlayListMap[event.wwName] = List.of(state.wtMap[event.wwName]!);
+        newPlayList = List.of(state.imageTargetListMap[event.iwName]!);
       }
     } else {
       // playlist supplied as list ints
-      newPlayListMap[event.wwName] = event.playList!.map((i) => state.wtMap[event.wwName]![i]).toList();
+      newPlayList = event.playList!.map((i) => state.imageTargetListMap[event.iwName]![i]).toList();
     }
     emit(state.copyWith(
-      playListMap: newPlayListMap,
+      playList: newPlayList,
     ));
   }
 
-  void _playNext(PlayNext event, emit) {
-    Map<String, List<TargetConfig>> newPlayListMap = {};
-    if (state.playList(event.wwName).isNotEmpty) {
-      newPlayListMap[event.wwName] = state.playList(event.wwName).sublist(1);
+  void _playNextInList(PlayNextInList event, emit) {
+    List<TargetConfig> newPlayList = [];
+    if (state.playList.isNotEmpty) {
+      newPlayList = state.playList.sublist(1);
       emit(state.copyWith(
-        playListMap: newPlayListMap,
+        playList: newPlayList,
       ));
     }
   }
 
   Future<void> _copyToClipboard(event, emit) async {
     playWhooshSound();
-    CAPIModel model = CAPIModel(state.wtMap);
+    CAPIModel model = CAPIModel(DateTime.now().millisecondsSinceEpoch, state.targetMap, state.imageTargetListMap);
     await Clipboard.setData(ClipboardData(text: jsonEncode(model.toJson())));
   }
 
 // update current scale, translate and selected target
   void _recordMatrix(RecordMatrix event, emit) {
-    if (state.aTargetIsSelected(event.wwName)) {
-      TargetConfig updatedTC = state.selectedTarget(event.wwName)!;
+    if (state.aTargetIsSelected()) {
+      TargetConfig updatedTC = state.selectedTarget!;
       updatedTC.setRecordedMatrix(event.newMatrix);
-      Map<String, List<TargetConfig>> newwtMap = _addOrUpdatewtMap(event.wwName, updatedTC);
+      Map<String, List<TargetConfig>> newimageTargetListMap = _addOrUpdateimageTargetListMap(event.wName, updatedTC);
       emit(state.copyWith(
-        wtMap: newwtMap,
+        imageTargetListMap: newimageTargetListMap,
         force: state.force + 1,
         // lastUpdatedTC: updatedTC,
       ));
@@ -141,12 +187,12 @@ class CAPIBloc extends Bloc<CAPIEvent, CAPIState> {
   void _targetMoved(TargetMoved event, emit) {
     TargetConfig updatedTC = event.tc;
     updatedTC.setTargetStackPosPc(event.newGlobalPos.translate(
-      state.CAPI_TARGET_RADIUS(event.tc.wwName),
-      state.CAPI_TARGET_RADIUS(event.tc.wwName),
+      event.tc.getScale() * event.targetRadius,
+      event.tc.getScale() * event.targetRadius,
     ));
-    Map<String, List<TargetConfig>> newwtMap = _addOrUpdatewtMap(event.tc.wwName, updatedTC);
+    Map<String, List<TargetConfig>> newimageTargetListMap = _addOrUpdateimageTargetListMap(event.tc.wName, updatedTC);
     emit(state.copyWith(
-      wtMap: newwtMap,
+      imageTargetListMap: newimageTargetListMap,
       force: state.force + 1,
     ));
   }
@@ -158,54 +204,74 @@ class CAPIBloc extends Bloc<CAPIEvent, CAPIState> {
       state.CAPI_TARGET_BTN_RADIUS,
       state.CAPI_TARGET_BTN_RADIUS,
     ));
-    Map<String, List<TargetConfig>> newwtMap = _addOrUpdatewtMap(event.tc.wwName, updatedTC);
+    Map<String, List<TargetConfig>> newimageTargetListMap = _addOrUpdateimageTargetListMap(event.tc.wName, updatedTC);
     emit(state.copyWith(
-      wtMap: newwtMap,
+      imageTargetListMap: newimageTargetListMap,
       force: state.force + 1,
     ));
   }
 
-  void _newTarget(NewTarget event, emit) {
+  // void _newTargetManual(NewTargetManual event, emit) {
+  //   TargetConfig newItem = TargetConfig(
+  //     uid: Random().nextInt(100),
+  //     twName: event.wName,
+  //   );
+  //   newItem.init(
+  //     this,
+  //     GlobalKey(debugLabel: "Target: ${1 + (state.imageTargetListMap[event.wName] ?? []).length}"),
+  //     FocusNode(),
+  //   );
+  //   newItem.setRecordedMatrix(Matrix4.identity());
+  //   newItem.setTargetStackPosPc(event.newGlobalPos);
+  //   newItem.btnLocalLeftPc = newItem.targetLocalPosLeftPc;
+  //   newItem.btnLocalTopPc = newItem.targetLocalPosTopPc;
+  //   Map<String, List<TargetConfig>> newimageTargetListMap = _addOrUpdateimageTargetListMap(event.wName, newItem);
+  //   // select new item
+  //   int index = (newimageTargetListMap[event.wName] ?? []).indexOf(newItem);
+  //   Map<String, int> newSelectionMap = Map.of(state.selectedTargetIndexMap);
+  //   if (index > -1) {
+  //     newSelectionMap[event.wName] = index;
+  //   }
+  //   emit(state.copyWith(
+  //     imageTargetListMap: newimageTargetListMap,
+  //     selectedTargetIndexMap: newSelectionMap,
+  //     // lastUpdatedTC: newItem,
+  //   ));
+  // }
+
+  void _newTargetAuto(NewTargetAuto event, emit) {
     TargetConfig newItem = TargetConfig(
       uid: Random().nextInt(100),
-      wwName: event.wwName,
+      wName: event.wName,
     );
     newItem.init(
       this,
-      GlobalKey(debugLabel: "Target: ${1 + (state.wtMap[event.wwName] ?? []).length}"),
+      GlobalKey(debugLabel: "Target: ${1 + (state.imageTargetListMap[event.wName] ?? []).length}"),
+      FocusNode(),
       FocusNode(),
     );
-    newItem.setRecordedMatrix(Matrix4.identity());
     newItem.setTargetStackPosPc(event.newGlobalPos);
     newItem.btnLocalLeftPc = newItem.targetLocalPosLeftPc;
     newItem.btnLocalTopPc = newItem.targetLocalPosTopPc;
-    Map<String, List<TargetConfig>> newwtMap = _addOrUpdatewtMap(event.wwName, newItem);
-    // select new item
-    int index = (newwtMap[event.wwName] ?? []).indexOf(newItem);
-    Map<String, int> newSelectionMap = Map.of(state.selectedTargetIndexMap);
-    if (index > -1) {
-      newSelectionMap[event.wwName] = index;
-    }
+    Map<String, List<TargetConfig>> newImageTargetListMap = _addOrUpdateimageTargetListMap(event.wName, newItem);
     emit(state.copyWith(
-      wtMap: newwtMap,
-      selectedTargetIndexMap: newSelectionMap,
-      // lastUpdatedTC: newItem,
+      imageTargetListMap: newImageTargetListMap,
+      // selectedTarget: newItem,
+      newestTarget: newItem,
     ));
   }
 
   void _deleteTarget(DeleteTarget event, emit) {
-    List<TargetConfig> newList = List.of(state.wtMap[event.tc.wwName] ?? []);
+    List<TargetConfig> newList = List.of(state.imageTargetListMap[event.tc.wName] ?? []);
     try {
       TargetConfig oldTc = newList.firstWhere((theTc) => theTc.uid == event.tc.uid);
       int oldTcIndex = newList.indexOf(oldTc);
       newList.removeAt(oldTcIndex);
-      Map<String, List<TargetConfig>> newwtMap = Map.of(state.wtMap);
-      newwtMap[event.tc.wwName] = newList;
-      Map<String, int> newSelectionMap = Map.of(state.selectedTargetIndexMap);
-      newSelectionMap[event.tc.wwName] = -1;
+      Map<String, List<TargetConfig>> newimageTargetListMap = Map.of(state.imageTargetListMap);
+      newimageTargetListMap[event.tc.wName] = newList;
       emit(state.copyWith(
-        wtMap: newwtMap,
-        selectedTargetIndexMap: newSelectionMap,
+        imageTargetListMap: newimageTargetListMap,
+        selectedTarget: null,
       ));
     } catch (e) {
       print("\nUnable to remove tc !\n");
@@ -213,34 +279,41 @@ class CAPIBloc extends Bloc<CAPIEvent, CAPIState> {
   }
 
   Future<void> _selectTarget(SelectTarget event, emit) async {
-    int index = (state.wtMap[event.tc.wwName] ?? []).indexOf(event.tc);
-    if (index > -1) {
-      Map<String, int> newSelectionMap = Map.of(state.selectedTargetIndexMap);
-      newSelectionMap[event.tc.wwName] = index;
-      emit(state.copyWith(
-        selectedTargetIndexMap: newSelectionMap,
-      ));
-    }
-  }
-
-  void _changedOrder(ChangedOrder event, emit) {
-    int newIndex = event.newIndex;
-    if (event.oldIndex < newIndex) {
-      newIndex -= 1;
-    }
-    List<TargetConfig> newTargetList = List.of(state.targets(event.wwName));
-    final TargetConfig item = newTargetList.removeAt(event.oldIndex);
-    newTargetList.insert(newIndex, item);
-    Map<String, List<TargetConfig>> newTargetsMap = Map.of(state.wtMap);
-    newTargetsMap[event.wwName] = newTargetList;
     emit(state.copyWith(
-      wtMap: newTargetsMap,
+      selectedTarget: event.tc,
     ));
   }
 
+  Future<void> _hideTargetsExcept(HideTargetsDuringPlayExcept event, emit) async {
+    emit(state.copyWith(
+      hideTargetsWhilePlayingExcept: event.tc,
+    ));
+  }
+
+  Future<void> _unhideTargets(event, emit) async {
+    emit(state.copyWith(
+      hideTargetsWhilePlayingExcept: null,
+    ));
+  }
+
+  // void _changedOrder(ChangedOrder event, emit) {
+  //   int newIndex = event.newIndex;
+  //   if (event.oldIndex < newIndex) {
+  //     newIndex -= 1;
+  //   }
+  //   List<TargetConfig> newTargetList = List.of(state.imageTargets(event.wName));
+  //   final TargetConfig item = newTargetList.removeAt(event.oldIndex);
+  //   newTargetList.insert(newIndex, item);
+  //   Map<String, List<TargetConfig>> newTargetsMap = Map.of(state.imageTargetListMap);
+  //   newTargetsMap[event.wName] = newTargetList;
+  //   emit(state.copyWith(
+  //     imageTargetListMap: newTargetsMap,
+  //   ));
+  // }
+
 // void clearSelection({bool reshowAllTargets = true}) {
 //   bloc.add(CAPIEvent.clearSelection());
-//   if (aTargetIsSelected(widget.wwName)) {
+//   if (aTargetIsSelected(widget.iwName)) {
 //     transformationController.removeListener(_onChangeTransformation);
 //     Useful.om.removeCalloutByFeature(CAPI.ANY_TOAST.feature(featureSeed), true);
 //     targetListGK.currentState?.setState(() {
@@ -275,25 +348,23 @@ class CAPIBloc extends Bloc<CAPIEvent, CAPIState> {
 // }
 
   void _clearSelection(ClearSelection event, emit) {
-    Map<String, int> newSelectionMap = Map.of(state.selectedTargetIndexMap);
-    newSelectionMap.remove(event.wwName);
     emit(state.copyWith(
-      selectedTargetIndexMap: newSelectionMap,
+      selectedTarget: null,
     ));
   }
 
 // void _clearSelection(ClearSelection event, emit) {
-//   if (state.aTargetIsSelected(widget.wwName)) {
+//   if (state.aTargetIsSelected(widget.iwName)) {
 //     TargetConfig newTC = state.selectedTarget!.clone();
-//     Map<String, List<TargetConfig>> newwtMap = {}..addAll(state.wtMap);
+//     Map<String, List<TargetConfig>> newimageTargetListMap = {}..addAll(state.imageTargetListMap);
 //     newTC.setTargetLocalPosPc(
 //       event.targetCalloutGlobalPos,
 //       state.childMeasuredPositionMap[state.selectedTargetWrapperName]!,
 //       state.childMeasuredSizeMap[state.selectedTargetWrapperName]!,
 //     );
-//     newwtMap[state.selectedTargetWrapperName]![state.selectedTargetIndex(widget.wwName)] = newTC;
+//     newimageTargetListMap[state.selectedTargetWrapperName]![state.selectedTargetIndex(widget.iwName)] = newTC;
 //     emit(state.copyWith(
-//       wtMap: newwtMap,
+//       imageTargetListMap: newimageTargetListMap,
 //       selectedTarget: null,
 //     ));
 //   }
@@ -303,33 +374,105 @@ class CAPIBloc extends Bloc<CAPIEvent, CAPIState> {
 //   emit(state.copyWith());
 // }
 
+  void _changedCalloutPosition(ChangedCalloutPosition event, emit) {
+    TargetConfig tc = event.tc.clone();
+    tc.calloutTopPc = event.newPos.dy / Useful.scrH;
+    tc.calloutLeftPc = event.newPos.dx / Useful.scrW;
+    Map<String, List<TargetConfig>> newimageTargetListMap = _addOrUpdateimageTargetListMap(tc.wName, tc);
+    emit(state.copyWith(
+      imageTargetListMap: newimageTargetListMap,
+      selectedTarget: tc,
+      force: state.force + 1,
+    ));
+  }
+
   void _changedCalloutDuration(ChangedCalloutDuration event, emit) {
-    emit(state.copyWith());
+    TargetConfig tc = event.tc.clone();
+    tc.calloutDurationMs = event.newDurationMs;
+    Map<String, List<TargetConfig>> newimageTargetListMap = _addOrUpdateimageTargetListMap(tc.wName, tc);
+    emit(state.copyWith(
+      imageTargetListMap: newimageTargetListMap,
+      selectedTarget: tc,
+      force: state.force + 1,
+    ));
   }
 
   void _changedCalloutTextAlign(ChangedCalloutTextAlign event, emit) {
-    emit(state.copyWith());
+    TargetConfig tc = event.tc.clone();
+    tc.setTextAlign(event.newTextAlign);
+    Map<String, List<TargetConfig>> newimageTargetListMap = _addOrUpdateimageTargetListMap(tc.wName, tc);
+    emit(state.copyWith(
+      imageTargetListMap: newimageTargetListMap,
+      selectedTarget: tc,
+      force: state.force + 1,
+    ));
   }
 
   void _changedCalloutTextStyle(ChangedCalloutTextStyle event, emit) {
-    emit(state.copyWith());
+    TargetConfig tc = event.tc.clone();
+    tc.setTextStyle(event.newTextStyle);
+    Map<String, List<TargetConfig>> newimageTargetListMap = _addOrUpdateimageTargetListMap(tc.wName, tc);
+    emit(state.copyWith(
+      imageTargetListMap: newimageTargetListMap,
+      selectedTarget: tc,
+      force: state.force + 1,
+    ));
+  }
+
+  void _changedTargetRadius(ChangedTargetRadius event, emit) {
+    TargetConfig tc = event.tc.clone();
+    tc.radius = event.newRadius;
+    Map<String, List<TargetConfig>> newimageTargetListMap = _addOrUpdateimageTargetListMap(tc.wName, tc);
+    emit(state.copyWith(
+      imageTargetListMap: newimageTargetListMap,
+      selectedTarget: tc,
+      force: state.force + 1,
+    ));
+  }
+
+  void _changedTransformScale(ChangedTransformScale event, emit) {
+    TargetConfig tc = event.tc.clone();
+    tc.transformScale = event.newScale;
+    Map<String, List<TargetConfig>> newimageTargetListMap = _addOrUpdateimageTargetListMap(tc.wName, tc);
+    emit(state.copyWith(
+      imageTargetListMap: newimageTargetListMap,
+      selectedTarget: tc,
+      force: state.force + 1,
+    ));
+  }
+
+  void _changedHelpContentType(ChangedHelpContentType event, emit) {
+    TargetConfig tc = event.tc.clone();
+    tc.usingText = !event.useImage;
+    Map<String, List<TargetConfig>> newimageTargetListMap = _addOrUpdateimageTargetListMap(tc.wName, tc);
+    emit(state.copyWith(
+      imageTargetListMap: newimageTargetListMap,
+      selectedTarget: tc,
+      force: state.force + 1,
+    ));
+  }
+
+  void _kbdHChanged(event, emit) {
+    emit(state.copyWith(
+      force: state.force + 1,
+    ));
   }
 
   // // emits new state containing the new measurement
   // void _measuredIV(MeasuredIV event, emit) {
   //   Map<String, Rect> newIVRectMap = {};
   //   newIVRectMap = Map.of(state.ivRectMap);
-  //   newIVRectMap[event.wwName] = event.ivRect;
-  //   // if (state.ivRectMap[event.wwName]?.size != event.ivRect.size) {
+  //   newIVRectMap[event.wName] = event.ivRect;
+  //   // if (state.ivRectMap[event.wName]?.size != event.ivRect.size) {
   //   emit(state.copyWith(
   //     ivRectMap: newIVRectMap,
   //   ));
   //   // }
   // }
 
-  Map<String, List<TargetConfig>> _addOrUpdatewtMap(final String wwName, final TargetConfig tc) {
+  Map<String, List<TargetConfig>> _addOrUpdateimageTargetListMap(final String iwName, final TargetConfig tc) {
     // replace or append tc in copy of its list
-    List<TargetConfig> newList = List.of(state.wtMap[wwName] ?? []);
+    List<TargetConfig> newList = List.of(state.imageTargetListMap[iwName] ?? []);
     try {
       TargetConfig oldTc = newList.firstWhere((theTc) => theTc.uid == tc.uid);
       int oldTcIndex = newList.indexOf(oldTc);
@@ -342,9 +485,9 @@ class CAPIBloc extends Bloc<CAPIEvent, CAPIState> {
       newList.add(tc);
     }
     // replace the list containing the tc
-    Map<String, List<TargetConfig>> newwtMap = Map.of(state.wtMap);
-    newwtMap[wwName] = newList;
-    return newwtMap;
+    Map<String, List<TargetConfig>> newimageTargetListMap = Map.of(state.imageTargetListMap);
+    newimageTargetListMap[iwName] = newList;
+    return newimageTargetListMap;
   }
 
 // void _refreshToolCallouts() {
@@ -356,34 +499,52 @@ class CAPIBloc extends Bloc<CAPIEvent, CAPIState> {
 //   Callout.moveToByFeature(CAPI.STYLES_CALLOUT.feature(), stylesCalloutInitialPos(b ?? true));
 // }
 
-  Future<Map<String, List<TargetConfig>>> _readJsonFile(final String path) async {
-    Map<String, List<TargetConfig>> wtMap = {};
+  Map<String, List<TargetConfig>> _parseImageTargets(CAPIModel model) {
+    Map<String, List<TargetConfig>> imageTargetListMap = {};
     try {
-      String jsonS = await rootBundle.loadString(path);
-      Map<String, dynamic> data = await json.decode(jsonS);
-      CAPIModel ccModel = CAPIModel.fromJson(data);
-      for (String wwName in ccModel.wtMap?.keys ?? []) {
-        List<TargetConfig>? targets = ccModel.wtMap?[wwName];
+      for (String iwName in model.imageTargetListMap?.keys ?? []) {
+        List<TargetConfig>? targets = model.imageTargetListMap?[iwName];
         if (targets != null && targets.isNotEmpty) {
           for (int i = 0; i < targets.length; i++) {
             targets[i].init(
               this,
               GlobalKey(debugLabel: "target-$i"),
               FocusNode(),
+              FocusNode(),
             );
           }
           // targets.sort((a, b) => a.calloutDurationMs.compareTo(b.calloutDurationMs));
-          wtMap[wwName] = targets;
+          imageTargetListMap[iwName] = targets;
         }
       }
     } catch (e) {
-      print("${path} not found (have you updated pubspec?)");
+      print("_parseImageTargets(): ${e.toString()}");
       rethrow;
     }
-    return wtMap;
+    return imageTargetListMap;
   }
 
-  Future<void> _readSoundFiles(final String path, final bool localTestingFilePaths) async {
+  Map<String, TargetConfig> _parseTargets(CAPIModel model) {
+    Map<String, TargetConfig> targetMap = {};
+    try {
+      for (String iwName in model.targetMap?.keys ?? []) {
+        TargetConfig tc = model.targetMap![iwName]!;
+        tc.init(
+          this,
+          GlobalKey(debugLabel: iwName),
+          FocusNode(),
+          FocusNode(),
+        );
+        targetMap[iwName] = tc;
+      }
+    } catch (e) {
+      print("_parseImageTargets(): ${e.toString()}");
+      rethrow;
+    }
+    return targetMap;
+  }
+
+  static Future<void> _readSoundFiles(final String path, final bool localTestingFilePaths) async {
     _soundpool = Soundpool.fromOptions(
         options: const SoundpoolOptions(
       streamType: StreamType.notification,
@@ -392,33 +553,41 @@ class CAPIBloc extends Bloc<CAPIEvent, CAPIState> {
         ? "lib/src/sounds/178186__snapper4298__camera-click-nikon.wav"
         : "packages/flutter_callout_api/lib/src/sounds/178186__snapper4298__camera-click-nikon.wav");
     _shutterSoundId = await _soundpool?.load(asset);
-    asset = await rootBundle.load(
-        localTestingFilePaths ? "lib/src/sounds/447910__breviceps__plop.wav" : "packages/flutter_callout_api/lib/src/sounds/447910__breviceps__plop.wav");
+    asset = await rootBundle.load(localTestingFilePaths
+        ? "lib/src/sounds/447910__breviceps__plop.wav"
+        : "packages/flutter_callout_api/lib/src/sounds/447910__breviceps__plop.wav");
     _plopSoundId = await _soundpool?.load(asset);
     asset = await rootBundle.load(localTestingFilePaths
         ? "lib/src/sounds/394415__inspectorj__bamboo-swing-a1.wav"
         : "packages/flutter_callout_api/lib/src/sounds/394415__inspectorj__bamboo-swing-a1.wav");
     _whooshSoundId = await _soundpool?.load(asset);
-    asset = await rootBundle.load(
-        localTestingFilePaths ? "lib/src/sounds/250048__kwahmah-02__sits6.wav" : "packages/flutter_callout_api/lib/src/sounds/250048__kwahmah-02__sits6.wav");
+    asset = await rootBundle.load(localTestingFilePaths
+        ? "lib/src/sounds/250048__kwahmah-02__sits6.wav"
+        : "packages/flutter_callout_api/lib/src/sounds/250048__kwahmah-02__sits6.wav");
     _errorSoundId = await _soundpool?.load(asset);
   }
 
   Future<void> playShutterSound() async {
+    await CAPIBloc.possiblyLoadSounds(state);
     if (_soundpool != null && _shutterSoundId != null) await _soundpool!.play(_shutterSoundId!);
   }
 
   Future<void> playPlopSound() async {
+    await CAPIBloc.possiblyLoadSounds(state);
     if (_soundpool != null && _plopSoundId != null) await _soundpool!.play(_plopSoundId!);
   }
 
   Future<void> playWhooshSound() async {
+    await CAPIBloc.possiblyLoadSounds(state);
     if (_soundpool != null && _whooshSoundId != null) await _soundpool!.play(_whooshSoundId!);
   }
 
-  Future<void> playErrorSound() async {
+  Future<void> playErrorSound(state) async {
+    await CAPIBloc.possiblyLoadSounds(state);
     if (_soundpool != null && _errorSoundId != null) await _soundpool!.play(_errorSoundId!);
   }
+
+  TargetConfig? selectedTC() => state.selectedTarget;
 
 // static Offset m4ToTranslation(Matrix4 m) {
 //   math.Vector3 translation = math.Vector3.zero();
@@ -435,44 +604,4 @@ class CAPIBloc extends Bloc<CAPIEvent, CAPIState> {
 //   m.decompose(translation, rotation, scale);
 //   return scale.b;
 // }
-
-  static Future<void> showStartTimeCallout(final TargetConfig tc) async {
-    TextEditingController teC = TextEditingController()..text = tc.calloutDurationMs.toString();
-    Callout startTimeEditorCallout = Callout(
-      feature: CAPI.START_TIME_CALLOUT.feature(),
-      focusNode: tc.focusNode(),
-      targetGKF: () => tc.gk(),
-      contents: () => NumberInput(
-          icon: const Icon(
-            Icons.timer,
-            size: 32,
-          ),
-          label: "show callout for (ms)",
-          controller: teC,
-          focusNode: tc.focusNode(),
-          onChanged: (s) {
-            tc.calloutDurationMs = int.parse(s);
-// tc.bloc.state.wtMap[tc.wwName]?.sort((a, b) => a.calloutDurationMs.compareTo(b.calloutDurationMs));
-          },
-          onClosed: () {
-            Useful.om.remove(CAPI.START_TIME_CALLOUT.feature(), true);
-          }),
-      barrierOpacity: 0.0,
-// arrowThickness: ArrowThickness.THIN,
-      arrowColor: Colors.red,
-      separation: 50,
-// skipArrow: separation == null,
-      modal: false,
-      widthF: () => 400,
-      heightF: () => 80,
-      minHeight: 50,
-      containsTextField: true,
-      draggable: true,
-      color: Colors.white,
-    );
-
-    await startTimeEditorCallout.show(
-      notUsingHydratedStorage: true,
-    );
-  }
 }
